@@ -229,15 +229,258 @@ const NOTIFS=[
 const CAMP_TODAY=[['5:00 AM','Morning drill'],['8:00 AM','Lectures, Hall B'],['12:00 PM','SAED session'],['4:00 PM','Final rehearsal'],['7:00 PM','Mammy Market']];
 const TRENDING=[['#SwearingIn','12.4k posts'],['#CampFood','8.1k posts'],['#PPAStories','5.6k posts'],['#LagosRent','3.9k posts'],['#Redeployment','2.2k posts'],['#PassingOut','1.8k posts']];
 const TAKEN=['amaka.ok','ibro.bello','fatima.nuhu','musa.sani','tunde.dev','zee.lawal','emeka.shoots','kemi.b','admin','nysc','official'];
+// ===== Extra sample data (people, communities, posts, listings, events, notifications) =====
+(function(){
+const COL=['#C8F169','#FF8A3D','#8FB3FF','#F7B2D9','#FFD66B','#C4B5FD','#7DD3FC','#B8E1C5','#FDA4AF'];
+const ini=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const IMG=n=>'media/img/p'+n+'.jpg', VID=n=>'media/vid/v'+n+'.mp4';
+
+// ---- avatars for the original people
+Object.entries({amaka:'w1',ibrahim:'m1',fatima:'w2',musa:'m2',tunde:'m3',zainab:'w3',emeka:'m4',kemi:'w4'}).forEach(([k,v])=>{USERS[k].photo='media/av/'+v+'.jpg';});
+
+// ---- more people: id, name, username, avatar, batch, state, status, verified, bio, followers, following, followsMe
+[
+['chinedu','Chinedu Eze','chinedu.eze','m5','Batch A 2026','Anambra','Serving',true,'Civil engineer serving in Awka. Ask me about site work and cheap rent.',640,410,false],
+['yusuf','Yusuf Abdullahi','yusuf.abd','m6','Batch B 2026','Kaduna','In camp',true,'Platoon 11. Chess club founder. Will challenge you.',320,280,true],
+['segun','Segun Ogunleye','segun.og','m7','Batch A 2026','Ogun','Serving',true,'Teaching physics in Abeokuta. Weekend barber.',770,520,false],
+['chidera','Chidera Nnamdi','chidera.n','m8','Batch C 2025','Rivers','Completed',true,'Passed out. Now building a logistics startup in Port Harcourt.',4300,610,false],
+['david','David Okon','david.okon','m9','Batch A 2026','Cross River','Serving',true,'Serving at a rural clinic. Nurse, runner, amateur drummer.',510,430,true],
+['samuel','Samuel Danjuma','sam.dan','m10','Batch B 2026','Plateau','In camp',true,'Platoon 4 sergeant. Plateau weather is unreal.',290,350,false],
+['ahmed','Ahmed Suleiman','ahmed.sul','m11','Batch A 2026','Kano','Serving',true,'Runs a phone-repair side hustle after PPA hours.',1900,300,true],
+['victor','Victor Obi','victor.obi','m12','Batch C 2025','Delta','Completed',true,'Alumni. Happy to review CVs for corpers job hunting.',2700,420,false],
+['kelechi','Kelechi Onyeka','kelechi.o','m13','Batch A 2026','Abia','Serving',true,'Serving in Aba. Fashion tailor and ankara lover.',880,560,false],
+['femi','Femi Coker','femi.coker','m14','Batch B 2025','Lagos','Completed',true,'Passed out last year. Photographer and weekend DJ.',3600,700,true],
+['ngozi','Ngozi Eze','ngozi.eze','w5','Batch A 2026','Anambra','Serving',true,'Serving at a primary school in Awka. Chief of the staff-room snacks.',720,490,true],
+['blessing','Blessing Udoh','blessing.udoh','w6','Batch A 2026','Akwa Ibom','Serving',true,'Banking intern during the week, choir on Sundays.',430,380,false],
+['halima','Halima Garba','halima.garba','w7','Batch B 2026','Bauchi','In camp',true,'Pharmacy grad. First time out of Bauchi, loving camp.',260,300,false],
+['aisha','Aisha Mohammed','aisha.mo','w8','Batch B 2025','FCT','Completed',true,'Alumni. HR officer in Abuja. DM-less but open to comments on job posts.',3100,450,false],
+['funke','Funke Adebayo','funke.ade','w9','Batch B 2026','Oyo','Awaiting deployment',false,'Waiting on my call-up letter. Asking questions all day.',180,420,false],
+['grace','Grace Ihejirika','grace.ihe','w10','Batch A 2026','Imo','Serving',true,'Serving in Owerri. Baker. Cakes for every corper birthday.',1250,610,true],
+['tolu','Tolu Akinwale','tolu.ak','w11','Batch A 2026','Lagos','Serving',true,'Product designer serving in Yaba. Open to freelance.',2200,530,true],
+['maryam','Maryam Yakubu','maryam.y','w12','Batch A 2026','Kaduna','Serving',true,'CDS health team lead. Ask about free screening outreach.',940,370,false],
+['bola','Bolanle Adewale','bola.ade','w13','Batch B 2026','Ogun','In camp',true,'Platoon 9. Dance captain for the cultural night.',680,440,true],
+['ifeoma','Ifeoma Chukwu','ifeoma.c','w14','Batch A 2026','Enugu','Serving',true,'Accountant serving at an NGO in Enugu. Hiring tips are my love language.',1450,500,false]
+].forEach(([id,name,un,av,batch,state,status,ver,bio,fo,fg,fm],i)=>{
+  USERS[id]={id,name,username:un,initials:ini(name),color:COL[i%COL.length],batch,camp:status==='Awaiting deployment'?'Not yet assigned':state+' Orientation Camp',state,status,verified:ver,bio,followers:fo,following:fg,followsMe:fm,photo:'media/av/'+av+'.jpg'};
+  TAKEN.push(un);
+});
+
+POSTS.p2.media=[IMG(35)];POSTS.p6.media=[IMG(36),IMG(37)];POSTS.p10.media=[IMG(38)];
+
+// ---- more communities
+const C=(id,name,official,category,sub,members,today,joined,join,color,initials,desc,rules,mods,pinned)=>{COMM[id]={id,name,official,category,sub,members,today,joined,join,color,initials,desc,rules,mods,pinned};};
+C('batch-a-26','Batch A 2026',true,'Batch & camp','Nationwide',51400,980,true,'open','#FF8A3D','A26','Every Batch A 2026 corps member. Passing-out countdown, CDS tips and PPA life.',['Be respectful.','No impersonating NYSC officials.','Keep listings in Marketplace.'],['musa'],['Passing-out clearance checklist. Start early.']);
+C('batch-c-25','Batch C 2025',true,'Batch & camp','Nationwide alumni',39800,310,true,'open','#C4B5FD','C25','Batch C 2025 alumni. Reunions, career advice and old camp stories.',['Be respectful.','Share jobs in the Jobs tab, not here.'],['zainab'],['One-year reunion in Abuja, 12 Dec. See Events.']);
+C('lagos-camp','Lagos Orientation Camp',true,'Batch & camp','Batch B 2026',2890,140,true,'open','#FFD66B','LC','The official space for corps members at Lagos orientation camp.',['Be respectful.','Only admins and moderators post official notices.','No selling here. Use Marketplace.'],['tunde'],['Kitchen duty roster is on the notice board.']);
+C('kaduna-camp','Kaduna Orientation Camp',true,'Batch & camp','Batch B 2026',2310,64,true,'open','#B8E1C5','KD','Everything Kaduna camp: platoon news, questions and photos.',['Be respectful.','Verify before you share official news.'],['yusuf'],['Welfare officer is available 4–6pm daily.']);
+C('lagos-cms','Lagos Corps Members',true,'Location','Lagos State',11800,420,true,'open','#7DD3FC','LG','Corps members serving in Lagos. Rent tips, meetups and transport.',['Be respectful.','Do not post PPA addresses.'],['tolu'],['BRT card guide pinned in the comments of last week’s thread.']);
+C('fct-cms','FCT Corps Members',true,'Location','Abuja',9400,260,true,'open','#F7B2D9','FC','Corps members serving in the FCT. Events, rent and jobs around Abuja.',['Be respectful.','Beware of agency scams.'],['aisha'],['FCT CDS directory updated this month.']);
+C('rivers-cms','Rivers Corps Members',true,'Location','Rivers State',5200,95,true,'open','#8FB3FF','RV','Corps members serving in Rivers State.',['Be respectful.'],['chidera'],['Port Harcourt meetup coming this Saturday.']);
+C('oyo-cms','Oyo Corps Members',true,'Location','Oyo State',4100,72,true,'open','#FDA4AF','OY','Corps members serving in Oyo State. Ibadan food tours and CDS.',['Be respectful.'],['kemi'],['Amala Thursday is tradition now.']);
+C('job-leads','Job Leads Nationwide',false,'Business','Nationwide',21800,540,true,'open','#C8F169','JL','Share and find jobs, gigs and internships. Always say who the employer is. Never ask for money.',['Name the employer and the pay.','No pay-to-apply listings. Ever.','Use the Jobs tab for formal listings.'],['victor','aisha'],['Never pay a fee to get a job. Report anyone who asks.']);
+C('corper-market','Corpers Marketplace Hub',false,'Business','Nationwide',15600,420,true,'open','#FFD66B','CM','Buy and sell second-hand items, kits and gadgets between corpers.',['Post price and area.','Meet in public places.','Mark items sold.'],['ahmed'],['Meet at public places and inspect before paying.']);
+C('entrepreneurs','Corper Entrepreneurs',false,'Business','Nationwide',8700,190,false,'open','#FF8A3D','CE','Side hustles, small businesses and startup talk for corpers.',['No pyramid schemes.','Share lessons, not just promos.'],['chidera'],['Weekly “what are you building” thread.']);
+C('abuja-roommates','Abuja Roommates',false,'Accommodation','FCT',4900,110,false,'open','#B8E1C5','AR','Find a roommate or hand over an apartment in Abuja.',['Post area, rent and fees.','Never pay before inspecting.'],['aisha'],['Agency fees in Abuja are negotiable. Ask.']);
+C('fellowship','Corpers Fellowship',false,'Faith','Nationwide',7300,150,false,'open','#C4B5FD','CF','A friendly space for corpers of faith. Prayer requests, sermons and fellowships near you.',['Respect all denominations.','No hate speech.'],['blessing'],['Sunday fellowships list updates every Friday.']);
+C('cds-health','CDS Health Crusaders',false,'CDS','Nationwide',3600,60,false,'open','#7DD3FC','HC','Health-focused CDS groups sharing outreach ideas and screening checklists.',['Share evidence-based info only.'],['maryam'],['Next outreach: malaria awareness, Kano.']);
+C('naija-fc','Naija Corpers FC',false,'Sports','Nationwide',6200,130,false,'open','#FF8A3D','FC','Football talk, fixtures and corpers-only tournaments.',['Respect the referee.'],['ibrahim'],['Inter-state tournament registration closes soon.']);
+C('creators','Content Creators Corner',false,'Creative','Nationwide',5400,170,false,'open','#F7B2D9','CC','Videographers, vloggers and writers. Collabs and gear swaps.',['Credit your collaborators.'],['femi'],['Monthly challenge: 60-second camp story.']);
+C('foodies','Corper Foodies',false,'Interest','Nationwide',9100,260,false,'open','#FFD66B','FD','Where to eat, what to cook on allowee, and the best suya in every state.',['Photos or it didn’t happen.'],['grace'],['Cooking on a budget: allowee edition.']);
+C('fitness','Fitness Corpers',false,'Interest','Nationwide',4300,90,false,'open','#B8E1C5','FT','Morning runs, gym tips and accountability partners.',['Be kind.'],['david'],['Weekend runs list by state.']);
+C('fashion','Style & Thrift',false,'Creative','Nationwide',5100,120,false,'open','#FDA4AF','ST','Ankara, thrift finds and tailor recommendations.',['Credit tailors.'],['kelechi'],['Tailor directory by state.']);
+C('nasarawa-lga','Corps Members in Nasarawa LGA',false,'Location','Nasarawa',410,12,false,'request','#8FB3FF','NL','A small community for corpers serving in Nasarawa LGA.',['Local tips only.'],['musa'],['CDS day is Thursday.']);
+C('redeploy','Redeployment Help Desk',false,'Location','Nationwide',3300,70,false,'open','#C8F169','RD','Questions and answers about redeployment, paperwork and settling in a new state.',['Share your experience, not rumours.'],['zainab'],['Keep copies of every letter.']);
+C('alumni-net','Alumni Network',false,'Batch & camp','Nationwide',12600,210,false,'open','#C4B5FD','AN','After passing out: careers, reunions and friends you made in camp.',['Share jobs in Jobs tab.'],['victor'],['Quarterly reunion calendar.']);
+C('music','Corpers Who Make Music',false,'Creative','Nationwide',2200,48,false,'open','#FFD66B','MU','Singers, producers and DJs. Share your tracks.',['Credit your producers.'],['femi'],['Cultural night rehearsals this week.']);
+C('ppa-stories','PPA Stories',false,'Interest','Nationwide',17500,330,false,'open','#FF8A3D','PS','The good, the funny and the unbelievable from corpers’ places of primary assignment.',['No naming individuals in complaints.'],['zainab'],['Be kind: your PPA story may be someone’s lesson.']);
+
+// ---- posts
+const mins=s=>{if(!s||/^just now$/i.test(s))return 0;const m=String(s).match(/(\d+)\s*(m|h|d|w)/i);if(!m)return 0;return +m[1]*({m:1,h:60,d:1440,w:10080}[m[2][0].toLowerCase()]);};
+let pc=10;
+const PO=(o)=>{const id=o.id||'p'+(++pc);const a=o.author&&USERS[o.author];
+  POSTS[id]={id,type:o.type||(o.media?'photo':'discussion'),author:o.author,community:o.community||null,title:o.title||'',text:o.text,media:o.media,time:o.time,likes:o.likes||0,cc:o.cc??(o.comments?o.comments.length:0),reposts:o.reposts||0,batch:o.batch??true,state:o.state===undefined?(a?a.state:null):o.state,vis:'Public',
+    comments:(o.comments||[]).map(([u,t,time,likes])=>({u,t,time,likes:likes||0})),poll:o.poll?{options:o.poll.map(([t,n])=>[t,n]),voted:null,ends:o.ends||'Ends in 1d'}:undefined};};
+const AN=(community,text,time,state)=>{const id='p'+(++pc);POSTS[id]={id,type:'announcement',community,text,time,batch:true,state:state||null};};
+
+// camp life: photos and videos
+PO({author:'bola',community:'lagos-camp',text:'Cultural night rehearsal is going to be LOUD. Platoon 9, bring your energy. Dance captain reporting.',media:[VID(1)],time:'12m',likes:96,cc:21,reposts:8,comments:[['tunde','Platoon 2 is coming for the trophy.','8m',14],['ifeoma','Send the video to the community page please','5m',3]]});
+PO({author:'yusuf',community:'kaduna-camp',text:'Chess corner at camp is full. Challenge me before Thursday. I have not lost since day 1.',media:[IMG(1),IMG(2)],time:'35m',likes:140,cc:44,reposts:6,comments:[['samuel','Platoon 4 accepts. Bring a flask of tea.','20m',11],['halima','I will watch and cheer for the underdog.','15m',9]]});
+PO({author:'emeka',community:'photographers',text:'Behind the scenes from this morning’s shoot. Golden hour never misses. Booking portraits this weekend.',media:[VID(3)],time:'50m',likes:320,cc:61,reposts:19,comments:[['femi','Clean grade. What lens?','40m',22],['tolu','Open for a design collab on the portfolio?','28m',5]]});
+PO({author:'samuel',community:'batch-b-26',text:'Plateau morning drills in 12°C. Nobody warned us. Platoon 4 survived with tea and pride.',media:[IMG(3)],time:'1h',likes:250,cc:34,reposts:7,comments:[['halima','Bauchi sends warm regards.','50m',12]]});
+PO({author:'halima',community:'batch-b-26',text:'First time seeing camp food portions this big. Beans and bread, you have my heart.',media:[IMG(4),IMG(5),IMG(6)],time:'2h',likes:480,cc:57,reposts:10,comments:[['amaka','That portion is a threat.','1h',31],['ibrahim','Mammy Market gets the credit.','1h',9]]});
+PO({author:'david',community:'fitness',text:'5am run done. 7km before PPA. Join the weekend runs, Cross River trail is beautiful.',media:[IMG(7)],time:'3h',likes:190,cc:22,reposts:4,comments:[['maryam','Send the route.','2h',3]]});
+PO({author:'femi',community:'creators',text:'60-second camp story challenge: entry #1. Cut in Lagos, shot in Kano. Rules: one take, no filters.',media:[VID(2)],time:'4h',likes:420,cc:78,reposts:31,comments:[['emeka','Strong opener.','3h',15],['tolu','The sound design is crazy good.','3h',20]]});
+PO({author:'grace',community:'foodies',text:'Corper birthday cake done. Strawberry and vanilla, delivered to Platoon 6 kitchen. Orders open for December.',media:[IMG(8),IMG(9)],time:'5h',likes:710,cc:96,reposts:24,comments:[['ngozi','Send the price list.','4h',6],['blessing','Do you deliver to Uyo?','4h',4]]});
+PO({author:'tolu',community:'lagos-cms',text:'Yaba co-working corner today. Portfolio review hour: bring your work, I will give honest feedback.',media:[IMG(10)],time:'6h',likes:360,cc:48,reposts:15,comments:[['tunde','I will bring mine. Free coffee?','5h',9]]});
+PO({author:'ahmed',community:'corper-market',text:'Phone screens replaced in 30 minutes. Corper discount all month. Kano Municipal, DM-less: use the contact buttons on my listings.',media:[IMG(11)],time:'7h',likes:260,cc:33,reposts:21,comments:[]});
+PO({author:'maryam',community:'cds-health',text:'Free blood-pressure and sugar screening at the LGA market this Saturday. 40 people screened last week. Bring a friend.',media:[IMG(12),IMG(13),IMG(14)],time:'8h',likes:830,cc:92,reposts:55,comments:[['david','Our clinic can donate leaflets.','7h',17]]});
+PO({author:'ngozi',community:'ppa-stories',text:'The pupils at my school gave me a handmade card today. I am not crying, you are crying.',media:[IMG(15)],time:'9h',likes:1900,cc:210,reposts:88,comments:[['grace','This is the content we need.','8h',44],['segun','Teachers are the real heroes.','8h',31]]});
+PO({author:'kelechi',community:'fashion',text:'Ankara two-piece finished for Blessing’s thanksgiving. Tailors in Aba are not joking.',media:[IMG(16),IMG(17)],time:'10h',likes:610,cc:70,reposts:26,comments:[['blessing','The fit is perfect!','9h',12]]});
+PO({author:'segun',community:'batch-a-26',text:'Physics demo with a bicycle wheel and a stool. Students finally understood angular momentum.',media:[VID(4)],time:'12h',likes:540,cc:63,reposts:30,comments:[['ifeoma','Please do chemistry next.','11h',9]]});
+PO({author:'chinedu',community:'batch-a-26',text:'Site visit in Awka. Good drainage design matters more than paint. Civil corpers, what are you working on?',media:[IMG(18),IMG(19)],time:'14h',likes:230,cc:26,reposts:5,comments:[]});
+PO({author:'ifeoma',community:'job-leads',text:'Interview day wearables: iron your khaki, bring two printed CVs and arrive 20 minutes early. It worked for me.',media:[IMG(20)],time:'16h',likes:970,cc:84,reposts:63,comments:[['victor','Add: research the company for 15 minutes.','15h',57]]});
+PO({author:'blessing',community:'fellowship',text:'Choir rehearsal after CDS today. If you can sing even a little, come join us.',media:[IMG(21)],time:'18h',likes:310,cc:40,reposts:8,comments:[]});
+PO({author:'victor',community:'alumni-net',text:'Alumni reunion planning is on. Batch C, who is coming to Abuja? Reply with your state.',media:[IMG(22),IMG(23)],time:'20h',likes:430,cc:92,reposts:11,comments:[['zainab','Count me in. I am bringing cake.','19h',23]]});
+PO({author:'aisha',community:'fct-cms',text:'Career fair at the Wuse stadium on Saturday. Dress sharp, bring CVs. Free entry for corps members.',media:[IMG(24)],time:'1d',likes:880,cc:101,reposts:59,comments:[['funke','Will it be open to people not yet deployed?','22h',7]]});
+PO({author:'zainab',community:'ppa-stories',text:'My first month in numbers: 14 clearances, 3 PPA changes, 1 amazing CDS group. Slow down and breathe.',media:[IMG(25)],time:'1d',likes:1500,cc:130,reposts:77,comments:[]});
+PO({author:'femi',community:'music',text:'Quick jam session at the studio. Anyone who plays keys? We need one more.',media:[VID(5)],time:'1d',likes:370,cc:52,reposts:16,comments:[['bola','I sing! Send details.','23h',9]]});
+PO({author:'david',community:'fitness',text:'Clinic outreach selfie. We reached 200 patients this week. Proud of the team.',media:[IMG(26),IMG(27)],time:'2d',likes:690,cc:64,reposts:22,comments:[]});
+PO({author:'tunde',community:'tech-corpers',text:'Hackathon demo day at Yaba. Three corper teams shipped real apps in 24 hours. Respect.',media:[IMG(28),IMG(29),IMG(30),IMG(31)],time:'2d',likes:1400,cc:150,reposts:98,comments:[['tolu','Shout out to the design team.','2d',34],['chinedu','Where do I join the next one?','2d',8]]});
+PO({author:'chidera',community:'entrepreneurs',text:'Our first 100 deliveries in Port Harcourt. Started with a bicycle during service. Thank you, Batch C.',media:[IMG(32)],time:'3d',likes:2100,cc:180,reposts:140,comments:[['victor','Proud of you.','3d',48]]});
+PO({author:'kemi',text:'Ibadan sunset after CDS. The city is quietly gorgeous.',media:[IMG(33)],time:'3d',likes:520,cc:44,reposts:9,comments:[]});
+PO({author:'ahmed',community:'kano-cms',text:'Dawn at the Kano gate. Every serving year has a few unforgettable mornings.',media:[IMG(34)],time:'4d',likes:410,cc:30,reposts:7,comments:[]});
+
+// questions
+PO({author:'funke',type:'question',text:'I have not received my call-up letter yet. Is it normal to still be waiting two weeks after registration?',time:'30m',likes:34,cc:12,reposts:1,comments:[['victor','Yes, it varies by batch. Check the portal weekly.','20m',14],['aisha','Keep copies of your registration slip.','12m',6]]});
+PO({author:'halima',type:'question',community:'batch-b-26',text:'How early should I get to the swearing-in parade ground on Thursday?',time:'1h',likes:61,cc:22,reposts:2,comments:[['ibrahim','Be there by 6am. Late means standing at the back.','50m',17]]});
+PO({author:'yusuf',type:'question',community:'kaduna-camp',text:'Can I bring a power bank into the hostel? Heard rumours it gets confiscated.',time:'2h',likes:44,cc:15,reposts:0,comments:[['samuel','Allowed, but keep it small. Mine is fine.','1h',10]]});
+PO({author:'ngozi',type:'question',community:'ppa-stories',text:'My PPA wants me to work Saturdays. Is that allowed? Our CDS day clashes too.',time:'3h',likes:88,cc:30,reposts:3,comments:[['zainab','No, ask the local inspector. Keep records.','2h',29]]});
+PO({author:'segun',type:'question',community:'batch-a-26',text:'Anyone redeployed from Lagos to Ogun? What documents did you need?',time:'5h',likes:52,cc:17,reposts:2,comments:[['kelechi','Redeployment letter, clearance and new state acceptance.','4h',8]]});
+PO({author:'chinedu',type:'question',community:'job-leads',text:'Any entry-level civil engineering jobs in Anambra or Enugu? Open to site-based roles.',time:'8h',likes:77,cc:28,reposts:9,comments:[['ifeoma','There is one at an NGO in Enugu. Check Jobs.','7h',15]]});
+PO({author:'tolu',type:'question',community:'lagos-roommates',text:'Looking for a roommate in Yaba from January. Budget ₦40k monthly. Who is passing out soon and wants to hand over?',time:'10h',likes:96,cc:34,reposts:12,comments:[['tunde','Check my Ikeja listing. Might fit.','9h',12]]});
+PO({author:'blessing',type:'question',community:'fellowship',text:'Which churches near Uyo have corper fellowship on Wednesdays?',time:'14h',likes:41,cc:11,reposts:0,comments:[]});
+PO({author:'maryam',type:'question',community:'cds-health',text:'Does anyone have a template for a malaria awareness leaflet in Hausa and English?',time:'1d',likes:63,cc:19,reposts:6,comments:[['david','I will send mine in the comments.','22h',7]]});
+PO({author:'victor',type:'question',community:'alumni-net',text:'How do you explain NYSC service on a CV? Skills, outcomes or just dates?',time:'2d',likes:210,cc:55,reposts:16,comments:[['aisha','Outcomes. Mention CDS impact.','2d',44]]});
+
+// polls
+PO({author:'bola',type:'poll',community:'lagos-camp',text:'Cultural night theme?',time:'45m',likes:84,cc:19,reposts:4,poll:[['Naija Heritage',102],['Throwback 2000s',77],['Nollywood Night',64]],ends:'Ends in 8h'});
+PO({author:'samuel',type:'poll',community:'batch-b-26',text:'Best camp snack after drills?',time:'4h',likes:60,cc:13,reposts:2,poll:[['Puff puff',58],['Chin chin',40],['Roasted corn',66],['Plantain chips',22]],ends:'Ends in 12h'});
+PO({author:'tolu',type:'poll',community:'tech-corpers',text:'Best stack for a beginner corper project?',time:'6h',likes:140,cc:44,reposts:9,poll:[['React + Firebase',210],['Flutter',120],['Django',90],['No-code first',85]],ends:'Ends in 2d'});
+PO({author:'grace',type:'poll',community:'foodies',text:'Best Nigerian breakfast on a small allowee?',time:'1d',likes:260,cc:60,reposts:11,poll:[['Akara and pap',140],['Bread and egg',110],['Yam and egg',172],['Moi moi',70]],ends:'Ends in 3d'});
+PO({author:'victor',type:'poll',community:'job-leads',text:'What matters most when choosing your first job after service?',time:'2d',likes:330,cc:80,reposts:20,poll:[['Salary',180],['Growth and mentorship',360],['Location',110],['Remote or flexible',210]],ends:'Ends in 4d'});
+PO({author:'ahmed',type:'poll',community:'corper-market',text:'What should I stock for December?',time:'3d',likes:70,cc:20,reposts:4,poll:[['Power banks',50],['Earphones',44],['Phone cases',31]],ends:'Ends in 5d'});
+
+// discussions
+PO({author:'aisha',community:'job-leads',title:'Hiring tip: how recruiters read corper CVs',text:'I screen CVs in Abuja. Three things get attention: 1) clear outcomes (not duties), 2) a CDS or community project, 3) a link to your work. Typos kill applications faster than weak experience.',time:'20m',likes:1200,cc:120,reposts:140,comments:[['victor','This is gold. Add: tailor each CV.','15m',48],['chinedu','Saving this. Thank you.','10m',9]]});
+PO({author:'victor',community:'job-leads',title:'Where to find jobs during service',text:'1) Your CDS group and PPA colleagues. 2) The Jobs tab here. 3) LinkedIn, but add “Corps member” in your headline. 4) Local business owners at your PPA. Do not pay anyone to “secure” a job.',time:'2h',likes:1800,cc:160,reposts:220,comments:[['ifeoma','Number 4 got me my interview.','1h',60]]});
+PO({author:'chidera',community:'entrepreneurs',title:'Side hustle rules I learned the hard way',text:'Keep your PPA duties first. Reinvest the first profits. Write down prices before talking to clients. And never lend your capital to a friend without a note.',time:'4h',likes:1300,cc:90,reposts:130,comments:[]});
+PO({author:'zainab',community:'redeploy',title:'Redeployment: what actually happened to me',text:'I applied on health grounds, got the letter after three weeks, then reported at the new state secretariat with copies. Keep every receipt. Your new state may take a few days to update your records.',time:'6h',likes:900,cc:100,reposts:84,comments:[['segun','Super helpful. Thanks Zainab.','5h',22]]});
+PO({author:'ifeoma',community:'job-leads',title:'Writing a job post people trust',text:'If you share a job: name the company, role, pay, location and how to apply. No screenshots only. Corpers should be able to verify you in two minutes.',time:'9h',likes:760,cc:60,reposts:70,comments:[]});
+PO({author:'tolu',community:'creators',title:'Freelance rate cheat-sheet for corpers',text:'Logo: ₦25–60k. Landing page: ₦80–200k. Social posts: ₦3–6k each. Charge more for rush work and always take 50% upfront.',time:'12h',likes:1400,cc:140,reposts:160,comments:[['femi','Add video editing: ₦15–40k per reel.','11h',31]]});
+PO({author:'zainab',community:'ppa-stories',title:'Funny things my PPA taught me',text:'Never plan a meeting on Monday morning, always bring snacks for the school staff, and learn names of the cleaners. They know everything.',time:'1d',likes:2400,cc:210,reposts:300,comments:[]});
+PO({author:'kemi',community:'oyo-cms',title:'Ibadan food map for corpers',text:'Amala at Bodija, bole at Sango, suya near Ring Road and cheap gari at the market. Drop your favourite below.',time:'1d',likes:800,cc:90,reposts:44,comments:[]});
+PO({author:'ahmed',community:'kano-cms',title:'Kano transport tips',text:'Use Keke for short trips, Danfo for the main road and agree prices first. Avoid peak hour around the old city.',time:'2d',likes:530,cc:46,reposts:30,comments:[]});
+PO({author:'grace',community:'foodies',title:'Allowee-friendly meal prep',text:'Cook rice and stew for four days. Keep a pot of beans. Buy vegetables on market day and freeze portions. You can eat well on ₦12k a week.',time:'2d',likes:1700,cc:120,reposts:210,comments:[]});
+PO({author:'david',community:'cds-health',title:'Starting a CDS health outreach',text:'1) Get your LGA’s permission. 2) Partner with a nearby clinic. 3) Bring leaflets and basic equipment. 4) Document your impact and share it.',time:'3d',likes:950,cc:70,reposts:90,comments:[]});
+PO({author:'chinedu',community:'batch-a-26',title:'Passing out checklist',text:'Clearance letter, CDS certificate, PPA release letter, medical forms and your ID card. Do not wait until the last week.',time:'3d',likes:1100,cc:80,reposts:110,comments:[]});
+PO({author:'femi',community:'alumni-net',title:'Life after NYSC: first six months',text:'Take a break, update your CV, build a portfolio and keep your camp friends close. Your network is your net worth.',time:'4d',likes:1900,cc:140,reposts:170,comments:[]});
+
+// announcements
+AN('lagos-camp','Lagos camp: swearing-in rehearsal moves to 3:00pm at the parade ground. Bring your ID cards.','2h','Lagos');
+AN('kaduna-camp','Kaduna camp: welfare desk is open 4–6pm daily. Lost items go there first.','5h','Kaduna');
+AN('batch-a-26','Batch A 2026: clearance forms for passing out open next Monday. Check your state secretariat.','1d');
+AN('job-leads','Reminder: no job that asks you to pay a fee is genuine. Report it and do not send money.','2d');
+AN('fct-cms','FCT corps members: CDS directory updated. Check your LGA group and day.','3d','FCT');
+AN('kano-camp','Camp store restocked with khaki, boots and vests. Prices are on the notice board.','4d','Kano');
+
+// more posts so every community has activity, plus extra videos
+PO({author:'ibrahim',community:'b-football',text:'Friday match highlights. Platoon 7 won 3–1. Rematch Tuesday, bring your boots.',media:[VID(5)],time:'3h',likes:380,cc:46,reposts:12,comments:[['yusuf','Platoon 11 wants the next game.','2h',8]]});
+PO({author:'ibrahim',community:'naija-fc',text:'Semi-finals of the Naija Corpers cup are on 29 Nov in Lagos. Squads must register this week.',media:[IMG(39),IMG(40)],time:'6h',likes:430,cc:58,reposts:24,comments:[]});
+PO({author:'emeka',community:'anime',type:'discussion',title:'Episode thread: this week’s watch-along',text:'Spoiler tags only. Who is joining the Saturday watch-along? Bring snacks.',time:'1d',likes:120,cc:33,reposts:3,comments:[['bola','I am in. Seat saved.','22h',4]]});
+PO({author:'zainab',community:'batch-c-25',text:'One year since we passed out. Dust off the khaki and come to the Abuja reunion on 12 Dec.',media:[IMG(41),IMG(42)],time:'5h',likes:620,cc:75,reposts:30,comments:[['victor','Count me in.','4h',12]]});
+PO({author:'chidera',community:'rivers-cms',text:'Port Harcourt corpers meetup after CDS this Saturday. Pizza on me, first 20 people.',media:[IMG(43)],time:'7h',likes:230,cc:25,reposts:8,comments:[]});
+PO({author:'aisha',community:'abuja-roommates',type:'question',text:'Which areas in Abuja are safest and affordable for a corper on a ₦50k monthly budget?',time:'9h',likes:150,cc:48,reposts:14,comments:[['funke','Gwarinpa and Lugbe worked for me.','8h',9]]});
+PO({author:'musa',community:'nasarawa-lga',type:'question',text:'Which CDS group meets near the Nasarawa LGA secretariat on Thursdays?',time:'1d',likes:20,cc:8,reposts:0,comments:[]});
+PO({author:'femi',community:'creators',text:'Gear swap day: lenses, tripods and mics. Post what you have and what you need.',media:[VID(2)],time:'8h',likes:210,cc:30,reposts:9,comments:[]});
+PO({author:'tolu',community:'lagos-cms',text:'Lagos traffic survival video: leave before 6am or after 9pm. Trust me.',media:[VID(1)],time:'11h',likes:560,cc:90,reposts:35,comments:[['tunde','Accurate.','10h',15]]});
+PO({author:'kemi',community:'foodies',text:'Amala and ewedu with gbegiri at 700 naira. Tell me where to eat next.',media:[IMG(44),IMG(45)],time:'12h',likes:470,cc:52,reposts:14,comments:[]});
+
+// ---- more listings
+const LC=['#2B3B32','#3B352B','#2B2F3B','#3B2B2B','#2B3B3B','#3B382B','#2B2B3B','#33302B','#2B343B','#3B2B34'];
+let li=0;
+const L=(id,kind,o)=>{LISTINGS[id]={id,kind,status:'Available',likes:0,saved:false,liked:false,color:LC[(li++)%LC.length],contact:{wa:true,call:false},fees:[],...o};};
+// accommodation
+L('acc4','accommodation',{title:'Room in 3-bedroom flat, Yaba',type:'Room in shared flat',price:420000,unit:'/ year',fees:[['Agency fee',42000],['Caution fee (refundable)',60000]],area:'Yaba',state:'Lagos',owner:'tolu',date:'1 day ago',avail:'From 1 Jan',likes:88,desc:'Spacious room with fitted wardrobe. Shared kitchen and bathroom with two other corpers. 12 minutes to Yaba Tech.',contact:{wa:true,call:true}});
+L('acc5','accommodation',{title:'Mini flat near Wuse market',type:'Mini flat',price:650000,unit:'/ year',fees:[['Agency fee',65000],['Legal fee',65000]],area:'Wuse',state:'FCT',owner:'aisha',date:'4 days ago',avail:'Now',likes:54,desc:'Furnished mini flat on a quiet street. Prepaid meter, steady water, secure gate. Handover from a passing-out corper.',contact:{wa:true,call:false}});
+L('acc6','accommodation',{title:'Self-contain in Awka',type:'Self-contain',price:150000,unit:'/ year',fees:[['Agency fee',15000]],area:'Awka',state:'Anambra',owner:'chinedu',date:'6 days ago',avail:'From 20 Dec',likes:41,desc:'Neat self-contain 8 minutes from my school. Landlord is friendly with corpers. Inspect before paying.',contact:{wa:true,call:true}});
+L('acc7','accommodation',{title:'Roommate wanted, Port Harcourt',type:'Roommate wanted',price:35000,unit:'/ month',fees:[],area:'GRA',state:'Rivers',owner:'chidera',date:'3 days ago',avail:'Now',likes:33,desc:'Looking for a corper roommate. Two-bedroom, shared kitchen, own bedroom. Quiet neighbourhood.',contact:{wa:true,call:false}});
+L('acc8','accommodation',{title:'Room in compound, Ibadan',type:'Room in shared flat',price:120000,unit:'/ year',fees:[['Caution fee (refundable)',15000]],area:'Bodija',state:'Oyo',owner:'kemi',date:'1 week ago',avail:'Now',likes:29,desc:'Single room with shared bathroom. Close to the market and bus stop.',contact:{wa:true,call:false}});
+L('acc9','accommodation',{title:'Hostel bed space, Jos',type:'Hostel or lodge',price:20000,unit:'/ month',fees:[],area:'Jos North',state:'Plateau',owner:'samuel',date:'2 days ago',avail:'Now',likes:19,desc:'Clean hostel for corpers. Bunk beds, security and water. 15 minutes from camp.',contact:{wa:true,call:true}});
+L('acc10','accommodation',{title:'1-bedroom flat, Owerri',type:'1-bedroom flat',price:280000,unit:'/ year',fees:[['Agency fee',28000],['Legal fee',28000]],area:'Owerri',state:'Imo',owner:'grace',date:'5 days ago',avail:'From 5 Jan',likes:37,desc:'Tiled floors, separate kitchen and a small balcony. Landlord lives upstairs.',contact:{wa:true,call:false}});
+L('acc11','accommodation',{title:'Self-contain in Gwarimpa (just rented)',type:'Self-contain',price:480000,unit:'/ year',fees:[['Agency fee',48000]],area:'Gwarimpa',state:'FCT',owner:'aisha',status:'Rented',date:'2 weeks ago',avail:'—',likes:60,desc:'Thank you all. This one is rented. Leaving it up for price reference.',contact:{wa:true,call:false}});
+// items
+L('item6','item',{title:'HP laptop, 8GB RAM',condition:'Fairly used',price:185000,area:'Yaba',state:'Lagos',owner:'tolu',date:'1 day ago',likes:55,desc:'Battery lasts 4 hours. Clean screen. Comes with charger and bag.',contact:{wa:true,call:true}});
+L('item7','item',{title:'iPhone XR, 128GB',condition:'Like new',price:210000,area:'Kano Municipal',state:'Kano',owner:'ahmed',date:'2 days ago',likes:78,desc:'Face ID works, battery 88%. Includes case and charger. Meet at public place.',contact:{wa:true,call:true}});
+L('item8','item',{title:'Mini fridge',condition:'Fairly used',price:55000,area:'Awka',state:'Anambra',owner:'chinedu',date:'3 days ago',likes:22,desc:'Cools well. Selling because I am passing out.',contact:{wa:true,call:false}});
+L('item9','item',{title:'Gas cooker with cylinder',condition:'Used',price:32000,area:'GRA',state:'Rivers',owner:'chidera',date:'4 days ago',likes:15,desc:'Two burners, works perfectly. Cylinder half full.',contact:{wa:true,call:true}});
+L('item10','item',{title:'Ankara fabric bundle (6 yards)',condition:'New',price:12000,area:'Aba',state:'Abia',owner:'kelechi',date:'5 days ago',likes:44,desc:'Beautiful print, unopened. Perfect for a two-piece.',contact:{wa:true,call:false}});
+L('item11','item',{title:'Ikea-style bookshelf',condition:'Fairly used',price:20000,area:'Wuse',state:'FCT',owner:'aisha',date:'1 week ago',likes:12,desc:'Solid. Slight scratch on the side.',contact:{wa:true,call:false}});
+L('item12','item',{title:'Power bank 20,000mAh',condition:'Like new',price:12000,area:'Kano Municipal',state:'Kano',owner:'ahmed',date:'2 days ago',likes:34,desc:'Fast charge, two ports. Includes cable.',contact:{wa:true,call:true}});
+L('item13','item',{title:'Sneakers, size 43',condition:'Fairly used',price:15000,area:'Ikeja',state:'Lagos',owner:'tunde',date:'3 days ago',likes:19,desc:'Comfortable, no tears. Pick up only.',contact:{wa:true,call:false}});
+L('item14','item',{title:'Camp kit bundle (khaki, boots, vest)',condition:'Used',price:9000,area:'Kano Municipal',state:'Kano',owner:'musa',date:'6 days ago',likes:28,desc:'Size M khaki, size 42 boots, crested vest. All clean.',contact:{wa:true,call:true}});
+L('item15','item',{title:'Bluetooth speaker',condition:'Fairly used',price:14000,area:'Jos North',state:'Plateau',owner:'samuel',date:'1 week ago',likes:11,desc:'Loud and clear, charges via USB-C.',contact:{wa:true,call:false}});
+L('item16','item',{title:'Mattress (5x6)',condition:'Like new',price:28000,area:'Owerri',state:'Imo',owner:'grace',date:'4 days ago',likes:17,desc:'Used 3 months. Clean cover included.',contact:{wa:true,call:false}});
+L('item17','item',{title:'Electric kettle',condition:'Like new',price:6500,area:'Ibadan',state:'Oyo',owner:'kemi',status:'Sold',date:'2 weeks ago',likes:8,desc:'Sold. Thanks everyone.',contact:{wa:true,call:false}});
+// jobs
+L('job4','job',{title:'Customer support agent (remote)',company:'Naija Fintech',jobType:'Full-time',price:120000,unit:'/ month',area:'Lagos',state:'Lagos',owner:'tolu',date:'1 day ago',likes:90,desc:'Chat support for a payments app. Training provided. English fluency required. Fits around evening hours.',contact:{wa:true,call:false}});
+L('job5','job',{title:'Social media manager',company:'Spice Kitchen',jobType:'Part-time',price:60000,unit:'/ month',area:'Wuse',state:'FCT',owner:'aisha',date:'2 days ago',likes:44,desc:'Post daily on Instagram and TikTok, respond to comments. Perfect for a creative corper.',contact:{wa:true,call:true}});
+L('job6','job',{title:'Junior accountant',company:'Brightway NGO',jobType:'Full-time',price:140000,unit:'/ month',area:'Enugu',state:'Enugu',owner:'ifeoma',date:'3 days ago',likes:36,desc:'Support the finance team with bookkeeping and monthly reports. ICAN students welcome.',contact:{wa:true,call:false}});
+L('job7','job',{title:'Event photographer (weekend gigs)',company:'Lens & Co',jobType:'Gig',price:30000,unit:'/ event',area:'Ikeja',state:'Lagos',owner:'femi',date:'2 days ago',likes:51,desc:'Weekend weddings and naming ceremonies. Bring your own camera. Good for corpers who already shoot.',contact:{wa:true,call:true}});
+L('job8','job',{title:'Delivery rider',company:'Port Express',jobType:'Part-time',price:80000,unit:'/ month',area:'GRA',state:'Rivers',owner:'chidera',date:'4 days ago',likes:27,desc:'Evening deliveries in PH. Motorbike provided. Valid licence needed.',contact:{wa:true,call:true}});
+L('job9','job',{title:'Content writer (part-time)',company:'Corpers Weekly',jobType:'Contract',price:45000,unit:'/ month',area:'Remote',state:'Lagos',owner:'zainab',date:'5 days ago',likes:48,desc:'Write 4 articles a month about service life, rent and careers. Flexible schedule.',contact:{wa:true,call:false}});
+L('job10','job',{title:'Frontend internship',company:'Pixel Labs',jobType:'Internship',price:50000,unit:'/ month',area:'Yaba',state:'Lagos',owner:'tunde',date:'1 week ago',likes:73,desc:'Three-month internship working on a React dashboard. Mentorship included.',contact:{wa:true,call:false}});
+L('job11','job',{title:'Secondary school teacher (maths)',company:'Greenfield College',jobType:'Full-time',price:90000,unit:'/ month',area:'Abeokuta',state:'Ogun',owner:'segun',date:'1 week ago',likes:25,desc:'Teach JSS 1 to 3 maths. Training provided. Good for maths and science graduates.',contact:{wa:true,call:true}});
+L('job12','job',{title:'Nurse assistant',company:'Hope Clinic',jobType:'Part-time',price:70000,unit:'/ month',area:'Calabar',state:'Cross River',owner:'david',date:'6 days ago',likes:31,desc:'Support nurses during evening shifts. Clinic is near the PPA schools.',contact:{wa:true,call:true}});
+L('job13','job',{title:'Graphic designer (filled)',company:'Studio Nine',jobType:'Contract',price:100000,unit:'/ month',area:'Ikeja',state:'Lagos',owner:'tolu',status:'Filled',date:'2 weeks ago',likes:39,desc:'This role has been filled. Thanks to everyone who applied.',contact:{wa:true,call:false}});
+L('job14','job',{title:'Phone-repair apprentice',company:'FixIt Kano',jobType:'Part-time',price:40000,unit:'/ month',area:'Kano Municipal',state:'Kano',owner:'ahmed',date:'3 days ago',likes:21,desc:'Learn screen and battery replacement. Work evenings after PPA.',contact:{wa:true,call:true}});
+
+// photos for every listing (posts used images 1–50, listings 51–160, events 161–175)
+let lp=51;
+const nextImg=()=>{const n=lp;lp=lp>=160?51:lp+1;return IMG(n);};
+Object.values(LISTINGS).forEach(l=>{if(l.photos)return;const c=l.kind==='accommodation'?3:l.kind==='item'?2:1;l.photos=Array.from({length:c},nextImg);});
+
+// ---- more events
+const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const E=(id,title,iso,time,location,state,organiser,interested,going,status,link,desc)=>{const d=new Date(iso+'T12:00');EVENTS[id]={id,title,day:String(d.getDate()),mon:MON[d.getMonth()],date:DOW[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()],time,location,state,organiser,interested,going,rsvp:null,status,color:LC[(li++)%LC.length],link,desc};};
+E('ev5','Naija Corpers football cup (semi-finals)','2026-11-29','3:00 PM','Teslim Balogun Stadium, Lagos','Lagos','ibrahim',520,140,'Upcoming','https://example.com/register','Corps-members-only football cup. Come watch, cheer and join the after party.');
+E('ev6','Job fair for corps members','2026-12-05','10:00 AM','Wuse Stadium, Abuja','FCT','aisha',910,260,'Upcoming','https://example.com/jobfair','Free entry for corps members. Bring CVs. Employers from tech, banking and NGOs.');
+E('ev7','CDS health outreach: free screening','2026-11-28','9:00 AM','Kaduna North Market','Kaduna','maryam',240,88,'Upcoming','','Blood pressure and sugar screening. Volunteers welcome.');
+E('ev8','Cultural night: Lagos camp','2026-11-27','6:00 PM','Lagos Orientation Camp hall','Lagos','bola',330,150,'Upcoming','','Dance, drama and food. Come in your best native attire.');
+E('ev9','Corper entrepreneurs meetup','2026-12-12','2:00 PM','Port Harcourt Pleasure Park','Rivers','chidera',380,92,'Upcoming','https://example.com/meetup','Share ideas, find partners and swap lessons from side hustles.');
+E('ev10','Alumni mixer: Batch C 2025','2026-12-19','4:00 PM','Jabi Lake Mall, Abuja','FCT','victor',410,120,'Upcoming','','Alumni networking evening. Food, music and honest career talk.');
+E('ev11','Photography walk: Ibadan','2026-12-06','8:00 AM','Bower’s Tower, Ibadan','Oyo','kemi',160,45,'Upcoming','','Free photo walk. Bring any camera. Learn composition tips from a pro.');
+E('ev12','New Year prayer and fellowship','2027-01-02','5:00 PM','Church hall, Uyo','Akwa Ibom','blessing',210,75,'Upcoming','','Praise, worship and food for corpers far from home.');
+E('ev13','Chess tournament at camp','2026-11-26','2:00 PM','Kaduna camp hall','Kaduna','yusuf',120,38,'Upcoming','','Open to all platoons. Bring your own board if you can.');
+E('ev14','Redeployment help clinic (online info)','2026-12-03','7:00 PM','Online link shared on RSVP','FCT','zainab',280,64,'Upcoming','https://example.com/clinic','Walkthrough of redeployment steps and paperwork. Q&A at the end.');
+E('ev15','Beach cleanup (completed)','2026-11-14','8:00 AM','Elegushi beach, Lagos','Lagos','tolu',330,120,'Completed','','Thanks to 120 volunteers who showed up.');
+E('ev16','Corper marketplace fair (cancelled)','2026-11-22','11:00 AM','Kano Municipal LGA','Kano','ahmed',90,22,'Cancelled','','Cancelled due to weather. We will reschedule soon.');
+let ep=161;
+Object.values(EVENTS).forEach(e=>{if(!e.photo){e.photo=IMG(ep);ep=ep>=175?161:ep+1;}});
+
+// ---- more notifications
+NOTIFS.push(
+ {id:'n9',cat:'social',u:'ngozi',text:'<b>Ngozi Eze</b> liked your post',time:'4h',read:false,go:['user','ngozi']},
+ {id:'n10',cat:'social',u:'tolu',text:'<b>Tolu Akinwale</b> commented on your photo: “Love the shot”',time:'5h',read:false,go:['user','tolu']},
+ {id:'n11',cat:'community',text:'New job in <b>Job Leads Nationwide</b>: Customer support agent (remote)',time:'6h',read:true,go:['listing','job4']},
+ {id:'n12',cat:'community',text:'<b>Corpers Marketplace Hub</b> has a new item: iPhone XR, 128GB',time:'8h',read:true,go:['listing','item7']},
+ {id:'n13',cat:'service',text:'<b>Event update:</b> Job fair for corps members moved to Wuse Stadium.',time:'10h',read:true,go:['event','ev6']},
+ {id:'n14',cat:'social',u:'femi',text:'<b>Femi Coker</b> started following you',time:'1d',read:true,go:['user','femi']},
+ {id:'n15',cat:'community',text:'<b>Lagos Corps Members</b>: new announcement about transport',time:'1d',read:true,go:['communityDetail','lagos-cms']},
+ {id:'n16',cat:'service',text:'<b>Account:</b> your profile is 80% complete. Add a photo to finish.',time:'2d',read:true,go:['editProfile']},
+ {id:'n17',cat:'social',u:'ifeoma',text:'<b>Ifeoma Chukwu</b> shared your listing',time:'2d',read:true,go:['user','ifeoma']}
+);
+TRENDING.push(['#JobAlert','4.7k posts'],['#CampLife','9.3k posts'],['#CDSOutreach','2.9k posts'],['#CorperHustle','3.4k posts'],['#RoommateWanted','2.1k posts']);
+
+// ---- Home feed: newest first, with an event every 8th item
+const items=[];
+Object.values(POSTS).forEach(p=>items.push({r:{k:'post',id:p.id},t:mins(p.time)}));
+Object.values(LISTINGS).forEach(l=>{if(l.status==='Available')items.push({r:{k:'listing',id:l.id},t:mins(l.date)});});
+items.sort((a,b)=>a.t-b.t);
+const evs=Object.values(EVENTS).filter(e=>e.status==='Upcoming');
+const out=[];let ei=0;
+items.forEach((x,i)=>{out.push(x.r);if((i+1)%8===0&&ei<evs.length)out.push({k:'event',id:evs[ei++].id});});
+FEED.length=0;FEED.push(...out);
+})();
+
 // ---------- State ----------
 const S={
   stack:[{s:'welcome'}],
   verif:'unverified',            // unverified | pending | verified | rejected
   me:{id:'me',name:'Chidi Okeke',username:'chidi.ok',initials:'CO',color:'#C8F169',bio:'Batch B ’26 at Kano camp. Tech corper. Football on weekends.',batch:'Batch B 2026',stream:'Stream 1',camp:'Kano Orientation Camp',state:'Kano',lga:'',ppa:'',status:'In camp',photo:null,interests:['Tech','Football'],followers:146,email:'chidi@example.com',phone:'',history:[],milestones:[],redeploy:null,alumniReq:false,callup:''},
-  homeFilter:'For You', exploreTab:'Trending', exploreState:'All', explorePrice:'Any', q:'',
+  homeFilter:'For You', exploreTab:'For You', exploreState:'All', explorePrice:'Any', q:'',
   commView:'Joined', commCat:'All', commQ:'', commTab:{},
   notifTab:'All', profileTab:'Posts', userTab:{}, followTab:'Followers',
-  following:new Set(['amaka','tunde','zainab']), muted:new Set(), blocked:new Set(), mutedComms:new Set(), requested:new Set(),
+  following:new Set(['amaka','tunde','zainab','ngozi','ahmed','emeka']), muted:new Set(), blocked:new Set(), mutedComms:new Set(), requested:new Set(),
   myPosts:[], myListings:[], myEvents:[], myComms:[],
   settings:{vis:'Corps members',showBatch:true,showState:true,showLga:false,showPpa:false,showLists:true,showLoc:false,
     push:true,nLikes:true,nComments:true,nFollows:true,nMentions:true,nComm:true,nService:true,nEvents:true,emailProduct:false,quiet:true,qFrom:'22:00',qTo:'06:00',
@@ -249,6 +492,7 @@ const verified=()=>S.verif==='verified';
 
 // ---------- Utils ----------
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isVid=x=>/\.(mp4|webm)$/i.test(x);
 const naira=n=>'₦'+Number(n||0).toLocaleString('en-NG');
 const short=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,'')+'k':String(n);
 const user=id=>id==='me'?S.me:USERS[id];
@@ -375,8 +619,9 @@ function need(k,msg,test){const v=(S.draft[k]??'').toString().trim();if(test?!te
 // ---------- Cards ----------
 function photos(list,key,h=200){
   if(!list||!list.length) return '';
-  if(S.settings.dataSaver&&!S.loadedMedia.has(key)) return `<button class="ph" data-a="loadMedia" data-id="${key}" style="width:100%;height:120px;margin-top:10px;color:#A3ABA5;flex-direction:column;gap:6px;font-size:13px;font-weight:600">${I('image',22)}Data saver on · Tap to load ${list.length>1?list.length+' photos':'photo'}</button>`;
-  const one=x=>x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<span class="ph" style="height:100%;width:100%"><img src="${x}" alt="Uploaded photo"></span>`;
+  S.mediaLists[key]=list;
+  if(S.settings.dataSaver&&!S.loadedMedia.has(key)) return `<button class="ph" data-a="loadMedia" data-id="${key}" style="width:100%;height:120px;margin-top:10px;color:#A3ABA5;flex-direction:column;gap:6px;font-size:13px;font-weight:600">${I('image',22)}Data saver on · Tap to load ${list.length>1?list.length+' items':(list[0]&&/\.(mp4|webm)$/i.test(list[0])?'video':'photo')}</button>`;
+  const isVid=x=>/\.(mp4|webm)$/i.test(x);const one=x=>isVid(x)?`<span class="ph" style="height:100%;width:100%;background:#000"><video src="${x}" controls playsinline preload="metadata" ${S.settings.autoplay?'autoplay muted loop':''} aria-label="Video" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video></span>`:x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<button class="ph" data-a="lightbox" data-key="${key}" data-src="${x}" aria-label="View photo full screen" style="height:100%;width:100%;padding:0"><img src="${x}" alt="Photo"></button>`;
   if(list.length===1) return `<div style="height:${h}px;margin-top:10px;display:flex">${one(list[0])}</div>`;
   const shown=list.slice(0,4);
   return `<div class="grid2" style="margin-top:10px;gap:6px">${shown.map((x,i)=>`<div style="height:${list.length===2?h-30:110}px;display:flex;position:relative">${one(x)}${i===3&&list.length>4?`<span style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">+${list.length-4}</span>`:''}</div>`).join('')}</div>`;
@@ -401,10 +646,10 @@ function postCard(p,full=false){
   }
   const u=user(p.author), mine=p.author==='me';
   const comm=p.community?COMM[p.community]:null;
-  const meta=[shortBatch(u.batch),comm?comm.name:null,p.time].filter(Boolean).join(' · ');
+  const meta=[shortBatch(u.batch),comm?comm.name:null,p.time,p.edited?'edited':null].filter(Boolean).join(' · ');
   const tag={question:`<span class="tag orange">${I('help',13)}Question</span>`,discussion:`<span class="tag orange">${I('disc',13)}Discussion</span>`,poll:`<span class="tag orange">${I('poll',13)}Poll</span>`}[p.type]||'';
   const fol=!mine&&!S.following.has(p.author)?`<button class="btn sm dark" data-a="follow" data-id="${p.author}">Follow</button>`:'';
-  const body=`${p.title?`<span class="hd" style="display:block;font-weight:700;font-size:18px;margin-top:10px;line-height:1.25">${esc(p.title)}</span>`:''}<span class="pt ${full?'':'clamp'}" style="display:${p.title?'block':'-webkit-box'};${p.title?'margin-top:4px':''};${full?'display:block':''}">${esc(p.text)}</span>`;
+  const body=`${p.title?`<span class="hd" style="display:block;font-weight:700;font-size:18px;margin-top:10px;line-height:1.25">${esc(p.title)}</span>`:''}<span class="pt ${full?'':'clamp'}" style="display:${p.title?'block':'-webkit-box'};${p.title?'margin-top:4px':''};${full?'display:block':''}">${rich(p.text)}</span>`;
   return `<article class="card">
     <div class="row">
       <button data-a="openUser" data-id="${p.author}" aria-label="${esc(u.name)}'s profile">${av(u,42)}</button>
@@ -502,6 +747,7 @@ function render(){
   const fn=SC[t.s]||SC.home;
   view.innerHTML=fn(t);
   document.getElementById('sheet').innerHTML=S.sheet?`<div class="sheet-wrap" data-a="closeSheet"><div class="sheet" role="dialog" aria-modal="true" data-a="noop"><div class="grab"></div>${SH[S.sheet.type](S.sheet)}</div></div>`:'';
+  if(S.lb) document.getElementById('sheet').innerHTML+=lbHtml();
   const k=keyOf(t); const nsc=view.querySelector('.scroll'); if(nsc) nsc.scrollTop=S.scrollMem[k]||0; S.curKey=k;
   if(S.focus){const el=document.getElementById(S.focus); if(el){el.focus(); if(el.setSelectionRange&&el.type!=='email'&&el.type!=='number'){try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}}} S.focus=null;}
 }
@@ -514,7 +760,7 @@ function closeSheet(){S.sheet=null; render();}
 function toast(m){const el=document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); el.textContent=m; app().appendChild(el); setTimeout(()=>el.remove(),2600);}
 // ---------- Screens ----------
 const SC={}, INIT={};
-const steps=n=>`<div class="steps" aria-label="Step ${n} of 4">${[1,2,3,4].map(i=>`<span class="${i<=n?'on':''}"></span>`).join('')}</div>`;
+const steps=n=>`<div class="steps" aria-label="Step ${n} of 3">${[1,2,3].map(i=>`<span class="${i<=n?'on':''}"></span>`).join('')}</div>`;
 const checkbox=(on,k,label)=>`<button data-a="toggleDraft" data-k="${k}" role="checkbox" aria-checked="${!!on}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:44px;font-size:14px;line-height:1.45;color:#D3D8D4"><span style="width:22px;height:22px;border-radius:7px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;${on?'background:#C8F169;color:#0F1211':'border:2px solid #4A5450'}">${on?I('check',14,'stroke-width="3"'):''}</span><span>${label}</span></button>`;
 const swRow=(k,title,sub,on)=>`<button class="li" data-a="toggleDraft" data-k="${k}" role="switch" aria-checked="${!!on}"><span class="t"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</span><span class="sw ${on?'on':''}" aria-hidden="true"></span></button>`;
 
@@ -537,6 +783,7 @@ SC.welcome=()=>`<div class="scroll nonav" style="display:flex;flex-direction:col
     <button class="btn lime block" data-a="go" data-s="signup" data-t="signup">Create account</button>
     <button class="btn outline block" data-a="go" data-s="signup" data-t="signin">I already have an account</button>
     <button class="btn block" style="color:#A3ABA5;height:44px" data-a="demo">Skip and explore as a demo user</button>
+    <div class="row" style="justify-content:center;gap:16px;font-size:13px"><button data-a="go" data-s="legal" data-t="terms" style="color:#A3ABA5;min-height:36px">Terms</button><button data-a="go" data-s="legal" data-t="privacy" style="color:#A3ABA5;min-height:36px">Privacy</button><button data-a="go" data-s="help" style="color:#A3ABA5;min-height:36px">Help</button></div>
   </div></div>`;
 
 INIT.signup=p=>{S.draft={mode:p.t,method:'Email',email:'',password:'',phone:'',terms:p.t==='signin'};};
@@ -546,7 +793,7 @@ SC.signup=t=>{const d=S.draft,si=t.t==='signin';
   ${seg(['Email','Phone'],d.method,'setDraft','data-k="method"')}
   ${d.method==='Email'?fld('email','Email address',{type:'email',ph:'you@example.com',attrs:'autocomplete="email"'})+fld('password','Password',{type:'password',ph:'At least 8 characters',attrs:'autocomplete="'+(si?'current':'new')+'-password"'})
    :fld('phone','Phone number',{type:'tel',prefix:'+234',prefixW:62,ph:'803 000 0000',attrs:'inputmode="tel" autocomplete="tel"',hint:'We’ll text you a one-time code.'})}
-  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:#C8F169;padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')}
+  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:#C8F169;padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+`<div class="hint" style="padding-left:34px">Read the <button data-a="go" data-s="legal" data-t="terms" style="color:#C8F169;font-weight:700;min-height:28px">Terms</button> and <button data-a="go" data-s="legal" data-t="privacy" style="color:#C8F169;font-weight:700;min-height:28px">Privacy Notice</button></div>`+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')}
   <button class="btn lime block" data-a="signupNext">${si?'Sign in':'Continue'}</button>
   <div class="row" style="gap:12px;color:#7D8681;font-size:13px"><span style="flex:1;height:1px;background:#2F3633"></span>or<span style="flex:1;height:1px;background:#2F3633"></span></div>
   <button class="btn outline block" data-a="google"><span class="av" style="width:22px;height:22px;border-radius:11px;background:#F2F4EF;font-size:13px">G</span>Continue with Google</button>
@@ -582,7 +829,7 @@ SC.journey=t=>{const d=S.draft,edit=d.mode==='edit';
   ${d.status==='Serving'?fld('ppa','Place of Primary Assignment (PPA)',{ph:'School, hospital, company…',opt:true,hint:I('lock',12)+' Private by default. Only you can see this.'}):''}`}
   <button class="btn lime block" data-a="journeyNext">${edit?'Save changes':'Continue'}</button></div></div>`;};
 
-INIT.verify=p=>{S.draft={callup:S.me.callup||'',docName:'',from:p.t||'onboarding'};};
+INIT.verify=p=>{S.draft={callup:S.me.callup||'',docName:'',docUrl:'',from:p.t||'later'};};
 SC.verify=t=>{const d=S.draft,ob=d.from==='onboarding';const awaiting=S.me.status==='Awaiting deployment';
   return `${tb(ob?'':'Verify membership',{right:ob?steps(3).replace('class="steps"','class="steps" style="flex:1;padding:0 8px 0 0"'):''})}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:16px">
   <span class="av" style="width:64px;height:64px;border-radius:22px;background:#C8F169">${I('shieldCheck',30)}</span>
@@ -590,18 +837,18 @@ SC.verify=t=>{const d=S.draft,ob=d.from==='onboarding';const awaiting=S.me.statu
   ${awaiting?`<div class="card" style="border:1px dashed #4A5450;background:transparent"><b>Verify after deployment</b><div class="hint" style="margin-top:4px">You can submit once your call-up letter arrives. Until then you can browse, follow people and post in public spaces.</div></div>
   <button class="btn lime block" data-a="verifySkip">Continue</button>`:`
   ${fld('callup','Call-up number',{ph:'As shown on your call-up letter',attrs:'autocapitalize="characters"'})}
-  <div class="field"><span class="flabel">Proof of membership</span>
+  <div class="field"><span class="flabel">NYSC ID card (issued at camp)</span>
     <label for="vdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.doc?'#FF8A3D':'#4A5450'};background:transparent">
-      <span class="ico" style="width:44px;height:44px;border-radius:14px;background:#232927;display:flex;align-items:center;justify-content:center">${I(d.docName?'check':'file',20,d.docName?'style="color:#C8F169"':'')}</span>
-      <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.docName?esc(d.docName):'Upload call-up letter or NYSC ID card'}</b><span class="hint">${d.docName?'Tap to replace':'Photo or PDF, up to 10 MB'}</span></span></label>
-    <input id="vdoc" type="file" accept="image/*,.pdf" class="vh" data-file="verifyDoc">${S.errors.doc?`<span class="err">${S.errors.doc}</span>`:''}</div>
+      ${d.docUrl?`<img src="${d.docUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover;flex:none">`:`<span class="ico" style="width:44px;height:44px;border-radius:14px;background:#232927;display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}
+      <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.docName?esc(d.docName):'Upload a photo of your NYSC ID card'}</b><span class="hint">${d.docName?'Tap to replace':'Name and photo must be clear. JPG or PNG.'}</span></span></label>
+    <input id="vdoc" type="file" accept="image/*" class="vh" data-file="verifyDoc">${S.errors.doc?`<span class="err">${S.errors.doc}</span>`:''}</div>
   <div class="stack" style="gap:8px">${[['lock','Only our verification team sees your document.'],['trash','It’s deleted after a decision is made.'],['users','Community moderators never see it.']].map(([i,s])=>`<div class="row" style="font-size:13px;color:#D3D8D4">${I(i,16,'style="color:#C8F169"')}${s}</div>`).join('')}</div>
   <button class="btn lime block" data-a="verifySubmit">Submit for review</button>
   ${ob?'<button class="btn block" style="color:#A3ABA5;height:44px" data-a="verifySkip">I’ll do this later</button>':''}`}
   </div></div>`;};
 
 INIT.interests=()=>{S.draft={interests:[...S.me.interests]};};
-SC.interests=()=>`${tb('',{right:steps(4).replace('class="steps"','class="steps" style="flex:1;padding:0 8px 0 0"')})}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:16px">
+SC.interests=()=>`${tb('',{right:steps(3).replace('class="steps"','class="steps" style="flex:1;padding:0 8px 0 0"')})}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:16px">
   <div><h1 class="hd" style="font-size:30px;margin:0 0 6px">What are you into?</h1><p class="muted" style="margin:0">We’ll suggest communities and posts. Pick as many as you like.</p></div>
   <div style="display:flex;flex-wrap:wrap;gap:8px">${INTERESTS.map(x=>{const on=S.draft.interests.includes(x);return `<button class="chip ${on?'on':''}" aria-pressed="${on}" data-a="toggleInterest" data-v="${x}">${on?'✓ ':''}${x}</button>`;}).join('')}</div>
   <button class="btn lime block" data-a="interestsNext">Continue</button>
@@ -630,7 +877,7 @@ function homeItems(){
   if(f==='My Batch') it=it.filter(r=>{const o=refObj(r),a=refAuthor(r);return r.k==='post'?(o.batch||(a&&user(a).batch===S.me.batch)):(a&&user(a).batch===S.me.batch);});
   if(f==='My State') it=it.filter(r=>refObj(r).state===S.me.state);
   if(f==='Following') it=it.filter(r=>{const a=refAuthor(r);return a&&(a==='me'||S.following.has(a));});
-  if(f==='For You') it=it.map((r,i)=>({r,k:(r.k==='post'&&refObj(r).type==='announcement')?i-50:(S.following.has(refAuthor(r))?i-2.5:i)})).sort((a,b)=>a.k-b.k).map(x=>x.r);
+  if(f==='For You'){let an=0;it=it.map((r,i)=>({r,k:(r.k==='post'&&refObj(r).type==='announcement'&&an++<2)?i-500:(S.following.has(refAuthor(r))?i-2.5:i)})).sort((a,b)=>a.k-b.k).map(x=>x.r);}
   return it;
 }
 function feedItem(r){return r.k==='post'?postCard(POSTS[r.id]):r.k==='listing'?listingCard(LISTINGS[r.id]):eventCard(EVENTS[r.id]);}
@@ -657,8 +904,8 @@ SC.home=()=>{
   ${verifBanner()}
   ${chips(['For You','My Batch','My State','Following'],S.homeFilter,'homeFilter')}
   ${S.homeFilter==='For You'&&me.status==='In camp'?campToday():''}
-  <div class="pad stack">${items.length?items.map(feedItem).join(''):emp}</div>
-  ${items.length?'<div class="empty" style="padding:24px">You’re all caught up.</div>':''}
+  <div class="pad stack">${S.settings.offline?offlineHtml():items.length?items.map(feedItem).join(''):emp}</div>
+  ${items.length&&!S.settings.offline?'<div class="empty" style="padding:24px">You’re all caught up.</div>':''}
   </div>${nav('home')}`;
 };
 
@@ -675,7 +922,7 @@ SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return `${tb('Post')}${empty('T
     <div class="row" style="gap:16px;font-size:12px;color:#A3ABA5;padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'#FF8A3D':'#A3ABA5'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}</div></div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
   ${p.cc>cs.length&&cs.length?`<div class="hint" style="padding:14px 4px">Showing the most recent comments.</div>`:''}`}
   </div></div>
-  ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px">${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="Add a comment…" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
+  ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="Add a comment…" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
 INIT.post=()=>{S.draft={comment:''};};
 
 // ===== Community =====
@@ -715,6 +962,8 @@ SC.communityDetail=t=>{const c=COMM[t.id];const tab=S.commTab[c.id]||'Feed';
       <div class="hint" style="padding:2px 4px">Moderators are corps members appointed by the platform. They are not NYSC officials.</div>
       <div class="sec">Members · ${c.members.toLocaleString()}</div>${others.map(id=>userRow(USERS[id])).join('')}
       <div class="hint" style="text-align:center;padding:8px">+ ${(c.members-others.length-mods.length).toLocaleString()} more</div>`;
+  } else if(tab==='Moderate'&&isMod(c)){
+    body=modPanel(c);
   } else if(tab==='Pinned'){
     body=c.pinned.length?c.pinned.map(x=>`<div class="card" style="display:flex;gap:12px;border:1px dashed #4A5450;background:transparent">${I('pin',20,'style="color:#FF8A3D"')}<div><span class="tag orange">Moderator notice</span><div style="font-size:15px;line-height:1.45;margin-top:4px">${esc(x)}</div></div></div>`).join(''):empty('Nothing pinned','');
   } else {
@@ -735,7 +984,7 @@ SC.communityDetail=t=>{const c=COMM[t.id];const tab=S.commTab[c.id]||'Feed';
       <div><div class="hd" style="font-weight:700;font-size:20px">${c.today}</div><div style="font-size:12px;color:#A3ABA5">posts today</div></div>
       <span style="margin-left:auto">${joinBtn(c,false)}</span>
     </div></div>
-  <div class="chips">${['Feed','Discussions','Members','Pinned','About'].map(x=>`<button class="chip ${x===tab?'on':''}" data-a="commTab" data-id="${c.id}" data-v="${x}" aria-pressed="${x===tab}">${x}</button>`).join('')}</div>
+  <div class="chips">${['Feed','Discussions','Members','Pinned','About',...(isMod(c)?['Moderate']:[])].map(x=>`<button class="chip ${x===tab?'on':''}" data-a="commTab" data-id="${c.id}" data-v="${x}" aria-pressed="${x===tab}">${x}</button>`).join('')}</div>
   <div class="pad stack">${body}</div></div>${nav('community')}`;
 };
 
@@ -758,9 +1007,9 @@ const CT={photo:'Photo or video',discussion:'Start a discussion',question:'Ask a
 INIT.compose=p=>{S.draft={photos:[],dest:p.comm||'feed',alsoFeed:!p.comm,vis:'Public',optCount:2,duration:'1 day',condition:'Fairly used',state:S.me.state,type:'Self-contain',period:'/ year',jobType:'Full-time',jobUnit:'/ month',fees:1,fee0l:'Agency fee',wa:true,call:false,phone:'',organiser:'me',time:'16:00'};};
 function photoPicker(label,req,single){const d=S.draft;
   return `<div class="field"><span class="flabel">${label}${req?'':' <span class="muted" style="font-weight:500">(optional)</span>'}</span>
-  <div class="chips" style="padding:0">${d.photos.map((u,i)=>`<span style="position:relative;flex:none"><span class="ph" style="width:${single?150:96}px;height:96px"><img src="${u}" alt="Selected photo ${i+1}"></span><button class="ib" style="position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:10px;background:rgba(15,18,17,.85)" data-a="rmPhoto" data-i="${i}" aria-label="Remove photo ${i+1}">${I('x',14)}</button></span>`).join('')}
+  <div class="chips" style="padding:0">${d.photos.map((u,i)=>`<span style="position:relative;flex:none"><span class="ph" style="width:${single?150:96}px;height:96px">${isVid(u)?`<video src="${u}" muted preload="metadata" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>`:`<img src="${u}" alt="Selected photo ${i+1}">`}</span><button class="ib" style="position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:10px;background:rgba(15,18,17,.85)" data-a="rmPhoto" data-i="${i}" aria-label="Remove photo ${i+1}">${I('x',14)}</button></span>`).join('')}
   ${single&&d.photos.length?'':`<label for="cphotos" class="ph" style="width:96px;height:96px;border:1.5px dashed ${S.errors.photos?'#FF8A3D':'#4A5450'};background:transparent;color:#A3ABA5;flex-direction:column;gap:4px;font-size:12px;font-weight:600;cursor:pointer">${I('camera',22)}Add</label>`}</div>
-  <input id="cphotos" type="file" accept="image/*" ${single?'':'multiple'} class="vh" data-file="composePhotos">${S.errors.photos?`<span class="err">${S.errors.photos}</span>`:''}</div>`;}
+  <input id="cphotos" type="file" accept="${topScreen().t==='photo'?'image/*,video/*':'image/*'}" ${single?'':'multiple'} class="vh" data-file="composePhotos">${S.errors.photos?`<span class="err">${S.errors.photos}</span>`:''}</div>`;}
 function destFields(){const d=S.draft;const joined=Object.values(COMM).filter(c=>c.joined);
   const inComm=d.dest!=='feed';const commOnly=inComm&&!d.alsoFeed;
   const vis=commOnly?'Community':(d.vis==='Community'?'Public':d.vis);
@@ -772,7 +1021,7 @@ function contactFields(){const d=S.draft;
   return `<div class="field"><span class="flabel">How people can reach you</span><div class="list">${swRow('wa','WhatsApp','Opens a chat with a pre-filled message',d.wa)}${swRow('call','Phone call','Shows your number when someone taps Call',d.call)}</div>${S.errors.contact?`<span class="err">${S.errors.contact}</span>`:''}<span class="hint">There’s no in-app chat. Your number is never shown on your profile.</span></div>
   ${fld('phone','Phone number for this listing',{type:'tel',prefix:'+234',prefixW:62,ph:'803 000 0000',attrs:'inputmode="tel"'})}`;}
 SC.compose=t=>{const ty=t.t,d=S.draft;let f='';
-  if(ty==='photo') f=photoPicker('Photos',true)+fld('text','Caption',{area:true,ph:'What’s happening?'})+fld('loc','Location',{opt:true,ph:'e.g. Parade ground',hint:'Shown as a general place, never your exact location.'})+destFields();
+  if(ty==='photo') f=photoPicker('Photos or video',true)+fld('text','Caption',{area:true,ph:'What’s happening?'})+fld('loc','Location',{opt:true,ph:'e.g. Parade ground',hint:'Shown as a general place, never your exact location.'})+destFields();
   if(ty==='discussion') f=fld('title','Title',{ph:'What do you want to talk about?',attrs:'maxlength="100"'})+fld('text','Details',{area:true,ph:'Share your thoughts, context or a story.'})+photoPicker('Photos',false)+destFields();
   if(ty==='question') f=fld('text','Your question',{area:true,ph:'e.g. Can we still change platoons after Wednesday?',hint:'Clear questions get better answers. Add your state or camp if it matters.'})+photoPicker('Supporting photo',false)+destFields();
   if(ty==='poll'){f=fld('text','Question',{ph:'e.g. Best spot at Mammy Market?',attrs:'maxlength="120"'})+`<div class="field"><span class="flabel">Options</span><div class="stack" style="gap:8px">${Array.from({length:d.optCount},(_,i)=>`<div class="row" style="gap:8px"><label for="f-opt${i}" class="vh">Option ${i+1}</label><input class="inp ${S.errors['opt'+i]?'bad':''}" id="f-opt${i}" data-k="opt${i}" value="${esc(d['opt'+i]||'')}" placeholder="Option ${i+1}" maxlength="40">${i>=2?`<button class="ib" data-a="rmOpt" data-i="${i}" aria-label="Remove option ${i+1}">${I('x',18)}</button>`:''}</div>`).join('')}</div>${S.errors.opts?`<span class="err">${S.errors.opts}</span>`:''}${d.optCount<5?`<button class="btn sm dark" style="align-self:flex-start;margin-top:4px" data-a="addOpt">${I('plus',16)}Add option</button>`:''}</div>`+fld('duration','Poll length',{opts:['1 day','3 days','1 week']})+`<div class="hint">One vote per member. Moderator elections use a separate, controlled process.</div>`+destFields();}
@@ -804,10 +1053,12 @@ function exFilters(withPrice){
 }
 function exploreBody(){
   const q=S.q.toLowerCase().trim();
+  if(S.settings.offline) return offlineHtml();
   if(q) return searchResults(q);
   const tab=S.exploreTab;let body='';
   const lst=k=>Object.values(LISTINGS).filter(l=>!l.deleted&&l.kind===k&&stateOk(l.state)&&priceOk(l.price)&&(!S.availOnly||l.status==='Available')&&!hiddenAuthor(l.owner));
-  if(tab==='Trending'){
+  if(tab==='For You'){body=forYouBody();}
+  else if(tab==='Trending'){
     const top=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community').sort((a,b)=>b.likes-a.likes).slice(0,4);
     body=`<div class="pad stack"><div class="card" style="padding:6px 4px"><div class="hd" style="font-weight:700;font-size:17px;padding:10px 12px 4px">Trending across Nigeria</div>${TRENDING.map(([h,c],i)=>`<button class="li" data-a="setQ" data-v="${h.slice(1)}" style="border-color:#232927"><span class="hd" style="width:26px;color:#A3ABA5;font-weight:700">${i+1}</span><span class="t"><b>${h}</b><span>${c}</span></span>${I('trend',18,'style="color:#C8F169"')}</button>`).join('')}</div>
     <div class="sec">Popular posts</div>${top.map(p=>postCard(p)).join('')}</div>`;
@@ -817,7 +1068,7 @@ function exploreBody(){
   } else if(tab==='Marketplace'){
     const l=lst('item');body=exFilters(true)+`<div class="pad">${l.length?`<div class="grid2">${l.map(itemTile).join('')}</div>`:empty('No items match','Try a different state or price.')}</div>`;
   } else if(tab==='Jobs'){
-    const l=lst('job');body=exFilters(false)+`<div class="pad stack">${l.length?l.map(listingCard).join(''):empty('No jobs here yet','Know of an opening? Share it from the Create button.')}</div>`;
+    const l=lst('job').filter(x=>S.jobType==='All'||x.jobType===S.jobType);body=exFilters(true)+chips(['All','Full-time','Part-time','Contract','Internship','Gig'],S.jobType,'jobType')+`<div class="pad stack">${l.length?l.map(listingCard).join(''):empty('No jobs here yet','Know of an opening? Share it from the Create button.')}</div>`;
   } else if(tab==='Accommodation'){
     const l=lst('accommodation');body=exFilters(true)+`<div class="pad stack">${l.length?l.map(listingCard).join(''):empty('No places match','Try a different state or price.')}</div>`;
   } else if(tab==='Events'){
@@ -827,7 +1078,7 @@ function exploreBody(){
   } else if(tab==='People'){
     const u=Object.values(USERS).filter(u=>stateOk(u.state)&&!S.blocked.has(u.id));body=exFilters(false)+`<div class="pad stack">${u.length?u.map(userRow).join(''):empty('No one found','Try another state.')}</div>`;
   }
-  return chips(['Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
+  return chips(['For You','Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
 }
 function searchResults(q){
   const m=s=>String(s||'').toLowerCase().includes(q);
@@ -902,6 +1153,7 @@ SC.event=t=>{const e=EVENTS[t.id];if(!e||e.deleted)return `${tb('Event')}${empty
     ${e.status==='Cancelled'?`<div class="card" style="border:1px solid #FF8A3D;background:transparent;font-size:14px">The organiser cancelled this event. People who were interested or going have been told.</div>`:''}
     <div class="list">${li({icon:'cal',title:esc(e.date),sub:'Date'})}${li({icon:'clock',title:esc(e.time),sub:'Time'})}${li({icon:'mappin',title:esc(e.location),sub:'Open in Maps',href:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.location),right:chev})}${e.link?li({icon:'link',title:'Registration link',sub:esc(e.link),href:e.link,right:chev}):''}</div>
     <div class="row" style="gap:8px">${r('interested','star','Interested')}${r('going','check','Going')}</div>
+    ${off?'':`<div class="list"><button class="li" data-a="eventRemind" data-id="${e.id}" role="switch" aria-checked="${!!e.remind}"><span class="t"><b>Remind me</b><span>Notify me the day before</span></span><span class="sw ${e.remind?'on':''}" aria-hidden="true"></span></button></div>`}
     <div class="hint" style="text-align:center">${e.interested} interested · ${e.going} going</div>
     <button class="card row" data-a="openUser" data-id="${e.organiser}" style="width:100%;text-align:left;padding:12px">${av(o,46)}<span style="flex:1;min-width:0"><span class="hint" style="display:block">Organised by</span><b style="display:flex;gap:5px;align-items:center">${esc(e.orgName||o.name)}${vb(o,14)}</b></span>${I('chevR',18)}</button>
     <p style="margin:0;font-size:15px;line-height:1.55;color:#D3D8D4">${esc(e.desc)}</p>
@@ -1011,7 +1263,12 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
     ${li({icon:'wifi',title:'Data & media',sub:S.settings.dataSaver?'Data saver on':'Data saver off',a:'go',data:'data-s="dataSettings"',right:chev})}</div>
   <div class="sec">Safety</div><div class="list">
     ${li({icon:'ban',title:'Blocked & muted',sub:`${S.blocked.size} blocked · ${S.muted.size} muted`,a:'go',data:'data-s="blocked"',right:chev})}
-    ${li({icon:'shield',title:'Safety tips',sub:'Accommodation, marketplace, meetups',a:'go',data:'data-s="safety"',right:chev})}
+    ${li({icon:'shield',title:'Safety tips',sub:'Jobs, accommodation, marketplace, meetups',a:'go',data:'data-s="safety"',right:chev})}
+    ${li({icon:'help',title:'Help centre',sub:'Answers to common questions',a:'go',data:'data-s="help"',right:chev})}
+    ${li({icon:'comment',title:'Contact support',a:'go',data:'data-s="contact"',right:chev})}
+    ${li({icon:'file',title:'Terms of Service',a:'go',data:'data-s="legal" data-t="terms"',right:chev})}
+    ${li({icon:'lock',title:'Privacy Notice',a:'go',data:'data-s="legal" data-t="privacy"',right:chev})}
+    ${li({icon:'info',title:'About Corpers Connect',a:'go',data:'data-s="legal" data-t="about"',right:chev})}
     ${li({icon:'book',title:'Community guidelines',a:'go',data:'data-s="safety" data-t="guidelines"',right:chev})}</div>
   <div class="sec">Your data</div><div class="list">
     ${li({icon:'download',title:'Download my data',sub:'Get a copy of your posts and profile',a:'downloadData'})}
@@ -1096,6 +1353,7 @@ SC.dataSettings=()=>{const s=S.settings;
   return `${tb('Data & media')}<div class="scroll nonav"><div class="pad stack">
   <div class="list"><div class="li"><span class="t"><b>Data saver</b><span>Photos load only when you tap them</span></span>${sw(s.dataSaver,'dataSaver','Data saver')}</div><div class="li"><span class="t"><b>Autoplay videos</b><span>Off saves data. Videos never autoplay in high resolution.</span></span>${sw(s.autoplay,'autoplay','Autoplay videos')}</div></div>
   <div class="field"><span class="flabel">Upload quality</span>${seg(['Standard','High'],s.quality,'setSetting','data-k="quality"')}<span class="hint">Standard uploads faster and uses less data.</span></div>
+  <div class="list"><div class="li"><span class="t"><b>Simulate offline</b><span>Demo of the no-connection state</span></span>${sw(s.offline,'offline','Simulate offline')}</div></div>
   <div class="list">${li({icon:'trash',title:'Clear cached media',sub:'Frees up space on your phone',a:'clearCache'})}</div></div></div>`;};
 
 SC.blocked=()=>{const t=S.blockTab||'Blocked';const ids=[...(t==='Blocked'?S.blocked:S.muted)];
@@ -1123,8 +1381,9 @@ SH.gate=s=>`<span class="av" style="width:56px;height:56px;border-radius:18px;ba
   <button class="btn lime block" data-a="go" data-s="verification">${S.verif==='pending'?'Check status':'Get verified'}</button><button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="closeSheet">Not now</button>`;
 SH.postMenu=s=>{const p=POSTS[s.id],mine=p.author==='me',u=p.author?user(p.author):null,f=u&&S.following.has(u.id);
   return `<div class="list">${li({icon:'bookmark',title:p.saved?'Remove from saved':'Save post',a:'save',data:`data-id="${p.id}"`})}${li({icon:'link',title:'Copy link',a:'copyLink'})}
+  ${mine&&p.type!=='poll'?li({icon:'edit',title:'Edit post',a:'editPost',data:`data-id="${p.id}"`}):''}
   ${mine?li({icon:'trash',title:'Delete post',danger:true,a:'deletePostAsk',data:`data-id="${p.id}"`})
-  :`${li({icon:'user',title:(f?'Unfollow ':'Follow ')+esc(first(u)),a:'follow',data:`data-id="${u.id}"`})}${li({icon:'mute',title:'Mute '+esc(first(u)),sub:'Hide their posts. They won’t be told.',a:'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block '+esc(first(u)),sub:'You won’t be able to interact',a:'blockAsk',data:`data-id="${u.id}"`})}${li({icon:'flag',title:'Report post',danger:true,a:'report',data:`data-kind="post" data-id="${p.id}"`})}`}</div>`;};
+  :`${li({icon:'user',title:(f?'Unfollow ':'Follow ')+esc(first(u)),a:'follow',data:`data-id="${u.id}"`})}${li({icon:'mute',title:'Mute '+esc(first(u)),sub:'Hide their posts. They won’t be told.',a:'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block '+esc(first(u)),sub:'You won’t be able to interact',a:'blockAsk',data:`data-id="${u.id}"`})}${p.community&&isMod(COMM[p.community])?li({icon:'pin',title:'Pin to community',sub:'Moderator action',a:'modPin',data:`data-id="${p.id}"`})+li({icon:'trash',title:'Remove as moderator',danger:true,a:'modRemove',data:`data-id="${p.id}"`}):''}${li({icon:'flag',title:'Report post',danger:true,a:'report',data:`data-kind="post" data-id="${p.id}"`})}`}</div>`;};
 SH.userMenu=s=>{const u=USERS[s.id];
   return `<div class="row" style="gap:12px;margin-bottom:14px">${av(u,44)}<b class="hd" style="font-size:18px">${esc(u.name)}</b></div><div class="list">${li({icon:'share',title:'Share profile',a:'share',data:`data-kind="profile" data-id="${u.id}"`})}${li({icon:'mute',title:S.muted.has(u.id)?'Unmute':'Mute',sub:'They won’t be told',a:S.muted.has(u.id)?'unmute':'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block',a:'blockAsk',data:`data-id="${u.id}"`})}${li({icon:'flag',title:'Report account',danger:true,a:'report',data:`data-kind="user" data-id="${u.id}"`})}</div>`;};
 SH.commMenu=s=>{const c=COMM[s.id],m=S.mutedComms.has(c.id);
@@ -1133,6 +1392,7 @@ SH.commMenu=s=>{const c=COMM[s.id],m=S.mutedComms.has(c.id);
   ${li({icon:'mute',title:m?'Unmute notifications':'Mute notifications',sub:'Posts still show here',a:'muteComm',data:`data-id="${c.id}"`})}
   ${li({icon:'link',title:'Copy invite link',a:'copyLink'})}
   ${c.official||c.admin==='me'?'':li({icon:'award',title:'Apply to moderate',a:'modApply',data:`data-id="${c.id}"`})}
+  ${isMod(c)?li({icon:'edit',title:'Edit info and rules',sub:'Moderator action',a:'commEdit',data:`data-id="${c.id}"`}):''}
   ${li({icon:'flag',title:'Report community',a:'report',data:`data-kind="community" data-id="${c.id}"`})}
   ${c.mods.length?li({icon:'shield',title:'Report a moderator',a:'report',data:`data-kind="moderator" data-id="${c.id}"`}):''}
   ${c.joined&&!c.official?li({icon:'logout',title:'Leave community',danger:true,a:'leaveComm',data:`data-id="${c.id}"`}):''}</div>`;};
@@ -1159,7 +1419,7 @@ SH.contact=s=>{const l=LISTINGS[s.id],o=user(l.owner);const msg=l.kind==='job'?`
     :`<button class="btn lime block" style="margin-top:14px" data-a="revealNum" data-id="${l.id}">${I('eye',18)}Show number</button>`}`;};
 SH.listingManage=s=>{const l=LISTINGS[s.id];const opts=l.kind==='accommodation'?['Available','Rented','Closed']:l.kind==='job'?['Available','Filled','Closed']:['Available','Sold','Closed'];
   return `<h2>Manage listing</h2><div class="sec" style="padding:4px 2px 8px">Status</div><div class="stack" style="gap:8px">${opts.map(o=>`<button class="opt ${l.status===o?'on':''}" style="background:#232927;border-color:${l.status===o?'#C8F169':'#232927'};padding:12px 14px" data-a="setListingStatus" data-id="${l.id}" data-v="${o}" role="radio" aria-checked="${l.status===o}"><span class="radio"></span><span style="font-size:15px">${o}</span></button>`).join('')}</div>
-  <div class="list" style="margin-top:14px">${li({icon:'refresh',title:'Renew listing',sub:'Listings expire after 30 days',a:'renewListing'})}${li({icon:'trash',title:'Delete listing',danger:true,a:'deleteListing',data:`data-id="${l.id}"`})}</div>`;};
+  <div class="list" style="margin-top:14px">${li({icon:'edit',title:'Edit details',a:'editListing',data:`data-id="${l.id}"`})}${li({icon:'refresh',title:'Renew listing',sub:'Listings expire after 30 days',a:'renewListing'})}${li({icon:'trash',title:'Delete listing',danger:true,a:'deleteListing',data:`data-id="${l.id}"`})}</div>`;};
 P.briefcase='<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>';
 P.refresh='<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/>';
 SH.eventManage=s=>`<h2>Change details</h2><p class="hint" style="margin:0 0 12px">Everyone who’s interested or going gets notified.</p><div class="stack">${fld('edate','Date',{type:'date'})}${fld('etime','Time',{type:'time'})}${fld('eloc','Location')}</div><button class="btn lime block" style="margin-top:16px" data-a="eventSave" data-id="${s.id}">Save and notify</button>`;
@@ -1204,9 +1464,9 @@ const A={
     if(!ok)return render();
     Object.assign(S.me,{name:v('name'),username:v('username'),bio:v('bio'),photo:S.draft.photo,initials:initials(v('name'))});go('journey');},
   journeyNext(){const d=S.draft;Object.assign(S.me,{status:d.status,batch:d.batch,stream:d.stream,state:d.state,camp:d.state+' Orientation Camp',lga:v('lga'),ppa:v('ppa')});
-    if(d.mode==='edit'){back();toast(verified()?'Saved. Changes to verified details are re-checked.':'Saved');return;}go('verify');},
+    if(d.mode==='edit'){back();toast(verified()?'Saved. Changes to verified details are re-checked.':'Saved');return;}go('interests');},
   verifySkip(){if(S.draft.from==='onboarding')go('interests');else back();},
-  verifySubmit(){S.errors={};let ok=need('callup','Enter your call-up number.',x=>x.length>=5);if(!S.draft.docName){S.errors.doc='Upload a document to continue.';ok=false;}
+  verifySubmit(){S.errors={};let ok=need('callup','Enter your call-up number.',x=>x.length>=5);if(!S.draft.docName){S.errors.doc='Upload a photo of your ID card to continue.';ok=false;}
     if(!ok)return render();S.verif='pending';S.me.callup=v('callup');
     if(S.draft.from==='onboarding'){toast('Submitted. We’ll let you know when it’s reviewed.');go('interests');}else{back();toast('Submitted for review');}},
   toggleInterest(d){const a=S.draft.interests,i=a.indexOf(d.v);i>=0?a.splice(i,1):a.push(d.v);render();},
@@ -1306,7 +1566,7 @@ const A={
   },
   // explore
   exTab(d){S.exploreTab=d.v;render();},
-  setQ(d){S.q=d.v;render();},
+  setQ(d){S.q=d.v;S.recent=[d.v,...S.recent.filter(x=>x.toLowerCase()!==d.v.toLowerCase())].slice(0,5);render();},
   toggleAvail(){S.availOnly=!S.availOnly;render();},
   exPlace(d){S.q='';S.exploreState=d.v;S.exploreTab='Accommodation';if(topScreen().s==='explore')render();else go('explore');},
   // listings
@@ -1374,7 +1634,7 @@ const FILES={
   verifyDoc(f){if(f[0]){S.draft.docName=f[0].name;delete S.errors.doc;render();}},
   redeployDoc(f){if(f[0]){S.draft.docName=f[0].name;delete S.errors.doc;render();}},
   reportEvidence(f){if(f[0]){S.draft.revName=f[0].name;render();}},
-  composePhotos(f){const single=topScreen().t==='event';const arr=[...f].filter(x=>x.type.startsWith('image/')).slice(0,8).map(x=>URL.createObjectURL(x));if(single)S.draft.photos=arr.slice(0,1);else S.draft.photos.push(...arr);S.draft.photos=S.draft.photos.slice(0,8);delete S.errors.photos;render();}
+  composePhotos(f){const single=topScreen().t==='event';const okv=topScreen().t==='photo';const arr=[...f].filter(x=>x.type.startsWith('image/')||(okv&&x.type.startsWith('video/'))).slice(0,8).map(x=>URL.createObjectURL(x)+(x.type.startsWith('video/')?'#.mp4':''));if(single)S.draft.photos=arr.slice(0,1);else S.draft.photos.push(...arr);S.draft.photos=S.draft.photos.slice(0,8);delete S.errors.photos;render();}
 };
 const LIVE={
   exploreQ(val){S.q=val;const el=document.getElementById('exResults');if(el)el.innerHTML=exploreBody();},
@@ -1386,6 +1646,144 @@ const CH={
 };
 
 // ---------- Wiring ----------
+// ===== Additions: ID verification, moderator tools, edit flows, legal pages, lightbox, search filters =====
+S.modDone=new Set();S.removedMembers=new Set();S.recent=['Lagos rent','junior developer','Batch B'];S.jobType='All';S.searchType='All';S.faq=null;S.mediaLists={};S.lb=null;S.appealed=false;
+S.settings.offline=false;
+COMM['b-football'].joined=true;COMM['b-football'].mods.push('me');
+['p2','p6','p11','p12','p20','p40','p50','p58'].forEach((id,i)=>{if(POSTS[id])POSTS[id].text+=[' #CampLife',' #CampLife @amaka.ok',' #SwearingIn',' #CampLife',' #CorperHustle',' #PPAStories',' #JobAlert',' #CampFood'][i];});
+NOTIF.unshift({id:'n18',cat:'service',text:'<b>Moderation:</b> your post in Kano Orientation Camp was removed. You can appeal.',time:'3h',read:false,go:['modNotice','mn1']});
+
+const isMod=c=>c.admin==='me'||(c.mods||[]).includes('me');
+const MOD_REASONS=['Spam','Harassment or bullying','Off-topic','Scam or fraud','Misinformation'];
+const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span style="color:#C8F169;font-weight:600">$2</span>');
+const offlineHtml=()=>`<div class="pad">${empty('You’re offline','Check your connection. Saved posts and listings are still available in Profile.',`<button class="btn sm lime" data-a="retry">Try again</button>`)}</div>`;
+
+// ---- Moderator panel
+function modPanel(c){
+  const reps=Object.values(POSTS).filter(p=>p.community===c.id&&p.author&&!p.deleted&&p.author!=='me').slice(0,3);
+  const open=reps.filter(p=>!S.modDone.has(c.id+':'+p.id));
+  const mem=['ahmed','segun','halima','david'].filter(id=>!S.removedMembers.has(c.id+':'+id));
+  return `<div class="card" style="border:1px solid #C8F169;background:transparent"><div class="row" style="gap:8px">${I('shield',18,'style="color:#C8F169"')}<b>Moderator tools</b></div><div class="hint" style="margin-top:4px">You can act in ${esc(c.name)} only. Serious cases go to the platform team. You can’t make official NYSC announcements.</div></div>
+  <button class="btn dark sm" style="height:42px" data-a="commEdit" data-id="${c.id}">${I('edit',16)}Edit info and rules</button>
+  <div class="sec">Reported content · ${open.length}</div>
+  ${open.length?open.map((p,i)=>{const u=user(p.author);return `<div class="card stack" style="gap:8px"><div class="row" style="gap:8px">${av(u,32)}<span style="flex:1;min-width:0;font-size:14px;font-weight:600">${esc(u.name)}</span><span class="tag oranges">${MOD_REASONS[(i+p.id.length)%MOD_REASONS.length]}</span></div><div style="font-size:14px;line-height:1.4;color:#D3D8D4">${esc((p.title||p.text).slice(0,140))}</div><div class="hint">Reported by ${2+i} members</div><div class="row" style="gap:6px"><button class="btn sm danger" style="flex:1" data-a="modRemove" data-id="${p.id}">Remove</button><button class="btn sm dark" style="flex:1" data-a="modDismiss" data-id="${p.id}">Keep</button><button class="btn sm dark" data-a="modEscalate" data-id="${p.id}">Escalate</button></div></div>`;}).join(''):empty('No open reports','You’re all caught up.')}
+  <div class="sec">Members</div>
+  <div class="list">${mem.map(id=>{const u=USERS[id];return `<div class="li">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></span><button class="btn sm dark" data-a="modKick" data-id="${c.id}" data-u="${id}">Remove</button></div>`;}).join('')}</div>
+  <div class="hint">Tip: use a post’s ••• menu to pin it or remove it.</div>`;
+}
+A.modRemove=d=>{const p=POSTS[d.id];p.deleted=true;S.modDone.add(p.community+':'+d.id);S.sheet=null;render();toast('Post removed. The author is told why and can appeal.');};
+A.modDismiss=d=>{const p=POSTS[d.id];S.modDone.add(p.community+':'+d.id);render();toast('Report dismissed');};
+A.modEscalate=d=>{const p=POSTS[d.id];S.modDone.add(p.community+':'+d.id);render();toast('Sent to the platform team');};
+A.modKick=d=>{S.removedMembers.add(d.id+':'+d.u);render();toast('Member removed from the community');};
+A.modPin=d=>{const p=POSTS[d.id],c=COMM[p.community];c.pinned.unshift((p.title||p.text).slice(0,140));S.sheet=null;render();toast('Pinned in '+c.name);};
+A.commEdit=d=>{const c=COMM[d.id];S.draft.cdesc=c.desc;S.draft.crules=c.rules.join('\n');sheet({type:'commEdit',id:d.id});};
+A.saveComm=d=>{const c=COMM[d.id];if(!(S.draft.cdesc||'').trim())return toast('Add a description');c.desc=S.draft.cdesc.trim();c.rules=(S.draft.crules||'').split('\n').map(x=>x.trim()).filter(Boolean);closeSheet();toast('Community updated');};
+SH.commEdit=s=>`<h2>Edit community</h2><div class="stack">${fld('cdesc','Description',{area:true})}${fld('crules','Rules (one per line)',{area:true})}</div><button class="btn lime block" style="margin-top:16px" data-a="saveComm" data-id="${s.id}">Save changes</button>`;
+
+// ---- Moderator application and verification now need a photo of the camp ID card
+FILES.verifyDoc=f=>{const x=f[0];if(!x)return;if(!x.type.startsWith('image/')){S.errors.doc='Please upload a photo (JPG or PNG) of your ID card.';return render();}S.draft.docName=x.name;S.draft.docUrl=URL.createObjectURL(x);delete S.errors.doc;render();};
+FILES.modDoc=f=>{const x=f[0];if(!x)return;if(!x.type.startsWith('image/')){S.errors.mdoc='Upload a photo of your NYSC ID card.';return render();}S.draft.mdocName=x.name;S.draft.mdocUrl=URL.createObjectURL(x);delete S.errors.mdoc;render();};
+A.modApply=d=>{Object.assign(S.draft,{mwhy:'',mexp:'',mdocName:'',mdocUrl:''});sheet({type:'modApply',id:d.id});};
+A.submitModApply=d=>{S.errors={};let ok=need('mwhy','Tell us a bit more (at least 20 characters).',x=>x.length>=20);if(!S.draft.mdocName){S.errors.mdoc='Upload a photo of your NYSC ID card.';ok=false;}if(!ok)return render();closeSheet();toast('Application sent. The platform team will check your ID.');};
+SH.modApply=s=>{const d=S.draft;return `<h2>Apply to moderate</h2><p class="hint" style="margin:0 0 12px">${esc(COMM[s.id].name)} · The platform team reviews applications and makes the final call. Moderators are not NYSC officials.</p><div class="stack">${fld('mwhy','Why do you want to moderate?',{area:true})}${fld('mexp','Relevant experience',{area:true,opt:true,ph:'Running groups, leadership roles…'})}
+  <div class="field"><span class="flabel">NYSC ID card (issued at camp)</span>
+  <label for="mdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.mdoc?'#FF8A3D':'#4A5450'};background:transparent;padding:10px">${d.mdocUrl?`<img src="${d.mdocUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover">`:`<span style="width:44px;height:44px;border-radius:14px;background:#232927;display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}<span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.mdocName?esc(d.mdocName):'Upload a photo of your ID card'}</b><span class="hint">${d.mdocName?'Tap to replace':'Required for moderators'}</span></span></label>
+  <input id="mdoc" type="file" accept="image/*" class="vh" data-file="modDoc">${S.errors.mdoc?`<span class="err">${S.errors.mdoc}</span>`:''}</div></div>
+  <div class="hint" style="margin-top:8px">${I('lock',12)} Only the verification team sees your ID. Community admins never do. It’s deleted after the decision.</div><button class="btn lime block" style="margin-top:16px" data-a="submitModApply" data-id="${s.id}">Send application</button>`;};
+
+// ---- Edit flows
+A.editPost=d=>{const p=POSTS[d.id];S.draft.etitle=p.title||'';S.draft.etext=p.text;sheet({type:'editPost',id:d.id});};
+A.saveEditPost=d=>{const p=POSTS[d.id];if(!(S.draft.etext||'').trim())return toast('A post can’t be empty');if(p.title)p.title=(S.draft.etitle||'').trim()||p.title;p.text=S.draft.etext.trim();p.edited=true;closeSheet();toast('Post updated');};
+SH.editPost=s=>{const p=POSTS[s.id];return `<h2>Edit post</h2><div class="stack">${p.title?fld('etitle','Title'):''}${fld('etext','Text',{area:true})}</div><div class="hint" style="margin-top:8px">Edited posts show an “edited” label.</div><button class="btn lime block" style="margin-top:14px" data-a="saveEditPost" data-id="${s.id}">Save</button>`;};
+A.editListing=d=>{const l=LISTINGS[d.id];Object.assign(S.draft,{ltitle:l.title,lprice:String(l.price),ldesc:l.desc});sheet({type:'editListing',id:d.id});};
+A.saveEditListing=d=>{const l=LISTINGS[d.id];S.errors={};let ok=need('ltitle','Add a title.');ok=need('lprice','Enter an amount.',s=>Number(s)>0)&&ok;if(!ok)return render();l.title=S.draft.ltitle.trim();l.price=Number(S.draft.lprice);l.desc=(S.draft.ldesc||'').trim();closeSheet();toast('Listing updated');};
+SH.editListing=s=>{const l=LISTINGS[s.id];return `<h2>Edit ${l.kind==='job'?'job':'listing'}</h2><div class="stack">${fld('ltitle','Title')}${fld('lprice',l.kind==='job'?'Pay':'Price',{type:'number',prefix:'₦',prefixW:30})}${fld('ldesc','Description',{area:true})}</div><button class="btn lime block" style="margin-top:14px" data-a="saveEditListing" data-id="${s.id}">Save changes</button>`;};
+
+// ---- Moderation notice and appeal
+INIT.modNotice=()=>{S.draft={appeal:''};};
+SC.modNotice=()=>`${tb('Moderation decision')}<div class="scroll nonav"><div class="pad stack">
+  <div class="card stack" style="gap:10px"><span class="tag oranges">Post removed</span><b class="hd" style="font-size:20px">Your post in Kano Orientation Camp was removed</b><div class="card" style="background:#232927;font-size:14px;color:#D3D8D4">“Anyone selling a mattress? Message me.”</div>
+  <div class="row" style="gap:8px;font-size:14px">${I('flag',16,'style="color:#FF8A3D"')}Rule 3: No selling here. Use Marketplace.</div><div class="hint">Decided by a community moderator · 3 hours ago</div></div>
+  ${S.appealed?`<div class="card row" style="gap:10px;border:1px solid #C8F169;background:transparent">${I('check',18,'style="color:#C8F169"')}<span><b>Appeal in review</b><span class="hint" style="display:block">A different reviewer from the platform team will look at it. You’ll get a notification.</span></span></div>`
+  :`<div class="sec">Think we got it wrong?</div>${fld('appeal','Tell us why',{area:true,ph:'Add context for the reviewer.'})}<button class="btn lime block" data-a="submitAppeal">Appeal this decision</button>`}
+  <div class="hint">Moderators can’t ban you from the platform. Serious actions are decided by the platform team and can be appealed.</div></div></div>`;
+A.submitAppeal=()=>{S.errors={};if(!need('appeal','Add a short reason (10 characters or more).',x=>x.length>=10))return render();S.appealed=true;render();toast('Appeal submitted');};
+
+// ---- Legal, help, contact, forgot password
+const LEGAL={
+ terms:['Terms of Service',[['Using Corpers Connect','You must be a current, prospective or former NYSC corps member to use member features. You are responsible for what you post.'],['Verification','Verification confirms NYSC membership only. It does not guarantee that any post, job, item or property is genuine.'],['Jobs, items and accommodation','You may not charge applicants to apply for a job. Fake or scam listings are removed and accounts may be suspended.'],['No payments or chat','Corpers Connect does not process payments or provide in-app chat. Contact happens through the methods you choose on a listing.'],['Moderation and appeals','Reports are reviewed by community moderators and the platform team. You can appeal significant decisions.'],['Prototype notice','This is sample copy for the prototype and is not legal advice.']]],
+ privacy:['Privacy Notice',[['What we collect','Name, username, contact details, NYSC information you add, and the ID card photo you submit for verification.'],['Your ID card','Only the verification team can see it. Community moderators never can. It is deleted after a decision.'],['What others see','PPA and precise location are private by default. You control who sees your profile and service information.'],['Contact details on listings','Your phone number is only shown when you choose a contact method on a listing, and only when someone taps to reveal it.'],['Your choices','You can edit your profile, download your data, deactivate or delete your account at any time.'],['Prototype notice','This is sample copy for the prototype and is not legal advice.']]],
+ about:['About Corpers Connect',[['What it is','A social network and an opportunity marketplace for NYSC corps members. Share camp life, find jobs, items, accommodation and events, and keep friendships after passing out.'],['Two equal halves','Social posts and communities sit beside jobs, marketplace, accommodation and events. Neither is a side feature.'],['Not affiliated with NYSC','Corpers Connect is independent. Moderators and verified members are not NYSC officials.'],['Version','Prototype 1.0 · sample data only']]]
+};
+SC.legal=t=>{const [title,secs]=LEGAL[t.t]||LEGAL.terms;return `${tb(title)}<div class="scroll nonav"><div class="pad stack">${secs.map(([h,b])=>`<div class="card"><b class="hd" style="font-size:17px">${h}</b><p style="margin:6px 0 0;line-height:1.55;color:#D3D8D4;font-size:14px">${b}</p></div>`).join('')}</div></div>`;};
+const FAQ=[['How do I get the verified badge?','Upload a clear photo of the NYSC ID card issued at camp, plus your call-up number. Our team reviews it by hand, usually within 48 hours.'],['Why was my verification rejected?','Common reasons are a blurry photo, a cropped card or details that do not match your profile. Fix it and resubmit, or appeal.'],['Can anyone see my ID card?','No. Only the verification team. It is deleted after a decision.'],['How do I become a moderator?','Open a community, choose Apply to moderate, and upload your ID card. The platform team makes the final decision.'],['Are the jobs safe to apply for?','Verified badges confirm NYSC membership, not that a job is genuine. Never pay to get a job. Report listings that ask for money.'],['I was redeployed. Do I need a new account?','No. Update your service information under Profile → Service information → Redeployment.'],['What happens when I pass out?','Your account stays. Your status changes to Alumni and you keep your posts, followers and communities.'],['Is there messaging?','Not yet. Contact happens through WhatsApp or phone on listings, chosen by the owner.']];
+SC.help=()=>`${tb('Help centre')}<div class="scroll nonav"><div class="pad stack"><div class="list">${FAQ.map(([q,a],i)=>`<button class="li" data-a="faq" data-i="${i}" aria-expanded="${S.faq===i}" style="flex-wrap:wrap"><span class="t" style="flex:1"><b>${q}</b></span>${I(S.faq===i?'x':'plus',16)}${S.faq===i?`<span style="flex-basis:100%;color:#D3D8D4;font-size:14px;line-height:1.5;padding-top:6px">${a}</span>`:''}</button>`).join('')}</div>
+  <button class="btn dark block" data-a="go" data-s="contact">Still stuck? Contact support</button></div></div>`;
+A.faq=d=>{S.faq=S.faq===+d.i?null:+d.i;render();};
+INIT.contact=()=>{S.draft={topic:'Verification',msg:''};};
+SC.contact=()=>`${tb('Contact support')}<div class="scroll nonav"><div class="pad stack">${fld('topic','Topic',{opts:['Verification','Moderator application','Report a scam','Account','Something else']})}${fld('msg','Message',{area:true,ph:'Tell us what happened. Never include your password.'})}<button class="btn lime block" data-a="sendContact">Send message</button><div class="hint">We reply by email within 2 working days.</div></div></div>`;
+A.sendContact=()=>{S.errors={};if(!need('msg','Add a few more details (10 characters or more).',x=>x.length>=10))return render();back();toast('Message sent. We’ll reply by email.');};
+INIT.forgot=()=>{S.draft={email:'',sent:false};};
+SC.forgot=()=>{const d=S.draft;return `${tb('Reset password')}<div class="scroll nonav" style="padding:0 20px"><div class="stack" style="gap:16px">${d.sent?`<span class="av" style="width:64px;height:64px;border-radius:22px;background:#C8F169">${I('check',30)}</span><h1 class="hd" style="font-size:28px;margin:0">Check your email</h1><p class="muted" style="margin:0;line-height:1.5">If an account exists for ${esc(d.email)}, we’ve sent a reset link. It expires in 30 minutes.</p><button class="btn lime block" data-a="back">Back to sign in</button>`:`<h1 class="hd" style="font-size:28px;margin:0">Forgot your password?</h1><p class="muted" style="margin:0;line-height:1.5">Enter your email and we’ll send a reset link.</p>${fld('email','Email address',{type:'email',attrs:'inputmode="email" autocomplete="email"'})}<button class="btn lime block" data-a="sendReset">Send reset link</button>`}</div></div>`;};
+A.forgot=()=>go('forgot');
+A.sendReset=()=>{S.errors={};if(!need('email','Enter a valid email address.',x=>EMAIL.test(x)))return render();S.draft.sent=true;render();};
+
+// ---- Lightbox
+function lbHtml(){const L=S.lb,src=L.list[L.i];return `<div style="position:absolute;inset:0;z-index:70;background:rgba(0,0,0,.96);display:flex;flex-direction:column" role="dialog" aria-modal="true" aria-label="Photo viewer"><div class="row" style="padding:14px;justify-content:space-between"><span class="tag" style="background:#232927">${L.i+1} / ${L.list.length}</span><button class="ib" data-a="lbClose" aria-label="Close">${I('x')}</button></div><div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"><img src="${src}" alt="Photo ${L.i+1}" style="max-width:100%;max-height:100%;object-fit:contain"></div>${L.list.length>1?`<div class="row" style="justify-content:center;gap:16px;padding:16px"><button class="ib" data-a="lbStep" data-d="-1" aria-label="Previous photo">${I('back')}</button><button class="ib" data-a="lbStep" data-d="1" aria-label="Next photo">${I('chevR')}</button></div>`:''}</div>`;}
+A.lightbox=d=>{const l=(S.mediaLists[d.key]||[]).filter(x=>!x.startsWith('#')&&!isVid(x));if(!l.length)return;S.lb={list:l,i:Math.max(0,l.indexOf(d.src))};render();};
+A.lbClose=()=>{S.lb=null;render();};
+A.lbStep=d=>{const L=S.lb;L.i=(L.i+ +d.d+L.list.length)%L.list.length;render();};
+
+// ---- Mentions in comments
+LIVE.commentLive=val=>{const box=document.getElementById('mentionBox');if(!box)return;const m=val.match(/@([A-Za-z0-9_.]*)$/);if(!m){box.innerHTML='';return;}const q=m[1].toLowerCase();const us=Object.values(USERS).filter(u=>u.username.toLowerCase().includes(q)||u.name.toLowerCase().includes(q)).slice(0,4);box.innerHTML=us.length?`<div class="chips" style="padding:0">${us.map(u=>`<button class="chip on" data-a="pickMention" data-u="${u.username}" style="background:#232927;color:#F2F4EF;border-color:#3A423E">@${u.username}</button>`).join('')}</div>`:'';};
+A.pickMention=d=>{const el=document.getElementById('f-comment');if(!el)return;el.value=el.value.replace(/@[A-Za-z0-9_.]*$/,'@'+d.u+' ');S.draft.comment=el.value;const box=document.getElementById('mentionBox');if(box)box.innerHTML='';el.focus();};
+
+// ---- Explore: For You, job filter, search filters, recent searches
+function forYouBody(){
+  const me=S.me,near=(a,b)=>(b.state===me.state)-(a.state===me.state);
+  const ok=l=>!l.deleted&&l.status==='Available'&&!hiddenAuthor(l.owner);
+  const jobs=Object.values(LISTINGS).filter(l=>l.kind==='job'&&ok(l)).sort(near).slice(0,3);
+  const items=Object.values(LISTINGS).filter(l=>l.kind==='item'&&ok(l)).sort(near).slice(0,4);
+  const places=Object.values(LISTINGS).filter(l=>l.kind==='accommodation'&&ok(l)).sort(near).slice(0,2);
+  const evs=Object.values(EVENTS).filter(e=>!e.deleted&&e.status==='Upcoming').slice(0,2);
+  const ppl=Object.values(USERS).filter(u=>!S.following.has(u.id)&&!S.blocked.has(u.id)).slice(0,3);
+  const comms=Object.values(COMM).filter(c=>!c.joined).slice(0,3);
+  const sec=(t,h,tab)=>`<div class="row" style="justify-content:space-between;padding:14px 2px 8px"><span class="eyebrow">${t}</span>${tab?`<button data-a="exTab" data-v="${tab}" style="font-size:13px;font-weight:700;color:#C8F169;min-height:32px">See all</button>`:''}</div>${h}`;
+  const rec=S.recent.length?`<div class="pad" style="padding-bottom:0"><div class="row" style="justify-content:space-between"><span class="eyebrow">Recent searches</span><button data-a="clearRecent" style="font-size:13px;font-weight:700;color:#A3ABA5;min-height:32px">Clear</button></div><div class="chips" style="padding:8px 0 0">${S.recent.map(r=>`<button class="chip" data-a="setQ" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>`:'';
+  return rec+`<div class="pad stack" style="gap:10px">${sec('Jobs for you',jobs.map(listingCard).join(''),'Jobs')}${sec('Marketplace picks',`<div class="grid2">${items.map(itemTile).join('')}</div>`,'Marketplace')}${sec('Places to stay',places.map(listingCard).join(''),'Accommodation')}${sec('Happening soon',evs.map(eventCard).join(''),'Events')}${sec('People to follow',ppl.map(userRow).join(''),'People')}${sec('Communities for you',comms.map(c=>commRow(c)).join(''),'Communities')}</div>`;
+}
+A.jobType=d=>{S.jobType=d.v;render();};
+A.clearRecent=()=>{S.recent=[];render();};
+A.retry=()=>{if(S.settings.offline)toast('Still offline');else render();};
+A.searchType=d=>{S.searchType=d.v;const el=document.getElementById('exResults');if(el)el.innerHTML=exploreBody();else render();};
+function searchResults(q){
+  const m=s=>String(s||'').toLowerCase().includes(q);
+  const T=S.searchType,on=k=>T==='All'||T===k;
+  const ppl=Object.values(USERS).filter(u=>!S.blocked.has(u.id)&&(m(u.name)||m(u.username)||m(u.state)));
+  const com=Object.values(COMM).filter(c=>m(c.name)||m(c.desc)||m(c.category));
+  let pos=Object.values(POSTS).filter(p=>!p.deleted&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community'&&(m(p.text)||m(p.title)));
+  const lis=Object.values(LISTINGS).filter(l=>!l.deleted&&!hiddenAuthor(l.owner)&&(m(l.title)||m(l.desc)||m(l.area)||m(l.state)||m(l.company)||m(l.jobType)));
+  const evs=Object.values(EVENTS).filter(e=>!e.deleted&&(m(e.title)||m(e.location)||m(e.state)));
+  const pl=STATES.filter(s=>m(s));
+  const tag=TRENDING.find(t=>t[0].slice(1).toLowerCase()===q);
+  if(tag&&!pos.length) pos=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&p.vis==='Public').sort((a,b)=>b.likes-a.likes).slice(0,4);
+  const sec=(t,h)=>h?`<div class="sec">${t}</div>${h}`:'';
+  const parts=[
+    on('Places')?sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:#C8F169"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Rentals, jobs, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join('')):'',
+    on('People')?sec('People',ppl.slice(0,T==='People'?20:3).map(userRow).join('')):'',
+    on('Communities')?sec('Communities',com.slice(0,T==='Communities'?20:3).map(c=>commRow(c)).join('')):'',
+    on('Jobs')?sec('Jobs',lis.filter(l=>l.kind==='job').slice(0,T==='Jobs'?20:3).map(listingCard).join('')):'',
+    on('Items')?sec('Items for sale',lis.filter(l=>l.kind==='item').slice(0,T==='Items'?20:3).map(listingCard).join('')):'',
+    on('Rentals')?sec('Accommodation',lis.filter(l=>l.kind==='accommodation').slice(0,T==='Rentals'?20:3).map(listingCard).join('')):'',
+    on('Events')?sec('Events',evs.slice(0,T==='Events'?20:3).map(eventCard).join('')):'',
+    on('Posts')?sec('Posts',pos.slice(0,T==='Posts'?20:4).map(p=>postCard(p)).join('')):''
+  ];
+  const row=chips(['All','People','Posts','Communities','Jobs','Items','Rentals','Events','Places'],T,'searchType');
+  const head=tag?`<div class="pad" style="padding-bottom:8px"><div class="card row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:#0F1211;display:flex;align-items:center;justify-content:center">${I('trend',20)}</span><span><b class="hd" style="font-size:18px">${esc(tag[0])}</b><span class="hint" style="display:block">${tag[1]} across Nigeria</span></span></div></div>`:'';
+  return row+head+(parts.some(Boolean)?`<div class="pad stack">${parts.join('')}</div>`:`<div class="pad">${empty(`No ${T==='All'?'':T.toLowerCase()+' '}results for “${esc(S.q)}”`,'Check the spelling or try a broader word.')}</div>`);
+}
+A.eventRemind=d=>{const e=EVENTS[d.id];e.remind=!e.remind;render();toast(e.remind?'We’ll remind you the day before':'Reminder off');};
+
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el||!app().contains(el))return;
   const a=el.dataset.a;if(a==='noop')return;
@@ -1404,6 +1802,7 @@ document.addEventListener('change',e=>{const t=e.target;
 });
 document.addEventListener('keydown',e=>{const t=e.target;
   if(e.key==='Enter'&&t.dataset&&t.dataset.enter){e.preventDefault();A[t.dataset.enter]({id:t.dataset.id});}
+  if(e.key==='Escape'&&S.lb){S.lb=null;render();return;}
   if(e.key==='Escape'&&S.sheet){closeSheet();}
 });
 render();

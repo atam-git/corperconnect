@@ -345,6 +345,15 @@ Do not assume that an official NYSC verification API exists or that the company 
 
 If automated verification is unavailable, launch with controlled manual verification.
 
+### Verification is separate from sign-up (agreed baseline)
+
+Sign-up must not block access. A new user reaches the app immediately after creating an account, profile and NYSC journey details. Verification is a separate step the user starts later from the "Get verified" banner or from Profile.
+
+- The user uploads a photo of the NYSC ID card issued at camp, plus the call-up number.
+- An admin reviews it manually. Approval grants the verified badge and unlocks member-only features.
+- The same ID photo is an additional requirement to apply as a community moderator.
+- Only authorised verification staff can see the ID. Community moderators and admins of communities never can. It is deleted after the decision.
+
 ## 5.6 Verification states
 
 | State | Meaning | Access |
@@ -1577,6 +1586,26 @@ These recommendations should guide implementation but require confirmation where
 - Decide whether prospective members can follow, comment or publish ordinary posts before verification.
 - Define how alumni status is confirmed.
 
+**Access by status (Recommended; to validate)**
+
+Access is decided by verification state, not by service status.
+
+| Status | Allowed | Blocked until verified |
+|---|---|---|
+| Awaiting deployment | Ask questions, comment, polls, discussions, ordinary photo posts, follow, like, save, join public communities, browse everything | Jobs, item and accommodation listings, events, creating communities, official camp/batch/state communities |
+| Verified, in camp or serving | Everything | None |
+| Alumni (confirmed) | Everything a verified member can do, including posting jobs and handovers. Keeps batch and camp communities | None. Posts carry an "Alumni" label |
+
+- Label posts from users awaiting deployment as "Awaiting deployment" so readers know the author has not reached camp.
+- Alumni can stay in official state and "currently serving" communities as readers and commenters, with their posts labelled "Alumni". Decide whether they may start new posts there.
+- Never present alumni as currently serving.
+- Rate-limit posts and follows on new accounts to deter spam.
+
+**Alumni confirmation (To validate)**
+- A user who signs up as "Completed" is shown as Unverified, not Alumni, until an admin confirms the status.
+- Evidence for moving from serving to alumni: passing-out certificate, reviewed manually. Decide the exact document and retention.
+- A self-declared status in the profile dropdown is never shown as a verified status.
+
 ## 24.3 Community governance
 - Set the initial community-creation limit.
 - Define minimum community rules.
@@ -1609,6 +1638,38 @@ These recommendations should guide implementation but require confirmation where
 - Prepare terms of service, privacy notice, community guidelines and marketplace safety guidance.
 - Define moderation staffing, escalation coverage and response targets.
 - Define incident response and account appeal procedures.
+
+## 24.9 Gaps identified during prototype review
+
+**Verification and identity**
+- One ID per account. Detect the same ID card used on more than one account.
+- Edited or fake ID photos. Manual review has limits. Define reviewer guidance and an escalation route.
+- Account recovery for phone-only users who lose their number.
+- Re-verification when a verified user changes batch, state or status (redeployment, passing out).
+
+**Jobs**
+- Who may post jobs. Today only verified members can. Decide whether external employers or businesses may post, and how they are vetted.
+- Job listing expiry and renewal period, and how to handle roles marked filled.
+- Handling of applicant data. Applications happen outside the app, so state what the platform does and does not store.
+- Priority review and a "pay to apply" report reason are in the prototype. Define response targets.
+
+**Moderators**
+- Term length, review cadence and the maximum number of communities one person may moderate.
+- What a moderator's removal notice tells the author, and how the appeal reaches a different reviewer.
+- Moderator ID retention. Same rules as member verification evidence.
+
+**Media**
+- Video limits (length, size, format), upload moderation and storage cost. The prototype uses short sample clips only.
+- Image and video review for explicit or harmful content before wide distribution.
+
+**Platform and operations**
+- Admin dashboard is required (section 18) but is not yet designed or prototyped.
+- Nigerian data protection obligations for storing ID photos, including registration and breach procedure.
+- Low-bandwidth behaviour: offline reading, data saver defaults, and a progressive web app option.
+- Languages: whether to support Hausa, Yoruba, Igbo or Pidgin interface text.
+- Accessibility review (contrast, touch targets, screen readers) before launch.
+- Anti-spam thresholds for new accounts, follows and listings.
+- Analytics events to instrument for the success measures in section 2.3.
 
 # 25. Dependencies and Risks
 
