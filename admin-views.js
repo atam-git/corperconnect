@@ -217,9 +217,17 @@ A.sendBroadcast=()=>{const t=val('b-title'),m=val('b-msg');if(!t||m.length<10)re
 V.camps=()=>{
   const camp=cur('camp',CAMPS[0]),items=SCHEDULE[camp];
   return pageHd('Camp schedules','Daily schedule items shown on members’ Home in camp. Camp moderators can submit items. Staff publish.',abtn('CAMP_SCHEDULE_MANAGE',I('plus',14)+'Add item','lime','addSched'))+
-   `<div class="chips">${CAMPS.map(c=>`<button class="chip ${camp===c?'on':''}" data-a="tab" data-k="camp" data-v="${c}">${c.replace(' Orientation Camp','')}</button>`).join('')}</div>`+
+   pendingSched()+`<div class="chips">${CAMPS.map(c=>`<button class="chip ${camp===c?'on':''}" data-a="tab" data-k="camp" data-v="${c}">${c.replace(' Orientation Camp','')}</button>`).join('')}</div>`+
    table(['Time','Item','Where','Published',''],items.map((it,i)=>`<tr><td class="mono">${it[0]}</td><td><b>${esc(it[1])}</b></td><td>${esc(it[2])}</td><td>${sw(it[3],'schedPub',`data-c="${camp}" data-i="${i}"`,!can('CAMP_SCHEDULE_MANAGE'))}</td><td>${abtn('CAMP_SCHEDULE_MANAGE','Delete','danger','schedDel',`data-c="${camp}" data-i="${i}"`,'sm')}</td></tr>`),'No items for today. Add the first one.');
 };
+function pendingSched(){
+  const list=PENDING_SCHED;
+  return `<div class="card" style="margin-bottom:16px"><h3 class="hd" style="margin:0 0 4px">Pending from moderators <span class="tag orange">${list.length}</span></h3><p class="muted" style="margin:0 0 10px">Camp moderators submit items. Approve to publish them to members in that camp.</p>`+
+  (list.length?table(['Camp','Time','Item','Where','Submitted by',''],list.map(p=>`<tr><td>${p.camp.replace(' Orientation Camp','')}</td><td class="mono">${p.time}</td><td><b>${esc(p.title)}</b></td><td>${esc(p.where)}</td><td>${esc(p.by)}</td><td>${abtn('CAMP_SCHEDULE_MANAGE','Approve','lime','schedApprove','data-id="'+p.id+'"','sm')} ${abtn('CAMP_SCHEDULE_MANAGE','Reject','danger','schedReject','data-id="'+p.id+'"','sm')}</td></tr>`)):'<div class="muted" style="padding:10px 0">Nothing waiting.</div>')+'</div>';
+}
+A.schedApprove=d=>{const i=PENDING_SCHED.findIndex(x=>x.id===d.id);if(i<0)return;const p=PENDING_SCHED.splice(i,1)[0];(SCHEDULE[p.camp]=SCHEDULE[p.camp]||[]).push([p.time,p.title,p.where,true]);SCHEDULE[p.camp].sort((a,b)=>a[0].localeCompare(b[0]));audit('SCHEDULE_APPROVED',p.camp+': '+p.title,'Submitted by '+p.by);render();toast('Approved and published. '+p.by+' is notified.');};
+A.schedReject=d=>openModal({title:'Reject this item',sub:'The moderator sees your reason.',body:field('Reason','sr-reason',{ph:'e.g. Clashes with lectures'}),ok:'schedRejectYes',data:'data-id="'+d.id+'"',okLabel:'Reject'});
+A.schedRejectYes=d=>{const r=val('sr-reason');if(r.length<3)return ferr('sr-reason','Add a short reason.');const i=PENDING_SCHED.findIndex(x=>x.id===d.id);const p=PENDING_SCHED.splice(i,1)[0];audit('SCHEDULE_REJECTED',p.camp+': '+p.title,r);closeModal();render();toast('Rejected. '+p.by+' is notified.');};
 A.schedPub=d=>{if(!can('CAMP_SCHEDULE_MANAGE'))return deny('CAMP_SCHEDULE_MANAGE');const it=SCHEDULE[d.c][d.i];it[3]=!it[3];audit(it[3]?'SCHEDULE_PUBLISHED':'SCHEDULE_UNPUBLISHED',d.c+': '+it[1],'');render();};
 A.schedDel=d=>{SCHEDULE[d.c].splice(d.i,1);audit('SCHEDULE_ITEM_DELETED',d.c,'');render();toast('Deleted');};
 A.addSched=()=>openModal({title:'Add schedule item',body:field('Time','s-time',{type:'time',v:'10:00'})+field('Title','s-title',{ph:'e.g. Parade rehearsal'})+field('Where','s-where',{ph:'e.g. Parade ground'}),ok:'saveSched',okLabel:'Add and publish'});

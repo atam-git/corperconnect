@@ -4,6 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Corpers Connect — NYSC social network and opportunity marketplace</title>
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F1211">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="A social network and opportunity marketplace for NYSC corps members.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Corpers Connect">
+<meta property="og:title" content="Corpers Connect — NYSC social network and opportunity marketplace">
+<meta property="og:description" content="A social network and opportunity marketplace for NYSC corps members.">
+<meta property="og:image" content="https://corperconnect-cn.vercel.app/media/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Corpers Connect — NYSC social network and opportunity marketplace">
+<meta name="twitter:image" content="https://corperconnect-cn.vercel.app/media/og-image.png">
 <link rel="stylesheet" href="theme.css"><script src="theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -188,6 +206,13 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke
 .radio{width:22px;height:22px;border-radius:11px;border:2px solid var(--line3);flex:none;display:flex;align-items:center;justify-content:center}
 .opt.on .radio,.radio.on{border-color:var(--accent-border)}
 .opt.on .radio::after,.radio.on::after{content:'';width:10px;height:10px;border-radius:5px;background:#C8F169}
+.mrow{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:18px;padding-bottom:2px}
+.mrow .mi{flex:none;scroll-snap-align:start;display:flex;position:relative;border-radius:18px;overflow:hidden}
+.mrow{--mh:380px}@media (min-width:640px){.mrow{--mh:460px}}@media (min-width:1100px){.mrow{--mh:500px}}
+.mrow:not(.one) .mi.por{height:var(--mh);aspect-ratio:4/5}.mrow:not(.one) .mi.lan{height:calc(var(--mh)*.72);aspect-ratio:4/3}
+.mrow:not(.one){align-items:flex-start}
+.mrow.one{overflow:visible}.mrow.one .mi.por{aspect-ratio:4/5;height:min(calc(var(--mh)*1.25),70vh);max-height:620px;max-width:100%}.mrow.one .mi.lan{aspect-ratio:4/3;width:100%;max-height:440px}
+.mi .ph{border-radius:0}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .pt{margin:10px 2px 0;font-size:15px;line-height:1.45;white-space:pre-line;word-wrap:break-word}
@@ -523,6 +548,31 @@ E('ev16','Corper marketplace fair (cancelled)','2026-11-22','11:00 AM','Kano Mun
 let ep=161;
 Object.values(EVENTS).forEach(e=>{if(!e.photo){e.photo=IMG(ep);ep=ep>=175?161:ep+1;}});
 
+// ---- portrait-first media: remap most landscape photos, then add new portrait posts
+(function(){let k=0;Object.values(POSTS).forEach(p=>{if(!p.media)return;p.media=p.media.map(m=>{const r=m.match(/^media\/img\/p(\d+)\.jpg$/);if(!r||+r[1]>=201)return m;k++;return k%4===0?m:IMG(201+((k*7)%50));});});})();
+const PIM=n=>IMG(200+n);
+PO({author:'amaka',community:'kano-camp',text:'Sunrise on the parade ground. Nobody warned me it would look this good at 5am.',media:[PIM(1)],time:'8m',likes:210,cc:19,reposts:5,comments:[['tunde','Stop it, I am crying.','5m',6]]});
+PO({author:'tolu',community:'creators',text:'Reel from the portfolio shoot. Vertical, 15 seconds, one take.',media:[VID(1)],time:'14m',likes:260,cc:31,reposts:12,comments:[['femi','Clean transitions.','10m',4]]});
+PO({author:'grace',community:'foodies',text:'Jollof, plantain and chicken, camp edition. Swipe for the plate, the queue and the empty tray.',media:[PIM(2),PIM(3),PIM(4)],time:'22m',likes:530,cc:62,reposts:14,comments:[['halima','The empty tray is the real review.','18m',20]]});
+PO({author:'kelechi',community:'fashion',text:'Ankara drop. Four looks, all stitched this week. Orders open for December.',media:[PIM(5),PIM(6),PIM(7),PIM(8)],time:'40m',likes:880,cc:94,reposts:41,comments:[['blessing','Look three, please.','30m',15]]});
+PO({author:'david',community:'fitness',text:'Morning run in 12 degrees. Short clip from the trail.',media:[VID(3)],time:'55m',likes:330,cc:27,reposts:6,comments:[]});
+PO({author:'zainab',community:'ppa-stories',text:'My classroom, day one versus day thirty. Swipe through.',media:[PIM(9),PIM(10)],time:'1h',likes:1400,cc:150,reposts:80,comments:[['ngozi','The after photo got me.','50m',33]]});
+PO({author:'emeka',community:'photographers',text:'Portrait set from Sunday. Natural light, one reflector, no edits besides colour.',media:[PIM(11),PIM(12),PIM(13),PIM(14),PIM(15),PIM(16)],time:'2h',likes:1100,cc:88,reposts:36,comments:[['tolu','Frame four is gorgeous.','1h',24]]});
+PO({author:'bola',community:'lagos-camp',text:'Dance captain energy. Vertical video from rehearsal.',media:[VID(5)],time:'3h',likes:410,cc:44,reposts:18,comments:[]});
+PO({author:'halima',community:'batch-b-26',text:'Outfit check before the swearing-in. Khaki pressed, boots shined.',media:[PIM(17)],time:'4h',likes:640,cc:58,reposts:9,comments:[['yusuf','Platoon 4 is ready.','3h',8]]});
+PO({author:'ngozi',community:'ppa-stories',text:'Handwritten notes from my pupils. One of them drew me as a superhero.',media:[PIM(18),PIM(19),PIM(20)],time:'5h',likes:2300,cc:240,reposts:120,comments:[['grace','Superhero, confirmed.','4h',60]]});
+PO({author:'maryam',community:'cds-health',text:'Screening day recap. A short clip and a few photos from the market.',media:[VID(4),PIM(21),PIM(22)],time:'6h',likes:760,cc:70,reposts:33,comments:[]});
+PO({author:'segun',community:'batch-a-26',text:'Sunset from the school roof after the last class of the week.',media:[PIM(23)],time:'7h',likes:420,cc:30,reposts:7,comments:[]});
+PO({author:'femi',community:'creators',text:'Behind the scenes, vertical edition. Left: the setup. Right: the frame.',media:[PIM(24),PIM(25)],time:'9h',likes:380,cc:36,reposts:15,comments:[['emeka','Love the lighting.','8h',10]]});
+PO({author:'victor',community:'alumni-net',text:'Passing-out day, one year on. Swipe for the old photos.',media:[PIM(26),PIM(27),PIM(28),PIM(29),PIM(30)],time:'11h',likes:970,cc:110,reposts:40,comments:[['zainab','Where did a year go?','10h',25]]});
+PO({author:'yusuf',community:'kaduna-camp',text:'Football after drills. Kaduna camp pitch is a vibe.',media:[PIM(31)],time:'13h',likes:300,cc:25,reposts:4,comments:[]});
+PO({author:'ifeoma',community:'job-leads',text:'Interview outfit, ready. Print two CVs, arrive early.',media:[PIM(32)],time:'15h',likes:700,cc:49,reposts:29,comments:[]});
+PO({author:'blessing',community:'fellowship',text:'Choir rehearsal, vertical clip. Join us on Thursday.',media:[VID(1)],time:'17h',likes:350,cc:33,reposts:9,comments:[]});
+PO({author:'ahmed',community:'corper-market',text:'Phone case and screen guard set. Three colours, corper price.',media:[PIM(33),PIM(34),PIM(35)],time:'19h',likes:150,cc:12,reposts:6,comments:[]});
+PO({author:'chinedu',community:'batch-a-26',text:'Site visit photos from Awka. Ongoing drainage works.',media:[PIM(36),PIM(37)],time:'21h',likes:210,cc:15,reposts:3,comments:[]});
+PO({author:'aisha',community:'fct-cms',text:'Career fair setup in Abuja. Vertical panorama of the hall.',media:[PIM(38)],time:'23h',likes:500,cc:41,reposts:19,comments:[]});
+POSTS.pm1={id:'pm1',type:'photo',author:'me',community:'kano-camp',title:'',text:'Camp morning. Three frames from the parade ground.',media:[PIM(39),PIM(40),PIM(41)],time:'5h',likes:48,cc:2,reposts:3,batch:true,state:'Kano',vis:'Public',comments:[{u:'tolu',t:'Love the shot',time:'4h',likes:2},{u:'ibrahim',t:'Platoon 3 represents.',time:'3h',likes:1}]};
+
 // ---- more notifications
 NOTIFS.push(
  {id:'n9',cat:'social',u:'ngozi',text:'<b>Ngozi Eze</b> liked your post',time:'4h',read:false,go:['user','ngozi']},
@@ -534,6 +584,15 @@ NOTIFS.push(
  {id:'n15',cat:'community',text:'<b>Lagos Corps Members</b>: new announcement about transport',time:'1d',read:true,go:['communityDetail','lagos-cms']},
  {id:'n16',cat:'service',text:'<b>Account:</b> your profile is 80% complete. Add a photo to finish.',time:'2d',read:true,go:['editProfile']},
  {id:'n17',cat:'social',u:'ifeoma',text:'<b>Ifeoma Chukwu</b> shared your listing',time:'2d',read:true,go:['user','ifeoma']}
+);
+['n1','n9','n10','n14','n17','n11','n12'].forEach(id=>{const i=NOTIFS.findIndex(n=>n.id===id);if(i>=0)NOTIFS.splice(i,1);});
+NOTIFS.unshift(
+ {id:'g1',cat:'social',kind:'like',key:'pm1',actors:['ngozi','amaka','tunde','ahmed','zainab'],total:48,time:'4m',read:false,go:['post','pm1']},
+ {id:'g2',cat:'social',kind:'follow',key:'me',actors:['amaka','femi','ifeoma'],total:7,time:'2m',read:false,go:['followList','me']},
+ {id:'g3',cat:'social',kind:'comment',key:'pm1',actors:['tolu','ibrahim'],total:2,time:'3h',read:false,go:['post','pm1']},
+ {id:'g4',cat:'social',kind:'repost',key:'pm1',actors:['emeka','grace'],total:3,time:'5h',read:true,go:['post','pm1']},
+ {id:'g5',cat:'community',kind:'jobs',key:'job-leads',actors:[],total:5,time:'6h',read:true,go:['communityDetail','job-leads']},
+ {id:'g6',cat:'community',kind:'items',key:'corper-market',actors:[],total:3,time:'8h',read:true,go:['communityDetail','corper-market']}
 );
 TRENDING.push(['#JobAlert','4.7k posts'],['#CampLife','9.3k posts'],['#CDSOutreach','2.9k posts'],['#CorperHustle','3.4k posts'],['#RoommateWanted','2.1k posts']);
 
@@ -708,9 +767,9 @@ function photos(list,key,h=200){
   S.mediaLists[key]=list;
   if(S.settings.dataSaver&&!S.loadedMedia.has(key)) return `<button class="ph" data-a="loadMedia" data-id="${key}" style="width:100%;height:120px;margin-top:10px;color:var(--muted);flex-direction:column;gap:6px;font-size:13px;font-weight:600">${I('image',22)}Data saver on · Tap to load ${list.length>1?list.length+' items':(list[0]&&/\.(mp4|webm)$/i.test(list[0])?'video':'photo')}</button>`;
   const isVid=x=>/\.(mp4|webm)$/i.test(x);const one=x=>isVid(x)?`${S.settings.autoplay?`<span class="ph" style="height:100%;width:100%;background:#000"><video src="${x}" autoplay muted loop controls playsinline aria-label="Video" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video></span>`:`<button class="ph" data-a="playVideo" data-src="${x}" aria-label="Play video" style="height:100%;width:100%;padding:0;background:linear-gradient(135deg,var(--surface),var(--bg-deep));flex-direction:column;gap:8px;color:var(--text)"><span style="width:60px;height:60px;border-radius:30px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted)">TAP TO PLAY VIDEO</span></button>`}`:x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<button class="ph" data-a="lightbox" data-key="${key}" data-src="${x}" aria-label="View photo full screen" style="height:100%;width:100%;padding:0"><img src="${x}" alt="Photo"></button>`;
-  if(list.length===1) return `<div style="height:${h}px;margin-top:10px;display:flex">${one(list[0])}</div>`;
-  const shown=list.slice(0,4);
-  return `<div class="grid2" style="margin-top:10px;gap:6px">${shown.map((x,i)=>`<div style="height:${list.length===2?h-30:110}px;display:flex;position:relative">${one(x)}${i===3&&list.length>4?`<span style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">+${list.length-4}</span>`:''}</div>`).join('')}</div>`;
+  const por=x=>isVid(x)?!/v[24][.]mp4$/.test(x):(x.startsWith('#')?false:(+((x.match(/p([0-9]+)[.]jpg/)||[])[1])>=201));
+  if(list.length===1){const p=por(list[0]);return `<div class="mrow one" style="margin-top:10px"><div class="mi ${p?'por':'lan'}">${one(list[0])}</div></div>`;}
+  return `<div class="mrow" role="group" aria-label="${list.length} items, swipe sideways" tabindex="0" style="margin-top:10px">${list.map(x=>`<div class="mi ${por(x)?'por':'lan'}">${one(x)}</div>`).join('')}</div><div class="hint" style="margin-top:4px;text-align:right">${list.length} items · swipe</div>`;
 }
 function pollBlock(p){
   const v=p.poll.voted, total=p.poll.options.reduce((a,o)=>a+o[1],0);
@@ -830,7 +889,7 @@ function render(){
   const view=document.getElementById('view');
   const sc=view.querySelector('.scroll'); if(sc&&S.curKey) S.scrollMem[S.curKey]=sc.scrollTop;
   const t=topScreen();
-  const fn=SC[t.s]||SC.home;
+  const fn=SC[t.s]||SC.unavailable;
   view.innerHTML=fn(t);
   // Inner pages (settings, notifications, detail screens) keep the desktop sidebar and right column
   {const root=S.stack[0]&&S.stack[0].s,inApp=['home','community','explore','profile'].includes(root);
@@ -877,14 +936,14 @@ SC.welcome=()=>`<div class="scroll nonav w-page" style="display:flex;flex-direct
     <div class="row" style="justify-content:center;gap:16px;font-size:13px"><button data-a="go" data-s="legal" data-t="terms" style="color:var(--muted);min-height:36px">Terms</button><button data-a="go" data-s="legal" data-t="privacy" style="color:var(--muted);min-height:36px">Privacy</button><button data-a="go" data-s="help" style="color:var(--muted);min-height:36px">Help</button></div>
   </div></div>`;
 
-INIT.signup=p=>{S.draft={mode:p.t,method:'Email',email:'',password:'',phone:'',terms:p.t==='signin'};};
+INIT.signup=p=>{S.draft={mode:p.t,method:'Email',email:'',password:'',phone:'',terms:p.t==='signin',age:p.t==='signin'};};
 SC.signup=t=>{const d=S.draft,si=t.t==='signin';
   return `${tb('')}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:16px">
   <div><h1 class="hd" style="font-size:32px;margin:0 0 6px">${si?'Welcome back':'Create your account'}</h1><p class="muted" style="margin:0;line-height:1.5">${si?'Sign in to pick up where you left off.':'You don’t need your call-up letter yet. Add NYSC details whenever you have them.'}</p></div>
   ${seg(['Email','Phone'],d.method,'setDraft','data-k="method"')}
   ${d.method==='Email'?fld('email','Email address',{type:'email',ph:'you@example.com',attrs:'autocomplete="email"'})+fld('password','Password',{type:'password',ph:'At least 8 characters',attrs:'autocomplete="'+(si?'current':'new')+'-password"'})
    :fld('phone','Phone number',{type:'tel',prefix:'+234',prefixW:62,ph:'803 000 0000',attrs:'inputmode="tel" autocomplete="tel"',hint:'We’ll text you a one-time code.'})}
-  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:var(--accent-text);padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+`<div class="hint" style="padding-left:34px">Read the <button data-a="go" data-s="legal" data-t="terms" style="color:var(--accent-text);font-weight:700;min-height:28px">Terms</button> and <button data-a="go" data-s="legal" data-t="privacy" style="color:var(--accent-text);font-weight:700;min-height:28px">Privacy Notice</button></div>`+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')}
+  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:var(--accent-text);padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+`<div class="hint" style="padding-left:34px">Read the <button data-a="go" data-s="legal" data-t="terms" style="color:var(--accent-text);font-weight:700;min-height:28px">Terms</button> and <button data-a="go" data-s="legal" data-t="privacy" style="color:var(--accent-text);font-weight:700;min-height:28px">Privacy Notice</button></div>`+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')+checkbox(d.age,'age','I am 18 years or older.')+(S.errors.age?`<span class="err">${S.errors.age}</span>`:'')}
   <button class="btn lime block" data-a="signupNext">${si?'Sign in':'Continue'}</button>
   <div class="row" style="gap:12px;color:var(--muted);font-size:13px"><span style="flex:1;height:1px;background:var(--line)"></span>or<span style="flex:1;height:1px;background:var(--line)"></span></div>
   <button class="btn outline block" data-a="google"><span class="av" style="width:22px;height:22px;border-radius:11px;background:var(--inv-bg);color:var(--inv-fg);font-size:13px">G</span>Continue with Google</button>
@@ -960,7 +1019,7 @@ SC.suggest=()=>{const off=['batch-b-26','kano-camp','kano-cms'].map(i=>COMM[i]);
 function hiddenAuthor(id){return id&&id!=='me'&&(S.blocked.has(id)||S.muted.has(id));}
 function refObj(r){return r.k==='post'?POSTS[r.id]:r.k==='listing'?LISTINGS[r.id]:EVENTS[r.id];}
 function refAuthor(r){const o=refObj(r);return r.k==='post'?o.author:r.k==='listing'?o.owner:o.organiser;}
-function refOk(r){const o=refObj(r);if(!o||o.deleted)return false;const a=refAuthor(r);if(hiddenAuthor(a))return false;
+function refOk(r){if(S.notInt&&S.notInt.has(r.k+':'+r.id))return false;const o=refObj(r);if(!o||o.deleted)return false;const a=refAuthor(r);if(hiddenAuthor(a))return false;
   if(r.k==='post'){if(o.community&&S.mutedComms.has(o.community)&&o.type!=='announcement')return false;if(o.type==='announcement'&&!COMM[o.community].joined)return false;}
   return true;}
 function homeItems(){
@@ -992,7 +1051,7 @@ SC.home=()=>{
     <button class="ib" data-a="tab" data-t="explore" aria-label="Search">${I('search')}</button>
     <button class="ib" data-a="go" data-s="notifications" aria-label="Notifications${unread?', unread':''}">${I('bell')}${unread?'<span class="dot"></span>':''}</button>
   </header>
-  ${verifBanner()}
+  ${verifBanner()}${installCard()}
   ${chips(['For You','My Batch','My State','Following'],S.homeFilter,'homeFilter')}
   ${S.homeFilter==='For You'&&me.status==='In camp'?campToday():''}
   <div class="pad stack">${S.settings.offline?offlineHtml():items.length?items.map(feedItem).join(''):emp}</div>
@@ -1001,7 +1060,7 @@ SC.home=()=>{
 };
 
 // ===== Post detail =====
-SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return `${tb('Post')}${empty('This post is no longer available','It may have been removed.')}`;
+SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return unavailable('post');
   const cs=p.comments||[];
   return `${tb(p.type==='poll'?'Poll':p.type==='question'?'Question':p.type==='discussion'?'Discussion':'Post')}
   <div class="scroll" style="padding-bottom:96px"><div class="pad">${postCard(p,true)}
@@ -1010,11 +1069,11 @@ SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return `${tb('Post')}${empty('T
   ${cs.length?cs.map((c,i)=>{const u=user(c.u);return `<div class="row" style="align-items:flex-start;gap:10px;padding:12px 0 0">
     <button data-a="openUser" data-id="${c.u}" aria-label="${esc(u.name)}">${av(u,36)}</button>
     <div style="flex:1;min-width:0"><div style="background:var(--surface);border-radius:4px 18px 18px 18px;padding:10px 12px"><div style="font-weight:600;font-size:13px;display:flex;gap:4px;align-items:center">${esc(u.name)}${vb(u,13)}</div><div style="font-size:14px;line-height:1.45;margin-top:2px;word-wrap:break-word">${esc(c.t)}</div></div>
-    <div class="row" style="gap:16px;font-size:12px;color:var(--muted);padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'var(--orange-text)':'var(--muted)'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}</div></div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
+    <div class="row" style="gap:16px;font-size:12px;color:var(--muted);padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'var(--orange-text)':'var(--muted)'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}<button data-a="replyTo" data-i="${i}" style="font-weight:700;min-height:32px">Reply</button></div>${repList(p,i,c).map(([r,j])=>{const ru=user(r.u);return `<div class="row" style="align-items:flex-start;gap:8px;padding:8px 0 0"><button data-a="openUser" data-id="${r.u}" aria-label="${esc(ru.name)}">${av(ru,28)}</button><div style="flex:1;min-width:0"><div style="background:var(--raised);border-radius:4px 16px 16px 16px;padding:8px 10px"><div style="font-weight:600;font-size:12.5px;display:flex;gap:4px;align-items:center">${esc(ru.name)}${vb(ru,12)}</div><div style="font-size:13.5px;line-height:1.4;margin-top:2px;word-wrap:break-word">${rich(r.t)}</div></div><div class="row" style="gap:14px;font-size:12px;color:var(--muted);padding:2px 4px 0"><span>${r.time}</span><button data-a="likeReply" data-id="${p.id}" data-i="${i}" data-j="${j}" aria-pressed="${!!r.liked}" style="font-weight:700;min-height:28px;color:${r.liked?'var(--accent-text)':'inherit'}">Like${r.likes?' · '+r.likes:''}</button>${r.u==='me'?`<button data-a="delReply" data-id="${p.id}" data-i="${i}" data-j="${j}" style="font-weight:700;min-height:28px">Delete</button>`:''}</div></div></div>`;}).join('')}${repMore(p,i,c)}</div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
   ${p.cc>cs.length&&cs.length?`<div class="hint" style="padding:14px 4px">Showing the most recent comments.</div>`:''}`}
   </div></div>
-  ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="Add a comment…" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
-INIT.post=()=>{S.draft={comment:''};};
+  ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${S.draft.replyTo!=null&&cs[S.draft.replyTo]?`<div class="row" style="position:absolute;left:16px;right:16px;bottom:74px;background:var(--raised);border-radius:12px;padding:6px 10px;font-size:12.5px;justify-content:space-between"><span>Replying to <b>${esc(user(cs[S.draft.replyTo].u).name)}</b></span><button data-a="cancelReply" style="font-weight:700;color:var(--muted)">Cancel</button></div>`:''}${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="${S.draft.replyTo!=null?'Write a reply…':'Add a comment…'}" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
+INIT.post=()=>{S.draft={comment:'',replyTo:null};};
 
 // ===== Community =====
 SC.community=()=>{
@@ -1191,7 +1250,7 @@ function searchResults(q){
 }
 
 // ===== Listing detail =====
-SC.listing=t=>{const l=LISTINGS[t.id];if(!l||l.deleted)return `${tb('Listing')}${empty('Listing removed','')}`;
+SC.listing=t=>{const l=LISTINGS[t.id];if(!l||l.deleted)return unavailable('listing');
   const o=user(l.owner),mine=l.owner==='me',acc=l.kind==='accommodation',job=l.kind==='job';
   const n=l.photos&&l.photos.length?l.photos.length:3;
   const idx=S.photoIdx?.[l.id]||0;
@@ -1231,7 +1290,7 @@ SC.listing=t=>{const l=LISTINGS[t.id];if(!l||l.deleted)return `${tb('Listing')}$
   </div>`;};
 
 // ===== Event detail =====
-SC.event=t=>{const e=EVENTS[t.id];if(!e||e.deleted)return `${tb('Event')}${empty('Event removed','')}`;
+SC.event=t=>{const e=EVENTS[t.id];if(!e||e.deleted)return unavailable('event');
   const o=user(e.organiser),mine=e.organiser==='me',off=e.status!=='Upcoming';
   const r=(v,ic,l)=>`<button class="btn ${e.rsvp===v?'lime':'dark'}" style="flex:1" data-a="rsvp" data-id="${e.id}" data-v="${v}" aria-pressed="${e.rsvp===v}" ${off?'disabled':''}>${I(ic,18,e.rsvp===v&&v==='interested'?'style="fill:currentColor"':'')}${l}</button>`;
   return `<div class="scroll" style="padding-bottom:40px">
@@ -1328,13 +1387,40 @@ SC.followList=t=>{const id=t.id,own=id==='me',u=user(id),tab=S.followTab;
   ${total>list.length&&list.length?`<div class="hint" style="text-align:center;padding:8px">+ ${(total-list.length).toLocaleString()} more</div>`:''}</div></div>`;};
 
 // ===== Notifications =====
+// Grouped notifications: one row per (kind, target). A new like on the same post updates the row instead of adding another.
+const NKIND={like:'liked',repost:'reposted',follow:'started following you',comment:'commented on'};
+function ntext(n){
+  if(!n.kind) return n.text;
+  const nm=n.actors.slice(0,2).map(a=>'<b>'+esc(user(a).name)+'</b>');
+  const rest=n.total-nm.length;
+  const who=nm.length===0?'':nm.length===1?(rest>0?nm[0]+' and '+rest+(rest===1?' other':' others'):nm[0]):(rest>0?nm.join(', ')+' and '+rest+(rest===1?' other':' others'):nm.join(' and '));
+  const target={like:'your post',repost:'your post',comment:'your post'}[n.kind];
+  const c=COMM[n.key];
+  if(n.kind==='follow') return who+' started following you';
+  if(n.kind==='jobs') return '<b>'+n.total+' new '+(n.total===1?'job':'jobs')+'</b> in <b>'+esc(c?c.name:'a community')+'</b>';
+  if(n.kind==='items') return '<b>'+n.total+' new '+(n.total===1?'item':'items')+'</b> in <b>'+esc(c?c.name:'a community')+'</b>';
+  const p=POSTS[n.key];const noun=p&&p.media&&p.media.length?'photo':'post';
+  return who+' '+NKIND[n.kind]+' your '+noun;
+}
+function notify(kind,key,actor,go){
+  let n=NOTIF.find(x=>x.kind===kind&&x.key===key);
+  if(n){n.actors=[actor,...n.actors.filter(a=>a!==actor)].slice(0,5);n.total++;n.read=false;n.time='now';NOTIF.splice(NOTIF.indexOf(n),1);NOTIF.unshift(n);}
+  else{n={id:uid('g'),cat:kind==='jobs'||kind==='items'?'community':'social',kind,key,actors:actor?[actor]:[],total:1,time:'now',read:false,go:go||['post',key]};NOTIF.unshift(n);}
+  return n;
+}
+function nstack(n){
+  const a=n.actors.slice(0,3);
+  if(a.length===1) return av(user(a[0]),42);
+  if(!a.length) return `<span class="ico" style="width:42px;height:42px;border-radius:14px;background:var(--line);color:var(--text)">${I(n.kind==='jobs'?'bag':'users',18)}</span>`;
+  return `<span style="position:relative;width:42px;height:42px;flex:none;display:block">${a.map((x,i)=>`<span style="position:absolute;${['left:0;top:0','left:16px;top:10px','left:6px;top:20px'][i]};border:2px solid var(--surface);border-radius:50%;display:flex">${av(user(x),24)}</span>`).join('')}</span>`;
+}
 SC.notifications=()=>{const tab=S.notifTab;
   const list=NOTIF.filter(n=>tab==='All'||(tab==='Social'&&n.cat==='social')||(tab==='Communities'&&n.cat==='community'));
   return `${tb('Notifications',{right:`<button class="btn sm dark" data-a="readAll">Mark all read</button>`})}<div class="scroll nonav">
   ${chips(['All','Social','Communities'],tab,'notifTab')}
   <div class="pad stack">${list.length?`<div class="list">${list.map(n=>`<button class="li" data-a="openNotif" data-id="${n.id}" style="${n.read?'':'background:var(--unread)'}">
-    ${n.u?av(user(n.u),42):`<span class="ico" style="width:42px;height:42px;border-radius:14px;background:${n.cat==='service'?'#FF8A3D':'var(--line)'};color:${n.cat==='service'?'var(--ink)':'var(--text)'}">${I(n.cat==='service'?'megaphone':'users',18)}</span>`}
-    <span class="t"><span class="nt" style="color:var(--text);font-size:14px;line-height:1.4;margin:0">${n.cat==='service'?'<span class="tag oranges" style="padding:1px 6px;font-size:10px;margin-right:4px">Service</span>':''}${n.text}</span><span>${n.time}</span></span>
+    ${n.kind?nstack(n):n.u?av(user(n.u),42):`<span class="ico" style="width:42px;height:42px;border-radius:14px;background:${n.cat==='service'?'#FF8A3D':'var(--line)'};color:${n.cat==='service'?'var(--ink)':'var(--text)'}">${I(n.cat==='service'?'megaphone':'users',18)}</span>`}
+    <span class="t"><span class="nt" style="color:var(--text);font-size:14px;line-height:1.4;margin:0">${n.cat==='service'?'<span class="tag oranges" style="padding:1px 6px;font-size:10px;margin-right:4px">Service</span>':''}${ntext(n)}</span><span>${n.time}</span></span>
     ${n.read?'':'<span style="width:10px;height:10px;border-radius:5px;background:#C8F169;flex:none"><span class="vh">Unread</span></span>'}</button>`).join('')}</div>`:empty('You’re all caught up','')}
   <button class="btn dark block" data-a="go" data-s="notifSettings">${I('gear',18)}Notification settings</button></div></div>`;};
 
@@ -1351,6 +1437,7 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
   <div class="sec">Preferences</div><div class="list">
     ${li({icon:'eye',title:'Privacy & visibility',sub:'Who sees your service details',a:'go',data:'data-s="privacy"',right:chev})}
     ${li({icon:'bell',title:'Notifications',sub:S.settings.push?'Push on'+(S.settings.quiet?' · quiet hours set':''):'Push off',a:'go',data:'data-s="notifSettings"',right:chev})}
+    ${showInstall()?li({icon:'download',title:'Install the app',sub:'Add to your home screen',a:'installApp',right:chev}):''}
     ${li({icon:'moon',title:'Appearance',sub:'Theme: '+CCTheme.label()+(CCTheme.get()==='system'?' (follows your device)':''),a:'appearance',right:chev})}
     ${li({icon:'wifi',title:'Data & media',sub:S.settings.dataSaver?'Data saver on':'Data saver off',a:'go',data:'data-s="dataSettings"',right:chev})}</div>
   <div class="sec">Safety</div><div class="list">
@@ -1385,6 +1472,7 @@ SC.account=()=>`${tb('Account & security')}<div class="scroll nonav"><div class=
   <div class="sec">Change password</div>${fld('cur','Current password',{type:'password'})}${fld('np','New password',{type:'password',hint:'At least 8 characters.'})}${fld('np2','Confirm new password',{type:'password'})}
   <button class="btn dark block" data-a="changePassword">Update password</button>
   <div class="sec">Sign-in methods</div><div class="list">${li({icon:'mail',title:'Email and password',sub:esc(S.me.email),right:'<span class="tag lime">On</span>'})}<div class="li"><span class="ico"><span style="font-weight:700">G</span></span><span class="t"><b>Google</b><span>${S.settings.google?'Connected':'Not connected'}</span></span>${sw(S.settings.google,'google','Google sign-in')}</div></div>
+  <div class="sec">Devices</div><div class="list">${li({icon:'phone',title:'Signed-in devices',sub:S.devices.length+(S.devices.length===1?' device':' devices'),a:'go',data:'data-s="sessions"',right:chev})}</div>
   <div class="hint">Security emails (new sign-ins, password changes) are always sent.</div></div></div>`;
 
 SC.verification=()=>{const v=S.verif;
@@ -1478,7 +1566,7 @@ SH.postMenu=s=>{const p=POSTS[s.id],mine=p.author==='me',u=p.author?user(p.autho
   return `<div class="list">${li({icon:'bookmark',title:p.saved?'Remove from saved':'Save post',a:'save',data:`data-id="${p.id}"`})}${li({icon:'link',title:'Copy link',a:'copyLink'})}
   ${mine&&p.type!=='poll'?li({icon:'edit',title:'Edit post',a:'editPost',data:`data-id="${p.id}"`}):''}
   ${mine?li({icon:'trash',title:'Delete post',danger:true,a:'deletePostAsk',data:`data-id="${p.id}"`})
-  :`${li({icon:'user',title:(f?'Unfollow ':'Follow ')+esc(first(u)),a:'follow',data:`data-id="${u.id}"`})}${li({icon:'mute',title:'Mute '+esc(first(u)),sub:'Hide their posts. They won’t be told.',a:'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block '+esc(first(u)),sub:'You won’t be able to interact',a:'blockAsk',data:`data-id="${u.id}"`})}${p.community&&isMod(COMM[p.community])?li({icon:'pin',title:'Pin to community',sub:'Moderator action',a:'modPin',data:`data-id="${p.id}"`})+li({icon:'trash',title:'Remove as moderator',danger:true,a:'modRemove',data:`data-id="${p.id}"`}):''}${li({icon:'flag',title:'Report post',danger:true,a:'report',data:`data-kind="post" data-id="${p.id}"`})}`}</div>`;};
+  :`${li({icon:'eye',title:'Not interested',sub:'Show fewer posts like this',a:'notInterested',data:`data-id="${p.id}"`})}${li({icon:'user',title:(f?'Unfollow ':'Follow ')+esc(first(u)),a:'follow',data:`data-id="${u.id}"`})}${li({icon:'mute',title:'Mute '+esc(first(u)),sub:'Hide their posts. They won’t be told.',a:'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block '+esc(first(u)),sub:'You won’t be able to interact',a:'blockAsk',data:`data-id="${u.id}"`})}${p.community&&isMod(COMM[p.community])?li({icon:'pin',title:'Pin to community',sub:'Moderator action',a:'modPin',data:`data-id="${p.id}"`})+li({icon:'trash',title:'Remove as moderator',danger:true,a:'modRemove',data:`data-id="${p.id}"`}):''}${li({icon:'flag',title:'Report post',danger:true,a:'report',data:`data-kind="post" data-id="${p.id}"`})}`}</div>`;};
 SH.userMenu=s=>{const u=USERS[s.id];
   return `<div class="row" style="gap:12px;margin-bottom:14px">${av(u,44)}<b class="hd" style="font-size:18px">${esc(u.name)}</b></div><div class="list">${li({icon:'share',title:'Share profile',a:'share',data:`data-kind="profile" data-id="${u.id}"`})}${li({icon:'mute',title:S.muted.has(u.id)?'Unmute':'Mute',sub:'They won’t be told',a:S.muted.has(u.id)?'unmute':'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block',a:'blockAsk',data:`data-id="${u.id}"`})}${li({icon:'flag',title:'Report account',danger:true,a:'report',data:`data-kind="user" data-id="${u.id}"`})}</div>`;};
 SH.commMenu=s=>{const c=COMM[s.id],m=S.mutedComms.has(c.id);
@@ -1546,6 +1634,7 @@ const A={
     if(S.draft.method==='Email'){ok=need('email','Enter a valid email address.',x=>EMAIL.test(x))&&ok;ok=need('password',si?'Enter your password.':'Use at least 8 characters.',x=>si?x.length>0:x.length>=8)&&ok;}
     else ok=need('phone','Enter a valid Nigerian mobile number.',x=>NGPHONE.test(x.replace(/\s/g,'')))&&ok;
     if(!si&&!S.draft.terms){S.errors.terms='Please accept the terms to continue.';ok=false;}
+    if(!si&&!S.draft.age){S.errors.age='You must be 18 or older to use Corpers Connect.';ok=false;}
     if(!ok)return render();
     if(S.draft.method==='Email')S.me.email=v('email');else S.me.phone=v('phone');
     go('otp');},
@@ -1746,11 +1835,12 @@ S.modDone=new Set();S.removedMembers=new Set();S.recent=['Lagos rent','junior de
 S.settings.offline=false;
 COMM['b-football'].joined=true;COMM['b-football'].mods.push('me');
 ['p2','p6','p11','p12','p20','p40','p50','p58'].forEach((id,i)=>{if(POSTS[id])POSTS[id].text+=[' #CampLife',' #CampLife @amaka.ok',' #SwearingIn',' #CampLife',' #CorperHustle',' #PPAStories',' #JobAlert',' #CampFood'][i];});
+S.myPosts.unshift('pm1');
 NOTIF.unshift({id:'n18',cat:'service',text:'<b>Moderation:</b> your post in Kano Orientation Camp was removed. You can appeal.',time:'3h',read:false,go:['modNotice','mn1']});
 
 const isMod=c=>c.admin==='me'||(c.mods||[]).includes('me');
 const MOD_REASONS=['Spam','Harassment or bullying','Off-topic','Scam or fraud','Misinformation'];
-const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span style="color:var(--accent-text);font-weight:600">$2</span>');
+const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span data-a="tagTap" data-v="$2" role="link" tabindex="0" style="color:var(--accent-text);font-weight:600;cursor:pointer">$2</span>');
 const offlineHtml=()=>`<div class="pad">${empty('You’re offline','Check your connection. Saved posts and listings are still available in Profile.',`<button class="btn sm lime" data-a="retry">Try again</button>`)}</div>`;
 
 // ---- Moderator panel
@@ -1764,7 +1854,7 @@ function modPanel(c){
   ${open.length?open.map((p,i)=>{const u=user(p.author);return `<div class="card stack" style="gap:8px"><div class="row" style="gap:8px">${av(u,32)}<span style="flex:1;min-width:0;font-size:14px;font-weight:600">${esc(u.name)}</span><span class="tag oranges">${MOD_REASONS[(i+p.id.length)%MOD_REASONS.length]}</span></div><div style="font-size:14px;line-height:1.4;color:var(--soft)">${esc((p.title||p.text).slice(0,140))}</div><div class="hint">Reported by ${2+i} members</div><div class="row" style="gap:6px"><button class="btn sm danger" style="flex:1" data-a="modRemove" data-id="${p.id}">Remove</button><button class="btn sm dark" style="flex:1" data-a="modDismiss" data-id="${p.id}">Keep</button><button class="btn sm dark" data-a="modEscalate" data-id="${p.id}">Escalate</button></div></div>`;}).join(''):empty('No open reports','You’re all caught up.')}
   <div class="sec">Members</div>
   <div class="list">${mem.map(id=>{const u=USERS[id];return `<div class="li">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></span><button class="btn sm dark" data-a="modKick" data-id="${c.id}" data-u="${id}">Remove</button></div>`;}).join('')}</div>
-  <div class="hint">Tip: use a post’s ••• menu to pin it or remove it.</div>`;
+  <div class="hint">Tip: use a post’s ••• menu to pin it or remove it.</div>${modExtras(c)}`;
 }
 A.modRemove=d=>{const p=POSTS[d.id];p.deleted=true;S.modDone.add(p.community+':'+d.id);S.sheet=null;render();toast('Post removed. The author is told why and can appeal.');};
 A.modDismiss=d=>{const p=POSTS[d.id];S.modDone.add(p.community+':'+d.id);render();toast('Report dismissed');};
@@ -1898,6 +1988,109 @@ window.addEventListener('cc-theme',()=>{try{renderRail();}catch(e){}});
 A.navExplore=d=>{S.exploreTab=d.v;S.q='';tabTo('explore');};
 A.navSaved=()=>{S.profileTab='Saved';tabTo('profile');};
 A.railQ=d=>{S.q=d.v;S.exploreTab='Trending';tabTo('explore');};
+
+// ===== Gap fills: sessions, not-available page, replies, join requests and invites, camp schedule, install prompt =====
+S.devices=[
+  {id:'d1',name:'This device',detail:'Chrome · Android · Kano',last:'Active now',current:true},
+  {id:'d2',name:'iPhone 13',detail:'Safari · Lagos',last:'2 days ago'},
+  {id:'d3',name:'Windows laptop',detail:'Edge · Kano',last:'5 days ago'},
+  {id:'d4',name:'Samsung Galaxy A14',detail:'Samsung Internet · Abuja',last:'3 weeks ago'}
+];
+
+// ---- "Not available" page
+function unavailable(kind){return `${tb('')}<div class="scroll nonav"><div class="pad" style="padding-top:36px"><div class="card" style="text-align:center;padding:30px 22px">
+  <span class="av" style="width:72px;height:72px;border-radius:24px;background:var(--raised);color:var(--muted);margin:0 auto">${I('info',32)}</span>
+  <h1 class="hd" style="font-size:26px;margin:16px 0 8px">This isn’t available anymore</h1>
+  <p class="muted" style="margin:0 0 20px;line-height:1.5">The ${kind} may have been removed or hidden, or the link may be wrong.</p>
+  <div class="stack" style="gap:10px;max-width:320px;margin:0 auto"><button class="btn lime block" data-a="tab" data-t="home">Go to Home</button><button class="btn dark block" data-a="back">Go back</button><button class="btn block" style="color:var(--muted)" data-a="go" data-s="contact">Report a problem</button></div></div></div></div>`;}
+SC.unavailable=()=>unavailable('page');
+
+// ---- Signed-in devices
+SC.sessions=()=>`${tb('Signed-in devices')}<div class="scroll nonav"><div class="pad stack">
+  <p class="hint" style="margin:0 4px">These devices are signed in to your account. Sign out of any you don’t recognise, then change your password.</p>
+  <div class="list">${S.devices.map(d=>`<div class="li"><span class="ico">${I('phone',18)}</span><span class="t"><b>${esc(d.name)}${d.current?' <span class="tag lime" style="margin-left:4px">This device</span>':''}</b><span>${esc(d.detail)} · ${d.last}</span></span>${d.current?'':`<button class="btn sm dark" data-a="revokeDevice" data-id="${d.id}">Sign out</button>`}</div>`).join('')}</div>
+  ${S.devices.length>1?`<button class="btn danger block" data-a="revokeAllAsk">${I('logout',18)}Sign out of all other devices</button>`:`<div class="empty" style="padding:20px">You’re signed in on this device only.</div>`}
+  <div class="hint" style="margin:0 4px">You’ll get an email whenever a new device signs in.</div></div></div>`;
+A.revokeDevice=d=>{const x=S.devices.find(y=>y.id===d.id);confirmSheet({title:'Sign out '+esc(x.name)+'?',body:'That device will be signed out right away. Anyone using it will need to sign in again.',cta:'Sign out',act:'revokeDeviceYes',id:d.id,danger:true});};
+A.revokeDeviceYes=d=>{S.devices=S.devices.filter(y=>y.id!==d.id);S.sheet=null;render();toast('Device signed out');};
+A.revokeAllAsk=()=>confirmSheet({title:'Sign out of all other devices?',body:'Every device except this one is signed out. You stay signed in here.',cta:'Sign out everywhere else',act:'revokeAllYes',danger:true});
+A.revokeAllYes=()=>{S.devices=S.devices.filter(y=>y.current);S.sheet=null;render();toast('Signed out of all other devices');};
+
+// ---- Comment replies (one level). Collapsed view shows the most popular reply, then a "View N more replies" link.
+S.openRep=S.openRep||new Set();
+function repList(p,i,c){const rs=(c.replies||[]).map((r,j)=>[r,j]);if(S.openRep.has(p.id+':'+i)||rs.length<=1)return rs;
+  let b=0;rs.forEach((x,k)=>{if((x[0].likes||0)>(rs[b][0].likes||0))b=k;});return [rs[b]];}
+function repMore(p,i,c){const n=(c.replies||[]).length;if(n<=1)return '';const k=p.id+':'+i,open=S.openRep.has(k);
+  return `<button data-a="toggleReplies" data-id="${p.id}" data-i="${i}" aria-expanded="${open}" style="display:flex;align-items:center;gap:8px;margin:6px 0 0 36px;font-size:12.5px;font-weight:700;color:var(--muted);min-height:32px"><span style="width:22px;height:1.5px;background:var(--line)"></span>${open?'Hide replies':'View '+(n-1)+' more '+(n-1===1?'reply':'replies')}</button>`;}
+A.toggleReplies=d=>{const k=d.id+':'+d.i;S.openRep.has(k)?S.openRep.delete(k):S.openRep.add(k);render();};
+A.replyTo=d=>{S.draft.replyTo=+d.i;S.focus='f-comment';render();};
+A.cancelReply=()=>{S.draft.replyTo=null;render();};
+A.delReply=d=>{const c=POSTS[d.id].comments[+d.i];c.replies.splice(+d.j,1);POSTS[d.id].cc--;render();toast('Reply deleted');};
+A.addComment=d=>{const t=v('comment');if(!t)return toast('Write something first');const p=POSTS[d.id],ri=S.draft.replyTo;
+  if(ri!=null&&p.comments[ri]){const c=p.comments[ri];(c.replies=c.replies||[]).push({u:'me',t,time:'now',likes:0});S.openRep.add(p.id+':'+ri);}
+  else p.comments.push({u:'me',t,time:'now',likes:0});
+  p.cc++;S.draft.comment='';S.draft.replyTo=null;render();scrollBottom();};
+POSTS.p2.comments[0].replies=[{u:'amaka',t:'Hold the cup tight, Platoon 7!',time:'45m',likes:2},{u:'emeka',t:'Rematch at the parade ground?',time:'40m',likes:1}];
+POSTS.p2.cc+=2;
+
+// ---- Join requests, invite links and camp schedule submissions (moderator tools)
+COMM['b-football'].join='request';
+COMM['b-football'].requests=['funke','halima','yusuf','samuel'];
+COMM['b-football'].invites=[{code:'bfc-8x2k',uses:12,max:50,days:21}];
+COMM['kano-camp'].mods.push('me');
+COMM['kano-camp'].camp=true;
+COMM['kano-camp'].invites=[{code:'kano-camp-p7',uses:48,max:200,days:10}];
+COMM['kano-camp'].requests=[];
+const CAMP_PENDING=[{time:'6:30 PM',title:'Cultural night rehearsal',where:'Hall B',status:'Waiting for approval'}];
+function modExtras(c){
+  const reqs=c.requests||[],inv=c.invites=c.invites||[];
+  let h='';
+  if(c.join==='request'||reqs.length){
+    h+=`<div class="sec">Join requests · ${reqs.length}</div>`+(reqs.length?`<div class="list">${reqs.map(id=>{const u=USERS[id];return `<div class="li">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)} · ${shortBatch(u.batch)} · ${esc(u.state)}</span></span><button class="btn sm lime" data-a="reqApprove" data-c="${c.id}" data-u="${id}">Approve</button><button class="btn sm dark" style="margin-left:6px" data-a="reqDecline" data-c="${c.id}" data-u="${id}">Decline</button></div>`;}).join('')}</div>`:empty('No pending requests','New requests show up here.'));
+  }
+  h+=`<div class="sec">Invite links</div>`+(inv.length?`<div class="list">${inv.map((x,i)=>`<div class="li"><span class="ico">${I('link',18)}</span><span class="t"><b>corpersconnect.com/join/${x.code}</b><span>${x.uses} joined${x.max?' of '+x.max:''} · expires in ${x.days} days</span></span><button class="btn sm dark" data-a="copyText" data-v="https://corpersconnect.com/join/${x.code}">Copy</button><button class="btn sm danger" style="margin-left:6px" data-a="revokeInvite" data-c="${c.id}" data-i="${i}">Revoke</button></div>`).join('')}</div>`:'<div class="hint">No active links.</div>')+`<button class="btn dark sm" style="margin-top:8px" data-a="newInvite" data-c="${c.id}">${I('plus',14)}Create invite link</button>`;
+  if(c.camp){
+    h+=`<div class="sec">Camp schedule · today</div><div class="list">${CAMP_TODAY.map(([t,n])=>`<div class="li"><span class="t"><b>${esc(n)}</b><span>${t} · published</span></span><span class="tag lime">Live</span></div>`).join('')}${CAMP_PENDING.map((x,i)=>`<div class="li"><span class="t"><b>${esc(x.title)}</b><span>${x.time} · ${esc(x.where)}</span></span><span class="tag or">${x.status}</span><button class="btn sm dark" style="margin-left:6px" data-a="withdrawSched" data-i="${i}">Withdraw</button></div>`).join('')}</div>
+    <button class="btn dark sm" style="margin-top:8px" data-a="addSchedule">${I('plus',14)}Add schedule item</button><div class="hint" style="margin-top:6px">An admin approves new items before members in camp see them.</div>`;
+  }
+  return h;
+}
+A.reqApprove=d=>{const c=COMM[d.c];c.requests=c.requests.filter(x=>x!==d.u);c.members++;render();toast(first(USERS[d.u])+' joined '+c.name);};
+A.reqDecline=d=>{const c=COMM[d.c];c.requests=c.requests.filter(x=>x!==d.u);render();toast('Request declined. '+first(USERS[d.u])+' is told.');};
+A.newInvite=d=>{const c=COMM[d.c];const code=(c.id.split('-').map(w=>w[0]).join('')+'-'+Math.random().toString(36).slice(2,6));(c.invites=c.invites||[]).unshift({code,uses:0,max:50,days:30});render();toast('Invite link created');};
+A.revokeInvite=d=>{COMM[d.c].invites.splice(+d.i,1);render();toast('Invite link revoked');};
+A.withdrawSched=d=>{CAMP_PENDING.splice(+d.i,1);render();toast('Withdrawn');};
+A.addSchedule=()=>{S.draft.stime='10:00';S.draft.stitle='';S.draft.swhere='';sheet({type:'campItem'});};
+SH.campItem=()=>`<h2>Add a schedule item</h2><p class="hint" style="margin:0 0 12px">Shown to members in camp once an admin approves it.</p><div class="stack">${fld('stime','Time',{type:'time'})}${fld('stitle','What’s happening?',{ph:'e.g. Parade rehearsal',attrs:'maxlength="60"'})}${fld('swhere','Where',{ph:'e.g. Parade ground',opt:true})}</div><button class="btn lime block" style="margin-top:14px" data-a="submitSchedule">Send for approval</button>`;
+A.submitSchedule=()=>{S.errors={};if(!need('stitle','Add a title.',x=>x.length>=3))return render();CAMP_PENDING.push({time:fmtTime(v('stime')),title:v('stitle'),where:v('swhere')||'Camp',status:'Waiting for approval'});closeSheet();toast('Sent to the platform team for approval');};
+
+// ---- Install prompt (PWA)
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;try{render();}catch(_){}});
+window.addEventListener('appinstalled',()=>{deferredInstall=null;try{localStorage.setItem('cc-installed','1');}catch(_){}try{render();}catch(_){}});
+const isStandalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+const lsGet=k=>{try{return localStorage.getItem(k);}catch(_){return null;}};
+const showInstall=()=>!isStandalone()&&!lsGet('cc-install-hide')&&!lsGet('cc-installed');
+function installCard(){if(!showInstall())return '';
+  return `<div style="padding:0 12px 10px"><div class="card row" style="gap:12px;border:1px solid var(--accent-border);background:transparent;padding:12px 14px"><span class="ico" style="width:42px;height:42px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none">${I('download',20)}</span><span style="flex:1;min-width:0"><b style="display:block;font-size:14px">Add Corpers Connect to your home screen</b><span class="hint">Opens like an app and uses less data.</span></span><button class="btn sm lime" data-a="installApp">Install</button><button class="ib" style="width:34px;height:34px;background:transparent;flex:none" data-a="hideInstall" aria-label="Dismiss">${I('x',16)}</button></div></div>`;}
+A.installApp=async()=>{if(deferredInstall){deferredInstall.prompt();let r;try{r=await deferredInstall.userChoice;}catch(_){}deferredInstall=null;if(r&&r.outcome==='accepted')toast('Installed. Open it from your home screen.');render();}else sheet({type:'install'});};
+A.hideInstall=()=>{try{localStorage.setItem('cc-install-hide','1');}catch(_){}render();};
+SH.install=()=>`<h2>Add to your home screen</h2><p class="hint" style="margin:0 0 12px">Corpers Connect installs like an app. No store needed.</p>
+  <div class="stack" style="gap:10px"><div class="card" style="background:var(--raised)"><b>iPhone (Safari)</b><ol style="margin:8px 0 0;padding-left:20px;color:var(--soft);font-size:14px;line-height:1.6"><li>Tap the Share button.</li><li>Choose “Add to Home Screen”.</li><li>Tap Add. Open it from your home screen to get notifications.</li></ol></div>
+  <div class="card" style="background:var(--raised)"><b>Android (Chrome)</b><ol style="margin:8px 0 0;padding-left:20px;color:var(--soft);font-size:14px;line-height:1.6"><li>Tap the ⋮ menu.</li><li>Choose “Install app” or “Add to Home screen”.</li><li>Confirm. It appears with your other apps.</li></ol></div>
+  <div class="card" style="background:var(--raised)"><b>Laptop (Chrome or Edge)</b><p style="margin:6px 0 0;color:var(--soft);font-size:14px">Click the install icon at the right of the address bar.</p></div></div>`;
+
+
+// ---- audit fills: tappable tags, reply likes, not interested, lightbox swipe
+S.notInt=new Set();
+A.tagTap=d=>{const t=d.v;if(t[0]==='#'){S.sheet=null;return A.railQ({v:t.slice(1)});}
+  const un=t.slice(1).toLowerCase();const u=S.me.username.toLowerCase()===un?S.me:Object.values(USERS).find(x=>x.username.toLowerCase()===un);
+  if(!u)return toast('No member with that username');if(u.id==='me')return tabTo('profile');A.openUser({id:u.id});};
+A.likeReply=d=>{const r=POSTS[d.id].comments[+d.i].replies[+d.j];r.liked=!r.liked;r.likes=(r.likes||0)+(r.liked?1:-1);render();};
+A.notInterested=d=>{S.notInt.add('post:'+d.id);S.sheet=null;if(topScreen().s==='post')back();else render();toast('Okay. You’ll see fewer posts like this.');};
+(function(){let x0=null;document.addEventListener('touchstart',e=>{x0=S.lb?e.touches[0].clientX:null;},{passive:true});
+document.addEventListener('touchend',e=>{if(x0==null||!S.lb||S.lb.list.length<2)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)A.lbStep({d:dx<0?1:-1});},{passive:true});
+document.addEventListener('keydown',e=>{if(!S.lb||S.lb.list.length<2)return;if(e.key==='ArrowRight')A.lbStep({d:1});if(e.key==='ArrowLeft')A.lbStep({d:-1});});})();
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el||!app().contains(el))return;

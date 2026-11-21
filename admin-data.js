@@ -277,3 +277,10 @@ const AUDIT=[
  ['4 days ago','System','SYSTEM','ID_IMAGES_DELETED','12 images','Retention job (7 days)'],
  ['4 days ago','Emeka Ola','ADMIN','AUDIT_EXPORTED','Last 30 days','Quarterly review']
 ].map(([when,actor,type,action,target,reason])=>({when,actor,type,action,target,reason}));
+
+// Schedule items submitted by camp moderators, waiting for staff approval
+const PENDING_SCHED=[
+ {id:'ps1',camp:'Kano Orientation Camp',by:'Chidi Okeke',time:'16:30',title:'Parade rehearsal',where:'Parade ground'},
+ {id:'ps2',camp:'Kano Orientation Camp',by:'Chidi Okeke',time:'19:00',title:'Mammy Market opens',where:'Market square'},
+ {id:'ps3',camp:'Lagos Orientation Camp',by:'Bolanle Adewale',time:'09:00',title:'SAED registration',where:'Hall A'}
+];
