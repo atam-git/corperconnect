@@ -18,12 +18,13 @@ a{color:#C8F169}
 #app{position:relative;width:100%;height:100vh;height:100dvh;background:#0F1211;overflow:hidden}
 /* Responsive: phone is the base layout. Tablet and desktop adapt the same screens. */
 #rail{display:none}
+.nav .lb{display:none}
 @media (min-width:640px){
+  #app{--col:640px;--shift:0px;--navw:56px;--rail:300px;background:#0A0D0C}
   #stage{padding:0;height:100%}
-  #app{background:#0A0D0C}
-  #app #view{inset:0;margin:0 auto;width:640px;background:#0F1211;border-left:1px solid #1c201f;border-right:1px solid #1c201f}
+  #app #view{inset:0 auto 0 calc(50% - var(--col)/2 - var(--shift));margin:0;width:var(--col);background:#0F1211;border-left:1px solid #1c201f;border-right:1px solid #1c201f}
   #app .scroll{padding-bottom:40px}
-  #app .nav{position:fixed;left:max(4px,calc(50% - 320px - 76px));right:auto;top:50%;bottom:auto;transform:translateY(-50%);width:56px;height:auto;flex-direction:column;gap:10px;padding:10px 0;border-radius:28px;justify-content:center}
+  #app .nav{position:fixed;left:max(4px,calc(50% - var(--col)/2 - var(--shift) - var(--navw) - 20px));right:auto;top:50%;bottom:auto;transform:translateY(-50%);width:var(--navw);height:auto;flex-direction:column;gap:10px;padding:10px 0;border-radius:28px;justify-content:center}
   #app .sheet-wrap{align-items:center;justify-content:center}
   #app .sheet{width:480px;max-width:calc(100% - 32px);max-height:86%;border-radius:28px;padding-top:18px}
   #app .grab{display:none}
@@ -31,12 +32,24 @@ a{color:#C8F169}
   #app .bottombar{padding-bottom:16px}
 }
 @media (min-width:1100px){
-  #app .nav{left:calc(50% - 320px - 84px);width:64px;padding:14px 0;gap:12px}
-  #rail{display:block;position:fixed;top:0;bottom:0;left:calc(50% + 320px + 24px);width:300px;padding:20px 0;overflow-y:auto;scrollbar-width:none}
+  #app{--col:700px;--rail:320px;--navw:200px;--shift:calc((var(--rail) + 24px - var(--navw) - 20px)/2)}
+  #app .nav{align-items:stretch;padding:12px;gap:6px;border-radius:30px}
+  #app .nav button{width:100%;height:50px;border-radius:25px;justify-content:flex-start;padding:0 16px;gap:14px}
+  #app .nav .lb{display:inline;font-weight:600;font-size:15px}
+  #app .nav button.create{justify-content:center;margin:6px 0}
+  #rail{display:block;position:fixed;top:0;bottom:0;left:calc(50% - var(--col)/2 - var(--shift) + var(--col) + 24px);width:var(--rail);padding:20px 0;overflow-y:auto;scrollbar-width:none}
   #rail::-webkit-scrollbar{display:none}
   #rail .card{margin-bottom:14px}
   #rail .rl{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 4px;min-height:44px;border-radius:12px}
   #rail .rl:hover{background:#232927}
+}
+@media (min-width:1500px){
+  #app{--col:760px;--rail:360px;--navw:220px}
+  #app .nav .lb{font-size:16px}
+}
+@media (min-width:1900px){
+  #app{--col:820px;--rail:400px;--navw:240px}
+  #app .scroll .pad{padding-left:18px;padding-right:18px}
 }
 #view{position:absolute;inset:0;display:flex;flex-direction:column}
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:110px;scrollbar-width:none}
@@ -607,8 +620,8 @@ function tb(title,{back=true,right='',close=false}={}){
   return `<div class="topbar">${back?`<button class="ib" data-a="back" aria-label="${close?'Close':'Back'}">${I(close?'x':'back')}</button>`:''}<h1>${title}</h1>${right}</div>`;
 }
 function nav(active){
-  const b=(t,ic,l)=>`<button class="${active===t?'on':''}" data-a="tab" data-t="${t}" aria-label="${l}" ${active===t?'aria-current="page"':''}>${I(ic,active===t?22:24)}</button>`;
-  return `<nav class="nav" aria-label="Main">${b('home','home','Home')}${b('community','users','Community')}<button class="create" data-a="create" aria-label="Create">${I('plus',24,'stroke-width="2.6"')}</button>${b('explore','compass','Explore')}${b('profile','user','Profile')}</nav>`;
+  const b=(t,ic,l)=>`<button class="${active===t?'on':''}" data-a="tab" data-t="${t}" aria-label="${l}" ${active===t?'aria-current="page"':''}>${I(ic,active===t?22:24)}<span class="lb">${l}</span></button>`;
+  return `<nav class="nav" aria-label="Main">${b('home','home','Home')}${b('community','users','Community')}<button class="create" data-a="create" aria-label="Create">${I('plus',24,'stroke-width="2.6"')}<span class="lb">Create</span></button>${b('explore','compass','Explore')}${b('profile','user','Profile')}</nav>`;
 }
 function empty(t,s,btn=''){return `<div class="empty"><b>${t}</b>${s}${btn?`<div style="margin-top:14px">${btn}</div>`:''}</div>`;}
 function seg(opts,cur,act,extra=''){return `<div class="seg" role="tablist">${opts.map(o=>`<button role="tab" aria-selected="${o===cur}" class="${o===cur?'on':''}" data-a="${act}" data-v="${esc(o)}" ${extra}>${esc(o)}</button>`).join('')}</div>`;}
@@ -797,7 +810,7 @@ SC.welcome=()=>`<div class="scroll nonav" style="display:flex;flex-direction:col
     <div style="position:absolute;right:0;bottom:28px">${av(USERS.zainab,60)}</div>
     <div style="position:absolute;left:44px;bottom:-6px;transform:rotate(-5deg);background:#FF8A3D;color:#0F1211;font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Platoon 3, we move!</div>
     <div style="position:absolute;right:30px;top:-4px;transform:rotate(4deg);background:#232927;font-weight:600;font-size:13px;padding:8px 12px;border-radius:14px">Self-contain · ₦180k/yr</div>
-    <div style="position:absolute;left:0;top:96px;transform:rotate(-3deg);background:#C8F169;color:#0F1211;font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Hiring: junior dev</div>
+    <div style="position:absolute;right:18px;bottom:-8px;transform:rotate(3deg);background:#C8F169;color:#0F1211;font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Hiring: junior dev</div>
   </div>
   <h1 class="hd" style="font-size:40px;line-height:1;margin:8px 0 12px;font-weight:700">Your service year, together.</h1>
   <p class="muted" style="font-size:16px;line-height:1.5;margin:0 0 22px">A social network and opportunity marketplace for corpers. Share camp photos and stories, find a roommate, sell what you don’t need, post or find a job, and keep the friendships after passing out.</p>
