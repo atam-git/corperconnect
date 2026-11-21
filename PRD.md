@@ -1344,6 +1344,10 @@ A separate web-based administration dashboard is required for internal platform 
 | Marketplace | Suspicious or reported listings |
 | Events | Reported events and administrative actions |
 | Analytics | Engagement, retention and usage trends |
+| Camp schedules | Daily camp schedule items shown on members' Home during camp |
+| Support | Contact-form tickets and replies |
+| Content | Terms, privacy, about, guidelines, safety and FAQ pages |
+| Roles and permissions | Admin accounts, custom roles and permission assignment (super admin) |
 
 ## 18.3 Verification management
 
@@ -1436,6 +1440,10 @@ The architecture should accommodate growth across:
 - Large public feeds.
 - High-volume media.
 - Member-created communities.
+
+## 20.3a Responsive layout
+
+Mobile is the primary experience, since most corps members will use a phone. The same screens adapt to tablet and desktop: phone has a bottom navigation and sheets, tablet adds a left rail and dialogs, desktop adds a right column with search, trending and people to follow. The admin dashboard is desktop first.
 
 ## 20.4 Accessibility and usability
 
@@ -1775,3 +1783,21 @@ The product should not be considered ready for a public launch until the followi
 ## End of PRD
 
 This document captures the current product direction and decisions from discovery. It is the baseline for the next deliverable: a screen-by-screen product specification covering layouts, states, interactions, permissions, validation, empty states and error handling.
+
+
+---
+
+## Appendix A. Decisions added after prototype review (21 November 2026)
+
+These refine the baseline above and are recorded in detail in the technical documents in `docs/`.
+
+1. **Two equal pillars.** The product is a social network and an opportunity marketplace (jobs, items, accommodation, events). Neither is secondary.
+2. **Sign-up is frictionless.** A new member gets the app immediately after account, profile and NYSC journey. No ID is needed to enter.
+3. **Verification is separate.** A member uploads a photo of the camp-issued NYSC ID card and the call-up number later. An admin reviews it by hand. The image is deleted 7 days after the decision. Moderator applications need the same ID.
+4. **Access by status.** Awaiting-deployment members can ask, comment, run polls and post ordinary content. Jobs, items, accommodation, events, creating communities and official communities need verification. Alumni keep full verified access once confirmed with a passing-out certificate.
+5. **Light scam protection.** Required fields, safety text, reports with priority, keyword check at publish, new-account listing limit, one-strike suspension, auto-hide at 3 reports. No business accounts at launch.
+6. **No feed quota at launch.** Observe the feed mix first and add a cap only if needed.
+7. **Admin roles and permissions.** Admins are a separate identity, invited, with MFA. A super admin can create roles and assign permissions. Default roles include a staff moderator focused on posts, communities, listings and reports. Admins can do everything a community moderator can, in any community, and can appoint and remove moderators.
+8. **Community moderators are live at launch,** alongside admins, approved by the platform team.
+9. **Responsive.** Mobile first, with tablet and desktop adaptations.
+10. **Hosting is decided after the app is built.**
