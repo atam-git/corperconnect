@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Corpers Connect — the home of the NYSC experience</title>
 <meta name="description" content="A social network and opportunity marketplace for NYSC corps members. Share camp life, find jobs, rooms, items and events, and keep the friendships after passing out.">
+<link rel="stylesheet" href="theme.css"><script src="theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="public.css">
@@ -31,9 +32,8 @@
       </div>
     </div>
     <div class="hero-art">
-      <div class="phone">
-        <div class="screen"><iframe src="index.html" title="Corpers Connect app preview" loading="lazy"></iframe></div>
-      </div>
+      <picture><source srcset="media/hero/hero-illustration.webp" type="image/webp"><img class="hero-ill" src="media/hero/hero-illustration.png" width="900" height="1125" fetchpriority="high" alt="Illustration of a young woman and man in NYSC uniform laughing together, surrounded by a phone feed, a job bag, a house key, a shopping bag, a calendar and chat bubbles" onerror="this.closest('.hero-art').classList.add('no-ill');this.closest('picture').remove()"></picture>
+      <div class="phone fb"><div class="screen"><iframe src="index.html" title="Corpers Connect app preview" loading="lazy"></iframe></div></div>
     </div>
   </div>
 </section>
@@ -55,6 +55,18 @@
         <ul><li>Jobs, gigs and internships</li><li>Rooms, handovers and roommates</li><li>Items for sale, from fans to khaki</li><li>Events across Nigeria</li></ul>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="preview">
+  <div class="wrap preview-grid">
+    <div>
+      <div class="eyebrow">See it in action</div>
+      <h2 class="hd" style="font-size:clamp(28px,6vw,42px);line-height:1.05;margin:8px 0 12px;font-weight:700">Try the app right here.</h2>
+      <p class="muted" style="font-size:17px;margin:0 0 20px;max-width:460px">This is the real prototype. Tap “Skip and explore as a demo user” to look around the feed, jobs, rooms and communities. Nothing you do is saved.</p>
+      <a class="btn lime" href="index.html">Open it full screen</a>
+    </div>
+    <div class="hero-art"><div class="phone"><div class="screen"><iframe src="index.html" title="Corpers Connect app preview" loading="lazy"></iframe></div></div></div>
   </div>
 </section>
 

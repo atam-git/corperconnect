@@ -52,7 +52,7 @@ function chipRow(key,opts,def){const cur=S.tab[key]||def||opts[0][0];return `<di
 const cur=(key,def)=>S.tab[key]||def;
 function searchBox(key,ph){return `<div class="search" style="margin-bottom:14px"><span>${I('search',16)}</span><label class="sr" for="q-${key}">${ph}</label><input id="q-${key}" data-live="${key}" value="${esc(S.q[key]||'')}" placeholder="${ph}"></div>`;}
 const hrs=h=>h<1?'just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';
-function sla(h,target=48){const c=h>=target*.83?'#FF8A3D':h>=target*.5?'#FFD66B':'#C8F169';return `<span style="color:${c};font-weight:700">${h}h</span><span class="muted"> of ${target}h</span>`;}
+function sla(h,target=48){const c=h>=target*.83?'var(--orange-text)':h>=target*.5?'var(--yellow-text)':'var(--accent-text)';return `<span style="color:${c};font-weight:700">${h}h</span><span class="muted"> of ${target}h</span>`;}
 function field(label,id,{type='text',ph='',v='',opts,area,hint}={}){const c=opts?`<select class="inp" id="${id}">${opts.map(o=>{const [a,b]=Array.isArray(o)?o:[o,o];return `<option value="${esc(a)}" ${String(v)===String(a)?'selected':''}>${esc(b)}</option>`;}).join('')}</select>`:area?`<textarea class="inp" id="${id}" placeholder="${esc(ph)}">${esc(v)}</textarea>`:`<input class="inp" id="${id}" type="${type}" value="${esc(v)}" placeholder="${esc(ph)}">`;return `<div class="field"><label for="${id}">${label}</label>${c}${hint?`<span class="hint">${hint}</span>`:''}<span class="err" id="err-${id}"></span></div>`;}
 const sw=(on,a,data='',dis=false)=>`<button class="sw ${on?'on':''}" role="switch" aria-checked="${!!on}" data-a="${a}" ${data} ${dis?'disabled':''}></button>`;
 
@@ -65,23 +65,23 @@ function ferr(id,msg){const e=$('err-'+id);if(e)e.textContent=msg||'';const i=$(
 // ---------- Auth views ----------
 function authView(){
   const a=S.auth;
-  const brand=`<div class="brand"><b>C</b><span>Corpers Connect<small style="display:block;font-family:Inter;font-size:10px;letter-spacing:1px;color:#FF8A3D;text-transform:uppercase">Admin console</small></span></div>`;
+  const brand=`<div class="brand"><b>C</b><span>Corpers Connect<small style="display:block;font-family:Inter;font-size:10px;letter-spacing:1px;color:var(--orange-text);text-transform:uppercase">Admin console</small></span></div>`;
   if(S.step==='login') return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Sign in</h1><p class="muted" style="margin:0 0 18px">Staff only. Admins are invited. MFA is required.</p>
    ${field('Work email','a-email',{type:'email',v:a.email})}${field('Password','a-pass',{type:'password',v:'demo-password'})}<div class="err" style="margin-bottom:8px">${esc(a.err)}</div>
    <button class="btn lime block" data-a="login">Continue</button>
-   <button class="btn block" style="color:#C8F169;margin-top:8px" data-a="goStep" data-v="invite">I have an invite link</button>
+   <button class="btn block" style="color:var(--accent-text);margin-top:8px" data-a="goStep" data-v="invite">I have an invite link</button>
    <p class="hint" style="margin-top:14px">Prototype: any password works. Your account locks after 5 failed attempts for 15 minutes.</p></div></div>`;
   if(S.step==='mfa') return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Enter your MFA code</h1><p class="muted" style="margin:0 0 18px">Open your authenticator app and enter the 6-digit code for Corpers Connect.</p>
    <div class="otp" role="group" aria-label="6 digit code">${[0,1,2,3,4,5].map(i=>`<input inputmode="numeric" maxlength="1" id="otp${i}" data-otp="${i}" aria-label="Digit ${i+1}">`).join('')}</div><div class="err" style="margin:8px 0">${esc(a.err)}</div>
    <button class="btn lime block" data-a="verifyMfa">Verify and sign in</button>
-   <button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="goStep" data-v="login">Back</button>
+   <button class="btn block" style="color:var(--muted);margin-top:6px" data-a="goStep" data-v="login">Back</button>
    <p class="hint" style="margin-top:12px">Prototype: any 6 digits work.</p></div></div>`;
   return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Accept your invite</h1><p class="muted" style="margin:0 0 14px">Set a password and enrol an authenticator app. Invites expire after 72 hours.</p>
    ${field('Password','i-pass',{type:'password',ph:'At least 12 characters'})}${field('Confirm password','i-pass2',{type:'password'})}
    <div class="lbl">Scan with your authenticator app</div><div class="qr" role="img" aria-label="Sample QR code"></div>
    ${field('Code from the app','i-code',{ph:'6 digits'})}
    <button class="btn lime block" data-a="acceptInvite">Finish setup</button>
-   <button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="goStep" data-v="login">Back to sign in</button></div></div>`;
+   <button class="btn block" style="color:var(--muted);margin-top:6px" data-a="goStep" data-v="login">Back to sign in</button></div></div>`;
 }
 
 // ---------- Shell ----------
@@ -102,6 +102,7 @@ function shell(){
   const top=`<header class="top"><button class="menu-btn" data-a="toggleSide" aria-label="Menu">${I('menu',20)}</button>
   <div class="search"><span>${I('search',16)}</span><label class="sr" for="gs">Search members</label><input id="gs" data-live="global" value="${esc(S.q.global||'')}" placeholder="Search members, listings, reports…"></div>
   <div class="persona"><label for="pers">Demo: view as</label><select id="pers" data-change="persona">${ADMINS.filter(a=>a.status==='ACTIVE').map(a=>`<option value="${a.id}" ${a.id===S.persona?'selected':''}>${esc(a.name)} · ${a.roles.map(r=>roleOf(r)?.name).join(' + ')}</option>`).join('')}</select></div>
+  <button class="theme-btn" data-a="theme" aria-label="Change theme, now ${CCTheme.label()}">${themeIcon()} <span>${CCTheme.label()}</span></button>
   <button class="avatar-btn" data-a="logout" aria-label="Sign out">${av(p.name,p.color,32)}<span class="soft" style="font-weight:600">Sign out</span></button></header>`;
   let page;
   if(!allowed(S.route)) page=`<div class="denied"><div class="big">${I('lock',30)}</div><h1 class="hd" style="font-size:26px;margin:0 0 6px">You don’t have access to this page</h1><p class="muted">The server answered <code>ADMIN_PERMISSION_DENIED</code>. This page needs one of: ${NEED[S.route].map(k=>`<code>${k}</code>`).join(' ')}.</p><button class="btn lime" data-a="go" data-v="overview">Back to overview</button></div>`;
@@ -156,6 +157,9 @@ A.goStep=d=>{S.step=d.v;S.auth.err='';render();};
 A.login=()=>{const em=val('a-email');if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.auth.err='Enter a valid work email.';return render();}S.auth.email=em;S.auth.err='';S.step='mfa';render();setTimeout(()=>{const f=$('otp0');if(f)f.focus();},30);};
 A.verifyMfa=()=>{const code=[0,1,2,3,4,5].map(i=>$('otp'+i).value).join('');if(!/^\d{6}$/.test(code)){S.auth.err='Enter all 6 digits.';return render();}S.authed=true;sessionStorage.setItem('ccadm','1');S.step='login';S.auth.err='';audit('LOGIN_SUCCESS','Admin session','MFA verified');route();};
 A.acceptInvite=()=>{const p=val('i-pass'),p2=val('i-pass2'),c=val('i-code');let ok=true;ok=ferr('i-pass',p.length>=12?'':'Use at least 12 characters.')&&ok;ok=ferr('i-pass2',p===p2&&p2?'':'Passwords do not match.')&&ok;ok=ferr('i-code',/^\d{6}$/.test(c)?'':'Enter the 6-digit code.')&&ok;if(!ok)return;S.step='login';S.auth.err='';render();toast('Account ready. Sign in to continue.');};
+const themeIcon=()=>{const t=CCTheme.get();const p=t==='light'?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>':t==='dark'?'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>':'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>';return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;};
+A.theme=()=>{CCTheme.next();render();};
+window.addEventListener('cc-theme',()=>{if(typeof render==='function')render();});
 A.logout=()=>{S.authed=false;sessionStorage.removeItem('ccadm');S.step='login';S.drawer=null;S.modal=null;render();};
 A.go=d=>{location.hash='#/'+d.v;};
 A.tab=d=>{S.tab[d.k]=d.v;render();};

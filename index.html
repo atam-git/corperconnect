@@ -4,160 +4,193 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Corpers Connect — NYSC social network and opportunity marketplace</title>
+<link rel="stylesheet" href="theme.css"><script src="theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#050606}
-body{font-family:Inter,system-ui,sans-serif;color:#F2F4EF;-webkit-font-smoothing:antialiased}
+html,body{margin:0;height:100%;background:var(--bg-deep)}
+body{font-family:Inter,system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
-a{color:#C8F169}
-:focus-visible{outline:2px solid #C8F169;outline-offset:2px}
+a{color:var(--accent-text)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 #stage{min-height:100%;display:flex;align-items:center;justify-content:center}
-#app{position:relative;width:100%;height:100vh;height:100dvh;background:#0F1211;overflow:hidden}
+#app{position:relative;width:100%;height:100vh;height:100dvh;background:var(--bg);overflow:hidden}
 /* Responsive: phone is the base layout. Tablet and desktop adapt the same screens. */
 #rail{display:none}
 .nav .lb{display:none}
+.nav.dxo{display:none}
+.nav .dx{display:none}
+.nav .sep{height:1px;background:var(--line);margin:6px 10px;flex:none}
 @media (min-width:640px){
-  #app{--col:640px;--shift:0px;--navw:56px;--rail:300px;background:#0A0D0C}
+  #app{--col:640px;--shift:0px;--navw:56px;--rail:300px;background:var(--bg-deep)}
   #stage{padding:0;height:100%}
-  #app #view{inset:0 auto 0 calc(50% - var(--col)/2 - var(--shift));margin:0;width:var(--col);background:#0F1211;border-left:1px solid #1c201f;border-right:1px solid #1c201f}
+  #app #view{inset:0 auto 0 calc(50% - var(--col)/2 - var(--shift));margin:0;width:var(--col);background:var(--bg);border-left:1px solid var(--frame);border-right:1px solid var(--frame)}
   #app .scroll{padding-bottom:40px}
-  #app .nav{position:fixed;left:max(4px,calc(50% - var(--col)/2 - var(--shift) - var(--navw) - 20px));right:auto;top:50%;bottom:auto;transform:translateY(-50%);width:var(--navw);height:auto;flex-direction:column;gap:10px;padding:10px 0;border-radius:28px;justify-content:center}
+  #app .nav.dxo{display:flex}
+  #app .nav{position:fixed;left:max(4px,calc(50% - var(--col)/2 - var(--shift) - var(--navw) - 14px));right:auto;top:50%;bottom:auto;transform:translateY(-50%);width:var(--navw);height:auto;flex-direction:column;gap:10px;padding:10px 0;border-radius:28px;justify-content:center}
   #app .sheet-wrap{align-items:center;justify-content:center}
   #app .sheet{width:480px;max-width:calc(100% - 32px);max-height:86%;border-radius:28px;padding-top:18px}
   #app .grab{display:none}
   #app .toast{bottom:32px}
   #app .bottombar{padding-bottom:16px}
 }
+/* Desktop: welcome becomes a two-column hero, other pre-app screens become a centred card */
+@media (min-width:900px){
+  #app[data-nav="0"]{--shift:0px}
+  #app[data-nav="0"]:not([data-s="welcome"]) #view{inset:24px auto 24px calc(50% - 280px);width:560px;max-width:calc(100% - 32px);border:1px solid var(--line);border-radius:32px;overflow:hidden;box-shadow:0 20px 60px var(--shadow)}
+  #app[data-s="welcome"]{--col:860px}
+  #app[data-s="welcome"] #view{border:0;background:transparent}
+  #app[data-s="welcome"] .w-page{display:grid!important;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto auto 1fr;column-gap:56px;padding:36px 40px!important;align-content:stretch}
+  #app[data-s="welcome"] .w-logo{grid-column:1/-1;grid-row:1}
+  #app[data-s="welcome"] .w-art{grid-column:2;grid-row:2/6;align-self:center;height:340px!important;zoom:1.15;margin:0!important}
+  #app[data-s="welcome"] .w-h{grid-column:1;grid-row:3;font-size:56px!important;line-height:1!important;align-self:end;margin:0 0 16px!important}
+  #app[data-s="welcome"] .w-p{grid-column:1;grid-row:4;font-size:18px!important;margin:0 0 26px!important}
+  #app[data-s="welcome"] .w-btns{grid-column:1;grid-row:5;margin-top:0!important;align-self:start;max-width:420px}
+}
+@media (min-width:1200px){#app[data-s="welcome"]{--col:1100px}#app[data-s="welcome"] .w-art{zoom:1.35}}
 @media (min-width:1100px){
-  #app{--col:700px;--rail:320px;--navw:200px;--shift:calc((var(--rail) + 24px - var(--navw) - 20px)/2)}
+  #app{--col:700px;--rail:320px;--navw:200px;--shift:calc((var(--rail) + 16px - var(--navw) - 14px)/2)}
   #app .nav{align-items:stretch;padding:12px;gap:6px;border-radius:30px}
   #app .nav button{width:100%;height:50px;border-radius:25px;justify-content:flex-start;padding:0 16px;gap:14px}
   #app .nav .lb{display:inline;font-weight:600;font-size:15px}
+  #app .nav .dx{display:flex}
+  #app .nav .sep.dx{display:block}
+  #app .nav{top:20px;transform:none;max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:none}
+  #app .nav::-webkit-scrollbar{display:none}
+  #app .nav button{flex:none}
+  #app .nav{justify-content:flex-start}
   #app .nav button.create{justify-content:center;margin:6px 0}
-  #rail{display:block;position:fixed;top:0;bottom:0;left:calc(50% - var(--col)/2 - var(--shift) + var(--col) + 24px);width:var(--rail);padding:20px 0;overflow-y:auto;scrollbar-width:none}
+  #rail{display:block;position:fixed;top:0;bottom:0;left:calc(50% - var(--col)/2 - var(--shift) + var(--col) + 16px);width:var(--rail);padding:20px 0;overflow-y:auto;scrollbar-width:none}
   #rail::-webkit-scrollbar{display:none}
   #rail .card{margin-bottom:14px}
   #rail .rl{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 4px;min-height:44px;border-radius:12px}
-  #rail .rl:hover{background:#232927}
+  #rail .rl:hover{background:var(--raised)}
+}
+@media (min-width:1100px) and (max-height:760px){
+  #app .nav{padding:8px 10px;gap:2px}
+  #app .nav button{height:42px}
+  #app .nav button.create{margin:2px 0}
+  #app .nav .sep{margin:3px 10px}
 }
 @media (min-width:1500px){
-  #app{--col:760px;--rail:360px;--navw:220px}
+  #app{--col:800px;--rail:400px;--navw:230px}
   #app .nav .lb{font-size:16px}
 }
 @media (min-width:1900px){
-  #app{--col:820px;--rail:400px;--navw:240px}
-  #app .scroll .pad{padding-left:18px;padding-right:18px}
+  #app{--col:900px;--rail:440px;--navw:250px}
 }
 #view{position:absolute;inset:0;display:flex;flex-direction:column}
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:110px;scrollbar-width:none}
 .scroll.nonav{padding-bottom:32px}
 .scroll::-webkit-scrollbar{display:none}
 .hd{font-family:'Space Grotesk',sans-serif;letter-spacing:-.5px}
-.muted{color:#A3ABA5}
-.eyebrow{font-size:12px;font-weight:600;color:#A3ABA5;letter-spacing:1px;text-transform:uppercase}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
 .topbar{display:flex;align-items:center;gap:8px;padding:12px 12px 8px;min-height:64px}
 .topbar h1{flex:1;margin:0;font-size:20px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ib{width:44px;height:44px;border-radius:15px;background:#1A1F1D;display:flex;align-items:center;justify-content:center;flex:none;position:relative}
-.ib.lime{background:#C8F169;color:#0F1211}
+.ib{width:44px;height:44px;border-radius:15px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex:none;position:relative}
+.ib.lime{background:#C8F169;color:var(--ink)}
 .dot{position:absolute;top:10px;right:11px;width:9px;height:9px;border-radius:5px;background:#FF8A3D}
-.card{background:#1A1F1D;border-radius:24px;padding:14px;display:block}
+.card{background:var(--surface);border-radius:24px;padding:14px;display:block}
 .pad{padding:0 12px}
 .stack{display:flex;flex-direction:column;gap:12px}
 .row{display:flex;align-items:center;gap:10px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 12px 12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{height:38px;padding:0 16px;border-radius:19px;border:1px solid #2F3633;color:#D3D8D4;font-weight:500;font-size:14px;white-space:nowrap;flex:none}
-.chip.on{background:#F2F4EF;color:#0F1211;border-color:#F2F4EF;font-weight:700}
+.chip{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);color:var(--soft);font-weight:500;font-size:14px;white-space:nowrap;flex:none}
+.chip.on{background:var(--inv-bg);color:var(--inv-fg);border-color:var(--inv-bg);font-weight:700}
 .btn{height:50px;border-radius:25px;padding:0 20px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;flex:none}
-.btn.lime{background:#C8F169;color:#0F1211}
-.btn.light{background:#F2F4EF;color:#0F1211}
-.btn.dark{background:#232927;color:#F2F4EF}
-.btn.outline{border:1px solid #3A423E;color:#F2F4EF}
-.btn.danger{background:#3A1E17;color:#FFB59A}
+.btn.lime{background:#C8F169;color:var(--ink)}
+.btn.light{background:var(--inv-bg);color:var(--inv-fg)}
+.btn.dark{background:var(--raised);color:var(--text)}
+.btn.outline{border:1px solid var(--line2);color:var(--text)}
+.btn.danger{background:var(--danger-bg);color:var(--danger-text)}
 .btn.sm{height:38px;padding:0 14px;font-size:13px;border-radius:13px}
 .btn.block{width:100%}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
-.pill{height:40px;padding:0 12px;border-radius:20px;background:#232927;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#F2F4EF;flex:none}
-.pill.on-like{background:#FF8A3D;color:#0F1211}
-.pill.on-lime{background:#C8F169;color:#0F1211}
+.pill{height:40px;padding:0 12px;border-radius:20px;background:var(--raised);display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);flex:none}
+.pill.on-like{background:#FF8A3D;color:var(--ink)}
+.pill.on-lime{background:#C8F169;color:var(--ink)}
 .tag{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.tag.lime{background:#C8F169;color:#0F1211}
-.tag.orange{color:#FF8A3D;padding:0}
-.tag.oranges{background:#FF8A3D;color:#0F1211}
-.tag.line{border:1px solid #3A423E;color:#D3D8D4;padding:3px 8px}
-.tag.blue{background:#22304D;color:#B9CEFF}
-.tag.grey{background:#2F3633;color:#D3D8D4}
-.av{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:#0F1211;flex:none;overflow:hidden}
+.tag.lime{background:#C8F169;color:var(--ink)}
+.tag.orange{color:var(--orange-text);padding:0}
+.tag.oranges{background:#FF8A3D;color:var(--ink)}
+.tag.line{border:1px solid var(--line2);color:var(--soft);padding:3px 8px}
+.tag.blue{background:var(--blue-bg);color:var(--blue-text)}
+.tag.grey{background:var(--line);color:var(--soft)}
+.av{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--ink);flex:none;overflow:hidden}
 .av img{width:100%;height:100%;object-fit:cover}
-.ph{background:#2A312E;border-radius:18px;display:flex;align-items:center;justify-content:center;color:rgba(15,18,17,.45);overflow:hidden;position:relative;flex:none}
+.ph{background:var(--phbg);border-radius:18px;display:flex;align-items:center;justify-content:center;color:rgba(15,18,17,.45);overflow:hidden;position:relative;flex:none}
 .ph img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .field{display:flex;flex-direction:column;gap:6px}
-.field>label,.flabel{font-size:13px;font-weight:600;color:#D3D8D4}
-.inp{height:50px;border-radius:16px;background:#1A1F1D;border:1.5px solid #2F3633;padding:0 14px;font-size:15px;outline:none;width:100%;color:#F2F4EF}
-.inp::placeholder{color:#7D8681}
+.field>label,.flabel{font-size:13px;font-weight:600;color:var(--soft)}
+.inp{height:50px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);padding:0 14px;font-size:15px;outline:none;width:100%;color:var(--text)}
+.inp::placeholder{color:var(--ph)}
 textarea.inp{height:auto;min-height:104px;padding:12px 14px;resize:none;line-height:1.45}
 select.inp{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A3ABA5' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
-select.inp option{background:#1A1F1D}
-.inp:focus{border-color:#C8F169}
+select.inp option{background:var(--surface)}
+.inp:focus{border-color:var(--accent-border)}
 .inp.bad{border-color:#FF8A3D}
-.err{color:#FFA27F;font-size:12px;font-weight:600}
-.hint{font-size:12px;color:#A3ABA5;line-height:1.4}
-.seg{display:flex;background:#1A1F1D;border-radius:16px;padding:4px;gap:4px}
-.seg button{flex:1;height:40px;border-radius:12px;font-weight:600;font-size:14px;color:#A3ABA5}
-.seg button.on{background:#F2F4EF;color:#0F1211}
-.list{background:#1A1F1D;border-radius:22px;overflow:hidden}
-.li{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:58px;width:100%;text-align:left;border-bottom:1px solid #232927;color:#F2F4EF;text-decoration:none}
+.err{color:var(--err);font-size:12px;font-weight:600}
+.hint{font-size:12px;color:var(--muted);line-height:1.4}
+.seg{display:flex;background:var(--surface);border-radius:16px;padding:4px;gap:4px}
+.seg button{flex:1;height:40px;border-radius:12px;font-weight:600;font-size:14px;color:var(--muted)}
+.seg button.on{background:var(--inv-bg);color:var(--inv-fg)}
+.list{background:var(--surface);border-radius:22px;overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:58px;width:100%;text-align:left;border-bottom:1px solid var(--raised);color:var(--text);text-decoration:none}
 .li:last-child{border-bottom:0}
 .li .t{flex:1;min-width:0}
 .li .t b{display:block;font-weight:600;font-size:15px}
-.li .t span{display:block;font-size:13px;color:#A3ABA5;margin-top:2px;line-height:1.35}
-.li .ico{width:36px;height:36px;border-radius:12px;background:#232927;display:flex;align-items:center;justify-content:center;flex:none}
-.sw{width:50px;height:30px;border-radius:15px;background:#2F3633;position:relative;flex:none;transition:background .2s}
-.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:12px;background:#A3ABA5;transition:left .2s}
-.sw.on{background:#C8F169}.sw.on::after{left:23px;background:#0F1211}
-.nav{position:absolute;left:16px;right:16px;bottom:18px;height:66px;border-radius:33px;background:#232927;display:flex;align-items:center;justify-content:space-around;padding:0 8px;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:5}
-.nav button{width:50px;height:50px;border-radius:25px;display:flex;align-items:center;justify-content:center;color:#A3ABA5;position:relative}
-.nav button.on{background:#F2F4EF;color:#0F1211}
-.nav button.create{background:#C8F169;color:#0F1211}
+.li .t span{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
+.li .t .nt b{display:inline;font-size:inherit}
+.li .t span.tag{display:inline-flex;font-size:10px;margin-top:0;line-height:1.4}
+.li .t span.tag.oranges{color:var(--ink)}
+.li .ico{width:36px;height:36px;border-radius:12px;background:var(--raised);display:flex;align-items:center;justify-content:center;flex:none}
+.sw{width:50px;height:30px;border-radius:15px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:12px;background:var(--muted);transition:left .2s}
+.sw.on{background:#C8F169}.sw.on::after{left:23px;background:var(--ink)}
+.nav{position:absolute;left:16px;right:16px;bottom:18px;height:66px;border-radius:33px;background:var(--raised);display:flex;align-items:center;justify-content:space-around;padding:0 8px;box-shadow:0 10px 30px var(--shadow);z-index:5}
+.nav button{width:50px;height:50px;border-radius:25px;display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative}
+.nav button.on{background:var(--inv-bg);color:var(--inv-fg)}
+.nav button.create{background:#C8F169;color:var(--ink)}
 #sheet:empty{display:none}
 .sheet-wrap{position:absolute;inset:0;background:rgba(0,0,0,.62);z-index:20;display:flex;align-items:flex-end;animation:fade .15s}
-.sheet{width:100%;max-height:90%;overflow-y:auto;background:#1A1F1D;border-radius:28px 28px 0 0;padding:10px 16px 28px;animation:up .22s ease-out;scrollbar-width:none}
+.sheet{width:100%;max-height:90%;overflow-y:auto;background:var(--surface);border-radius:28px 28px 0 0;padding:10px 16px 28px;animation:up .22s ease-out;scrollbar-width:none}
 .sheet h2{font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:-.5px;margin:4px 0 6px}
-.sheet .list{background:#232927}
-.sheet .li{border-color:#2F3633}
-.sheet .li .ico{background:#2F3633}
-.sheet .inp{background:#232927;border-color:#3A423E}
-.grab{width:40px;height:5px;border-radius:3px;background:#3A423E;margin:0 auto 12px}
+.sheet .list{background:var(--raised)}
+.sheet .li{border-color:var(--line)}
+.sheet .li .ico{background:var(--line)}
+.sheet .inp{background:var(--raised);border-color:var(--line2)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
 @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 @keyframes fade{from{opacity:0}}
-.toast{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);background:#F2F4EF;color:#0F1211;font-weight:600;font-size:14px;padding:12px 18px;border-radius:16px;z-index:40;width:max-content;max-width:330px;text-align:center;animation:fade .2s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);background:var(--inv-bg);color:var(--inv-fg);font-weight:600;font-size:14px;padding:12px 18px;border-radius:16px;z-index:40;width:max-content;max-width:330px;text-align:center;animation:fade .2s;box-shadow:0 10px 30px var(--shadow)}
 svg.i{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.sec{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#A3ABA5;padding:10px 4px 0}
-.empty{text-align:center;padding:40px 24px;color:#A3ABA5;font-size:14px;line-height:1.5}
-.empty b{display:block;color:#F2F4EF;font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:4px}
+.sec{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:10px 4px 0}
+.empty{text-align:center;padding:40px 24px;color:var(--muted);font-size:14px;line-height:1.5}
+.empty b{display:block;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:4px}
 .steps{display:flex;gap:6px;padding:0 16px}
-.steps span{flex:1;height:4px;border-radius:2px;background:#2F3633}
+.steps span{flex:1;height:4px;border-radius:2px;background:var(--line)}
 .steps span.on{background:#C8F169}
-.opt{width:100%;text-align:left;display:flex;gap:12px;align-items:center;padding:14px;border-radius:20px;background:#1A1F1D;border:1.5px solid #1A1F1D}
-.opt.on{border-color:#C8F169;background:#1F2A1A}
-.radio{width:22px;height:22px;border-radius:11px;border:2px solid #4A5450;flex:none;display:flex;align-items:center;justify-content:center}
-.opt.on .radio,.radio.on{border-color:#C8F169}
+.opt{width:100%;text-align:left;display:flex;gap:12px;align-items:center;padding:14px;border-radius:20px;background:var(--surface);border:1.5px solid var(--surface)}
+.opt.on{border-color:var(--accent-border);background:var(--bubble)}
+.radio{width:22px;height:22px;border-radius:11px;border:2px solid var(--line3);flex:none;display:flex;align-items:center;justify-content:center}
+.opt.on .radio,.radio.on{border-color:var(--accent-border)}
 .opt.on .radio::after,.radio.on::after{content:'';width:10px;height:10px;border-radius:5px;background:#C8F169}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .pt{margin:10px 2px 0;font-size:15px;line-height:1.45;white-space:pre-line;word-wrap:break-word}
 .tl{position:relative;padding-left:28px}
-.tl::before{content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:#2F3633}
+.tl::before{content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
 .tl .m{position:relative;padding:0 0 18px}
-.tl .m::before{content:'';position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:7px;background:#0F1211;border:2px solid #4A5450}
-.tl .m.v::before{background:#C8F169;border-color:#C8F169}
+.tl .m::before{content:'';position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:7px;background:var(--bg);border:2px solid var(--line3)}
+.tl .m.v::before{background:#C8F169;border-color:var(--accent-border)}
 .tl .m.p::before{border-color:#FF8A3D}
 .otp{letter-spacing:14px;text-align:center;font-size:26px;font-family:'Space Grotesk',sans-serif;font-weight:700;height:64px}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.bottombar{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 20px;background:#0F1211;border-top:1px solid #1A1F1D;z-index:4}
+.bottombar{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 20px;background:var(--bg);border-top:1px solid var(--surface);z-index:4}
 </style></head><body><div id="stage"><div id="app"><div id="view"></div><aside id="rail" aria-label="Trending and suggestions"></aside><div id="sheet"></div></div></div><script>
 // ---------- Sample data (front-end only, nothing is sent anywhere) ----------
 const STATES=['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara'];
@@ -621,15 +654,25 @@ function tb(title,{back=true,right='',close=false}={}){
 }
 function nav(active){
   const b=(t,ic,l)=>`<button class="${active===t?'on':''}" data-a="tab" data-t="${t}" aria-label="${l}" ${active===t?'aria-current="page"':''}>${I(ic,active===t?22:24)}<span class="lb">${l}</span></button>`;
-  return `<nav class="nav" aria-label="Main">${b('home','home','Home')}${b('community','users','Community')}<button class="create" data-a="create" aria-label="Create">${I('plus',24,'stroke-width="2.6"')}<span class="lb">Create</span></button>${b('explore','compass','Explore')}${b('profile','user','Profile')}</nav>`;
+  return `<nav class="nav" aria-label="Main">${b('home','home','Home')}${b('community','users','Community')}<button class="create" data-a="create" aria-label="Create">${I('plus',24,'stroke-width="2.6"')}<span class="lb">Create</span></button>${b('explore','compass','Explore')}${b('profile','user','Profile')}
+    <span class="sep dx" aria-hidden="true"></span>
+    <button class="dx" data-a="go" data-s="notifications" aria-label="Notifications"><span style="position:relative;display:flex">${I('bell',24)}${NOTIF.some(n=>!n.read)?'<span class="dot" style="top:-3px;right:-3px"></span>':''}</span><span class="lb">Notifications</span></button>
+    <button class="dx" data-a="navExplore" data-v="Jobs" aria-label="Jobs">${I('briefcase',24)}<span class="lb">Jobs</span></button>
+    <button class="dx" data-a="navExplore" data-v="Marketplace" aria-label="Marketplace">${I('bag',24)}<span class="lb">Marketplace</span></button>
+    <button class="dx" data-a="navExplore" data-v="Accommodation" aria-label="Rooms">${I('building',24)}<span class="lb">Rooms</span></button>
+    <button class="dx" data-a="navExplore" data-v="Events" aria-label="Events">${I('cal',24)}<span class="lb">Events</span></button>
+    <span class="sep dx" aria-hidden="true"></span>
+    <button class="dx" data-a="navSaved" aria-label="Saved">${I('bookmark',24)}<span class="lb">Saved</span></button>
+    <button class="dx" data-a="go" data-s="settings" aria-label="Settings">${I('gear',24)}<span class="lb">Settings</span></button>
+    </nav>`;
 }
 function empty(t,s,btn=''){return `<div class="empty"><b>${t}</b>${s}${btn?`<div style="margin-top:14px">${btn}</div>`:''}</div>`;}
 function seg(opts,cur,act,extra=''){return `<div class="seg" role="tablist">${opts.map(o=>`<button role="tab" aria-selected="${o===cur}" class="${o===cur?'on':''}" data-a="${act}" data-v="${esc(o)}" ${extra}>${esc(o)}</button>`).join('')}</div>`;}
 function chips(opts,cur,act){return `<div class="chips">${opts.map(o=>`<button class="chip ${o===cur?'on':''}" data-a="${act}" data-v="${esc(o)}" aria-pressed="${o===cur}">${esc(o)}</button>`).join('')}</div>`;}
 function sw(on,k,label){return `<button class="sw ${on?'on':''}" role="switch" aria-checked="${!!on}" aria-label="${esc(label)}" data-a="toggleSet" data-k="${k}"></button>`;}
 function li({icon,title,sub='',right='',a='',data='',danger=false,href=''}){
-  const ic=icon?`<span class="ico" style="${danger?'color:#FFA27F':''}">${I(icon,18)}</span>`:'';
-  const inner=`${ic}<span class="t"><b style="${danger?'color:#FFA27F':''}">${title}</b>${sub?`<span>${sub}</span>`:''}</span>${right}`;
+  const ic=icon?`<span class="ico" style="${danger?'color:var(--err)':''}">${I(icon,18)}</span>`:'';
+  const inner=`${ic}<span class="t"><b style="${danger?'color:var(--err)':''}">${title}</b>${sub?`<span>${sub}</span>`:''}</span>${right}`;
   if(href) return `<a class="li" href="${href}" target="_blank" rel="noopener">${inner}</a>`;
   if(a) return `<button class="li" data-a="${a}" ${data}>${inner}</button>`;
   return `<div class="li">${inner}</div>`;
@@ -645,7 +688,7 @@ function fld(k,label,o={}){
   if(o.opts) ctl=`<select class="inp ${bad?'bad':''}" id="f-${k}" data-k="${k}" ${o.rerender?'data-rerender="1"':''}>${o.opts.map(x=>{const [val,lab]=Array.isArray(x)?x:[x,x];return `<option value="${esc(val)}" ${String(v)===String(val)?'selected':''}>${esc(lab)}</option>`;}).join('')}</select>`;
   else if(o.area) ctl=`<textarea class="inp ${bad?'bad':''}" id="f-${k}" data-k="${k}" placeholder="${esc(o.ph||'')}" ${o.attrs||''}>${esc(v)}</textarea>`;
   else ctl=`<input class="inp ${bad?'bad':''} ${o.cls||''}" id="f-${k}" data-k="${k}" type="${o.type||'text'}" value="${esc(v)}" placeholder="${esc(o.ph||'')}" ${o.attrs||''}>`;
-  if(o.prefix) ctl=`<div style="position:relative">${`<span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#A3ABA5;font-weight:600">${o.prefix}</span>`}${ctl.replace('class="inp','style="padding-left:'+(o.prefixW||34)+'px" class="inp')}</div>`;
+  if(o.prefix) ctl=`<div style="position:relative">${`<span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600">${o.prefix}</span>`}${ctl.replace('class="inp','style="padding-left:'+(o.prefixW||34)+'px" class="inp')}</div>`;
   return `<div class="field"><label for="f-${k}">${label}${o.opt?' <span class="muted" style="font-weight:500">(optional)</span>':''}</label>${ctl}${o.hint?`<span class="hint">${o.hint}</span>`:''}${err}</div>`;
 }
 function need(k,msg,test){const v=(S.draft[k]??'').toString().trim();if(test?!test(v):!v){S.errors[k]=msg;return false;}return true;}
@@ -654,8 +697,8 @@ function need(k,msg,test){const v=(S.draft[k]??'').toString().trim();if(test?!te
 function photos(list,key,h=200){
   if(!list||!list.length) return '';
   S.mediaLists[key]=list;
-  if(S.settings.dataSaver&&!S.loadedMedia.has(key)) return `<button class="ph" data-a="loadMedia" data-id="${key}" style="width:100%;height:120px;margin-top:10px;color:#A3ABA5;flex-direction:column;gap:6px;font-size:13px;font-weight:600">${I('image',22)}Data saver on · Tap to load ${list.length>1?list.length+' items':(list[0]&&/\.(mp4|webm)$/i.test(list[0])?'video':'photo')}</button>`;
-  const isVid=x=>/\.(mp4|webm)$/i.test(x);const one=x=>isVid(x)?`${S.settings.autoplay?`<span class="ph" style="height:100%;width:100%;background:#000"><video src="${x}" autoplay muted loop controls playsinline aria-label="Video" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video></span>`:`<button class="ph" data-a="playVideo" data-src="${x}" aria-label="Play video" style="height:100%;width:100%;padding:0;background:linear-gradient(135deg,#1A1F1D,#0A0D0C);flex-direction:column;gap:8px;color:#F2F4EF"><span style="width:60px;height:60px;border-radius:30px;background:#C8F169;color:#0F1211;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span style="font-size:12px;font-weight:700;letter-spacing:1px;color:#A3ABA5">TAP TO PLAY VIDEO</span></button>`}`:x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<button class="ph" data-a="lightbox" data-key="${key}" data-src="${x}" aria-label="View photo full screen" style="height:100%;width:100%;padding:0"><img src="${x}" alt="Photo"></button>`;
+  if(S.settings.dataSaver&&!S.loadedMedia.has(key)) return `<button class="ph" data-a="loadMedia" data-id="${key}" style="width:100%;height:120px;margin-top:10px;color:var(--muted);flex-direction:column;gap:6px;font-size:13px;font-weight:600">${I('image',22)}Data saver on · Tap to load ${list.length>1?list.length+' items':(list[0]&&/\.(mp4|webm)$/i.test(list[0])?'video':'photo')}</button>`;
+  const isVid=x=>/\.(mp4|webm)$/i.test(x);const one=x=>isVid(x)?`${S.settings.autoplay?`<span class="ph" style="height:100%;width:100%;background:#000"><video src="${x}" autoplay muted loop controls playsinline aria-label="Video" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video></span>`:`<button class="ph" data-a="playVideo" data-src="${x}" aria-label="Play video" style="height:100%;width:100%;padding:0;background:linear-gradient(135deg,var(--surface),var(--bg-deep));flex-direction:column;gap:8px;color:var(--text)"><span style="width:60px;height:60px;border-radius:30px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted)">TAP TO PLAY VIDEO</span></button>`}`:x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<button class="ph" data-a="lightbox" data-key="${key}" data-src="${x}" aria-label="View photo full screen" style="height:100%;width:100%;padding:0"><img src="${x}" alt="Photo"></button>`;
   if(list.length===1) return `<div style="height:${h}px;margin-top:10px;display:flex">${one(list[0])}</div>`;
   const shown=list.slice(0,4);
   return `<div class="grid2" style="margin-top:10px;gap:6px">${shown.map((x,i)=>`<div style="height:${list.length===2?h-30:110}px;display:flex;position:relative">${one(x)}${i===3&&list.length>4?`<span style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">+${list.length-4}</span>`:''}</div>`).join('')}</div>`;
@@ -664,8 +707,8 @@ function pollBlock(p){
   const v=p.poll.voted, total=p.poll.options.reduce((a,o)=>a+o[1],0);
   return `<div class="stack" style="gap:8px;margin-top:10px">${p.poll.options.map((o,i)=>{
     const pct=Math.round(o[1]/(total||1)*100), mine=v===i;
-    return `<button data-a="vote" data-id="${p.id}" data-i="${i}" aria-pressed="${mine}" style="position:relative;overflow:hidden;display:flex;align-items:center;height:46px;padding:0 14px;border-radius:14px;font-size:14px;font-weight:500;background:#232927;border:1.5px solid ${mine?'#C8F169':'#232927'}">
-      <span style="position:absolute;left:0;top:0;bottom:0;width:${v===null?0:pct}%;background:${mine?'#3F5A1A':'#2F3633'};transition:width .4s"></span>
+    return `<button data-a="vote" data-id="${p.id}" data-i="${i}" aria-pressed="${mine}" style="position:relative;overflow:hidden;display:flex;align-items:center;height:46px;padding:0 14px;border-radius:14px;font-size:14px;font-weight:500;background:var(--raised);border:1.5px solid ${mine?'var(--accent-border)':'var(--raised)'}">
+      <span style="position:absolute;left:0;top:0;bottom:0;width:${v===null?0:pct}%;background:${mine?'var(--pollfill)':'var(--line)'};transition:width .4s"></span>
       <span style="position:relative;flex:1;text-align:left">${esc(o[0])}</span>
       <span style="position:relative;font-weight:700">${v===null?'':pct+'%'}</span></button>`;}).join('')}
     <div class="hint">${total} votes · ${p.poll.ends}${v===null?' · Tap to vote':' · You can change your vote'}</div></div>`;
@@ -673,7 +716,7 @@ function pollBlock(p){
 function postCard(p,full=false){
   if(p.type==='announcement'){
     const c=COMM[p.community];
-    return `<article class="card" style="background:#C8F169;color:#0F1211;padding:16px 18px">
+    return `<article class="card" style="background:#C8F169;color:var(--ink);padding:16px 18px">
       <div class="row" style="justify-content:space-between"><span style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:6px">${I('megaphone',14)}Official · ${esc(c.name)}</span><span style="font-size:12px;font-weight:600">${p.time}</span></div>
       <p class="hd" style="margin:8px 0 0;font-weight:700;font-size:20px;line-height:1.2">${esc(p.text)}</p>
       <button data-a="go" data-s="communityDetail" data-id="${c.id}" style="margin-top:10px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;min-height:32px">Open community ${I('chevR',14)}</button></article>`;
@@ -689,7 +732,7 @@ function postCard(p,full=false){
       <button data-a="openUser" data-id="${p.author}" aria-label="${esc(u.name)}'s profile">${av(u,42)}</button>
       <button data-a="openUser" data-id="${p.author}" style="flex:1;min-width:0;text-align:left">
         <span style="display:flex;align-items:center;gap:5px;font-weight:600;font-size:15px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</span>${vb(u)}${u.status==='Completed'?'<span class="tag blue" style="padding:2px 6px;font-size:10px">Alumni</span>':''}</span>
-        <span style="display:block;font-size:13px;color:#A3ABA5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(meta)}</span>
+        <span style="display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(meta)}</span>
       </button>${fol}
       <button class="ib" style="width:36px;height:36px;background:transparent" data-a="postMenu" data-id="${p.id}" aria-label="More options">${I('more',20)}</button>
     </div>
@@ -721,36 +764,36 @@ function listingCard(l){
     ${listingThumb(l,84)}
     <span style="min-width:0;flex:1;display:block">
       <span style="display:flex;gap:6px;align-items:center"><span class="tag orange">${KIND_LABEL[l.kind]}${l.kind==='job'?' · '+esc(l.jobType):''}</span>${l.status!=='Available'?statusPill(l.status,l.kind):''}</span>
-      <span style="display:block;font-weight:600;font-size:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.title)}</span>${l.kind==='job'?`<span style="display:block;font-size:12px;color:#D3D8D4">${esc(l.company)}</span>`:''}
-      <span class="hd" style="display:block;font-weight:700;font-size:18px;color:#C8F169">${naira(l.price)}<span style="font-family:Inter;font-weight:500;font-size:12px;color:#A3ABA5"> ${l.unit||''}${fee}</span></span>
-      <span style="display:block;font-size:12px;color:#A3ABA5">${esc(l.area)}, ${esc(l.state)}</span>
+      <span style="display:block;font-weight:600;font-size:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.title)}</span>${l.kind==='job'?`<span style="display:block;font-size:12px;color:var(--soft)">${esc(l.company)}</span>`:''}
+      <span class="hd" style="display:block;font-weight:700;font-size:18px;color:var(--accent-text)">${naira(l.price)}<span style="font-family:Inter;font-weight:500;font-size:12px;color:var(--muted)"> ${l.unit||''}${fee}</span></span>
+      <span style="display:block;font-size:12px;color:var(--muted)">${esc(l.area)}, ${esc(l.state)}</span>
     </span></button>`;
 }
 function itemTile(l){
   return `<button class="card" data-a="openListing" data-id="${l.id}" style="text-align:left;padding:8px;width:100%">
     <span style="display:block;position:relative">${listingThumb(l,0,16).replace('width:0px;height:0px','width:100%;height:130px')}${l.status!=='Available'?`<span style="position:absolute;top:8px;left:8px">${statusPill(l.status)}</span>`:''}</span>
-    <span class="hd" style="display:block;font-weight:700;font-size:17px;color:#C8F169;margin:8px 4px 0">${naira(l.price)}</span>
+    <span class="hd" style="display:block;font-weight:700;font-size:17px;color:var(--accent-text);margin:8px 4px 0">${naira(l.price)}</span>
     <span style="display:block;font-size:14px;font-weight:600;margin:2px 4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.title)}</span>
-    <span style="display:block;font-size:12px;color:#A3ABA5;margin:2px 4px 4px">${esc(l.state)} · ${esc(l.condition||l.type)}</span></button>`;
+    <span style="display:block;font-size:12px;color:var(--muted);margin:2px 4px 4px">${esc(l.state)} · ${esc(l.condition||l.type)}</span></button>`;
 }
 function eventCard(e){
   const off=e.status!=='Upcoming';
   return `<button class="card" data-a="openEvent" data-id="${e.id}" style="display:flex;gap:12px;align-items:center;text-align:left;width:100%;padding:12px">
-    <span style="width:64px;height:76px;border-radius:18px;background:${off?'#2F3633':'#C8F169'};color:${off?'#A3ABA5':'#0F1211'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none"><span class="hd" style="font-size:26px;font-weight:700;line-height:1">${e.day}</span><span style="font-size:11px;font-weight:800;letter-spacing:1px">${e.mon}</span></span>
+    <span style="width:64px;height:76px;border-radius:18px;background:${off?'var(--line)':'#C8F169'};color:${off?'var(--muted)':'var(--ink)'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none"><span class="hd" style="font-size:26px;font-weight:700;line-height:1">${e.day}</span><span style="font-size:11px;font-weight:800;letter-spacing:1px">${e.mon}</span></span>
     <span style="flex:1;min-width:0;display:block">
       <span class="tag orange">Event${off?' · '+e.status:''}</span>
-      <span style="display:block;font-weight:600;font-size:15px;margin-top:3px;${off?'text-decoration:line-through;color:#A3ABA5':''}">${esc(e.title)}</span>
-      <span style="display:block;font-size:12px;color:#A3ABA5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.time} · ${esc(e.location)}</span>
-      <span style="display:block;font-size:12px;color:#D3D8D4;margin-top:2px">${e.interested} interested · ${e.going} going${e.rsvp?` · <b style="color:#C8F169">You’re ${e.rsvp}</b>`:''}</span>
+      <span style="display:block;font-weight:600;font-size:15px;margin-top:3px;${off?'text-decoration:line-through;color:var(--muted)':''}">${esc(e.title)}</span>
+      <span style="display:block;font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.time} · ${esc(e.location)}</span>
+      <span style="display:block;font-size:12px;color:var(--soft);margin-top:2px">${e.interested} interested · ${e.going} going${e.rsvp?` · <b style="color:var(--accent-text)">You’re ${e.rsvp}</b>`:''}</span>
     </span></button>`;
 }
 function commRow(c,compact=false){
   const btn=joinBtn(c,true);
   return `<div class="card" style="display:flex;gap:12px;align-items:center;padding:12px">
     <button data-a="go" data-s="communityDetail" data-id="${c.id}" style="display:flex;gap:12px;align-items:center;flex:1;min-width:0;text-align:left">${cav(c,52)}
-      <span style="min-width:0;display:block"><span style="display:flex;gap:6px;align-items:center">${c.official?'<span class="tag lime" style="padding:2px 6px;font-size:10px">Official</span>':''}<span style="font-size:12px;color:#A3ABA5">${esc(c.category)}</span></span>
+      <span style="min-width:0;display:block"><span style="display:flex;gap:6px;align-items:center">${c.official?'<span class="tag lime" style="padding:2px 6px;font-size:10px">Official</span>':''}<span style="font-size:12px;color:var(--muted)">${esc(c.category)}</span></span>
       <span style="display:block;font-weight:600;font-size:15px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.name)}</span>
-      <span style="display:block;font-size:12px;color:#A3ABA5">${short(c.members)} members · ${esc(c.sub)}</span></span></button>${btn}</div>`;
+      <span style="display:block;font-size:12px;color:var(--muted)">${short(c.members)} members · ${esc(c.sub)}</span></span></button>${btn}</div>`;
 }
 function joinBtn(c,sm){
   const cls=sm?'btn sm':'btn';
@@ -765,7 +808,7 @@ function userRow(u){
   return `<div class="row card" style="padding:12px">
     <button data-a="openUser" data-id="${u.id}" style="display:flex;gap:12px;align-items:center;flex:1;min-width:0;text-align:left">${av(u,46)}
     <span style="min-width:0;display:block"><span style="display:flex;align-items:center;gap:5px;font-weight:600">${esc(u.name)}${vb(u,14)}</span>
-    <span style="display:block;font-size:12px;color:#A3ABA5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@${esc(u.username)} · ${shortBatch(u.batch)} · ${esc(u.state)}</span>
+    <span style="display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@${esc(u.username)} · ${shortBatch(u.batch)} · ${esc(u.state)}</span>
     ${mutual?'<span class="tag grey" style="margin-top:4px;padding:2px 6px;font-size:10px">Mutual</span>':u.followsMe&&!f?'<span class="tag grey" style="margin-top:4px;padding:2px 6px;font-size:10px">Follows you</span>':''}</span></button>
     ${u.id==='me'?'':`<button class="btn sm ${f?'dark':'lime'}" data-a="follow" data-id="${u.id}">${f?'Following':'Follow'}</button>`}</div>`;
 }
@@ -780,6 +823,10 @@ function render(){
   const t=topScreen();
   const fn=SC[t.s]||SC.home;
   view.innerHTML=fn(t);
+  // Inner pages (settings, notifications, detail screens) keep the desktop sidebar and right column
+  {const root=S.stack[0]&&S.stack[0].s,inApp=['home','community','explore','profile'].includes(root);
+   if(inApp&&!view.querySelector('.nav'))view.insertAdjacentHTML('beforeend',nav(root).replace('class="nav"','class="nav dxo"'));}
+  app().dataset.s=t.s;app().dataset.nav=view.querySelector('.nav')?'1':'0';
   document.getElementById('sheet').innerHTML=S.sheet?`<div class="sheet-wrap" data-a="closeSheet"><div class="sheet" role="dialog" aria-modal="true" data-a="noop"><div class="grab"></div>${SH[S.sheet.type](S.sheet)}</div></div>`:'';
   renderRail();
   if(S.lb) document.getElementById('sheet').innerHTML+=lbHtml();
@@ -796,29 +843,29 @@ function toast(m){const el=document.createElement('div'); el.className='toast'; 
 // ---------- Screens ----------
 const SC={}, INIT={};
 const steps=n=>`<div class="steps" aria-label="Step ${n} of 3">${[1,2,3].map(i=>`<span class="${i<=n?'on':''}"></span>`).join('')}</div>`;
-const checkbox=(on,k,label)=>`<button data-a="toggleDraft" data-k="${k}" role="checkbox" aria-checked="${!!on}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:44px;font-size:14px;line-height:1.45;color:#D3D8D4"><span style="width:22px;height:22px;border-radius:7px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;${on?'background:#C8F169;color:#0F1211':'border:2px solid #4A5450'}">${on?I('check',14,'stroke-width="3"'):''}</span><span>${label}</span></button>`;
+const checkbox=(on,k,label)=>`<button data-a="toggleDraft" data-k="${k}" role="checkbox" aria-checked="${!!on}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:44px;font-size:14px;line-height:1.45;color:var(--soft)"><span style="width:22px;height:22px;border-radius:7px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;${on?'background:#C8F169;color:var(--ink)':'border:2px solid var(--line3)'}">${on?I('check',14,'stroke-width="3"'):''}</span><span>${label}</span></button>`;
 const swRow=(k,title,sub,on)=>`<button class="li" data-a="toggleDraft" data-k="${k}" role="switch" aria-checked="${!!on}"><span class="t"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</span><span class="sw ${on?'on':''}" aria-hidden="true"></span></button>`;
 
 // ===== Onboarding =====
-SC.welcome=()=>`<div class="scroll nonav" style="display:flex;flex-direction:column;padding:26px 20px 24px">
-  <div class="row" style="gap:8px"><span class="av" style="width:36px;height:36px;border-radius:12px;background:#C8F169;font-size:19px">C</span><span class="hd" style="font-weight:700;font-size:22px">Corpers Connect</span></div>
-  <div style="position:relative;height:280px;margin:18px 0 6px" aria-hidden="true">
-    <div style="position:absolute;left:50%;top:50%;width:210px;height:210px;margin:-105px 0 0 -105px;border-radius:105px;background:#C8F169;color:#0F1211;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="hd" style="font-size:40px;font-weight:700;line-height:1">Batch B</span><span class="hd" style="font-size:40px;font-weight:700;line-height:1">’26</span><span style="font-size:12px;font-weight:800;letter-spacing:1px;margin-top:6px">CAMP · PPA · ALUMNI</span></div>
+SC.welcome=()=>`<div class="scroll nonav w-page" style="display:flex;flex-direction:column;padding:26px 20px 24px">
+  <div class="row w-logo" style="gap:8px"><span class="av" style="width:36px;height:36px;border-radius:12px;background:#C8F169;font-size:19px">C</span><span class="hd" style="font-weight:700;font-size:22px">Corpers Connect</span></div>
+  <div class="w-art" style="position:relative;height:280px;margin:18px 0 6px" aria-hidden="true">
+    <div style="position:absolute;left:50%;top:50%;width:210px;height:210px;margin:-105px 0 0 -105px;border-radius:105px;background:#C8F169;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="hd" style="font-size:40px;font-weight:700;line-height:1">Batch B</span><span class="hd" style="font-size:40px;font-weight:700;line-height:1">’26</span><span style="font-size:12px;font-weight:800;letter-spacing:1px;margin-top:6px">CAMP · PPA · ALUMNI</span></div>
     <div style="position:absolute;left:4px;top:10px">${av(USERS.amaka,56)}</div>
     <div style="position:absolute;right:4px;top:64px">${av(USERS.tunde,48)}</div>
     <div style="position:absolute;left:20px;bottom:6px">${av(USERS.ibrahim,46)}</div>
     <div style="position:absolute;right:0;bottom:28px">${av(USERS.zainab,60)}</div>
-    <div style="position:absolute;left:44px;bottom:-6px;transform:rotate(-5deg);background:#FF8A3D;color:#0F1211;font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Platoon 3, we move!</div>
-    <div style="position:absolute;right:30px;top:-4px;transform:rotate(4deg);background:#232927;font-weight:600;font-size:13px;padding:8px 12px;border-radius:14px">Self-contain · ₦180k/yr</div>
-    <div style="position:absolute;right:18px;bottom:-8px;transform:rotate(3deg);background:#C8F169;color:#0F1211;font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Hiring: junior dev</div>
+    <div style="position:absolute;left:44px;bottom:-6px;transform:rotate(-5deg);background:#FF8A3D;color:var(--ink);font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Platoon 3, we move!</div>
+    <div style="position:absolute;right:30px;top:-4px;transform:rotate(4deg);background:var(--raised);font-weight:600;font-size:13px;padding:8px 12px;border-radius:14px">Self-contain · ₦180k/yr</div>
+    <div style="position:absolute;right:18px;bottom:-8px;transform:rotate(3deg);background:#C8F169;color:var(--ink);font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Hiring: junior dev</div>
   </div>
-  <h1 class="hd" style="font-size:40px;line-height:1;margin:8px 0 12px;font-weight:700">Your service year, together.</h1>
-  <p class="muted" style="font-size:16px;line-height:1.5;margin:0 0 22px">A social network and opportunity marketplace for corpers. Share camp photos and stories, find a roommate, sell what you don’t need, post or find a job, and keep the friendships after passing out.</p>
-  <div class="stack" style="gap:10px;margin-top:auto">
+  <h1 class="hd w-h" style="font-size:40px;line-height:1;margin:8px 0 12px;font-weight:700">Your service year, together.</h1>
+  <p class="muted w-p" style="font-size:16px;line-height:1.5;margin:0 0 22px">A social network and opportunity marketplace for corpers. Share camp photos and stories, find a roommate, sell what you don’t need, post or find a job, and keep the friendships after passing out.</p>
+  <div class="stack w-btns" style="gap:10px;margin-top:auto">
     <button class="btn lime block" data-a="go" data-s="signup" data-t="signup">Create account</button>
     <button class="btn outline block" data-a="go" data-s="signup" data-t="signin">I already have an account</button>
-    <button class="btn block" style="color:#A3ABA5;height:44px" data-a="demo">Skip and explore as a demo user</button>
-    <div class="row" style="justify-content:center;gap:16px;font-size:13px"><button data-a="go" data-s="legal" data-t="terms" style="color:#A3ABA5;min-height:36px">Terms</button><button data-a="go" data-s="legal" data-t="privacy" style="color:#A3ABA5;min-height:36px">Privacy</button><button data-a="go" data-s="help" style="color:#A3ABA5;min-height:36px">Help</button></div>
+    <button class="btn block" style="color:var(--muted);height:44px" data-a="demo">Skip and explore as a demo user</button>
+    <div class="row" style="justify-content:center;gap:16px;font-size:13px"><button data-a="go" data-s="legal" data-t="terms" style="color:var(--muted);min-height:36px">Terms</button><button data-a="go" data-s="legal" data-t="privacy" style="color:var(--muted);min-height:36px">Privacy</button><button data-a="go" data-s="help" style="color:var(--muted);min-height:36px">Help</button></div>
   </div></div>`;
 
 INIT.signup=p=>{S.draft={mode:p.t,method:'Email',email:'',password:'',phone:'',terms:p.t==='signin'};};
@@ -828,18 +875,18 @@ SC.signup=t=>{const d=S.draft,si=t.t==='signin';
   ${seg(['Email','Phone'],d.method,'setDraft','data-k="method"')}
   ${d.method==='Email'?fld('email','Email address',{type:'email',ph:'you@example.com',attrs:'autocomplete="email"'})+fld('password','Password',{type:'password',ph:'At least 8 characters',attrs:'autocomplete="'+(si?'current':'new')+'-password"'})
    :fld('phone','Phone number',{type:'tel',prefix:'+234',prefixW:62,ph:'803 000 0000',attrs:'inputmode="tel" autocomplete="tel"',hint:'We’ll text you a one-time code.'})}
-  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:#C8F169;padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+`<div class="hint" style="padding-left:34px">Read the <button data-a="go" data-s="legal" data-t="terms" style="color:#C8F169;font-weight:700;min-height:28px">Terms</button> and <button data-a="go" data-s="legal" data-t="privacy" style="color:#C8F169;font-weight:700;min-height:28px">Privacy Notice</button></div>`+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')}
+  ${si?'<button class="btn" style="height:36px;align-self:flex-start;color:var(--accent-text);padding:0" data-a="forgot">Forgot password?</button>':checkbox(d.terms,'terms','I agree to the <u>Terms of Service</u> and <u>Privacy Notice</u>.')+`<div class="hint" style="padding-left:34px">Read the <button data-a="go" data-s="legal" data-t="terms" style="color:var(--accent-text);font-weight:700;min-height:28px">Terms</button> and <button data-a="go" data-s="legal" data-t="privacy" style="color:var(--accent-text);font-weight:700;min-height:28px">Privacy Notice</button></div>`+(S.errors.terms?`<span class="err">${S.errors.terms}</span>`:'')}
   <button class="btn lime block" data-a="signupNext">${si?'Sign in':'Continue'}</button>
-  <div class="row" style="gap:12px;color:#7D8681;font-size:13px"><span style="flex:1;height:1px;background:#2F3633"></span>or<span style="flex:1;height:1px;background:#2F3633"></span></div>
-  <button class="btn outline block" data-a="google"><span class="av" style="width:22px;height:22px;border-radius:11px;background:#F2F4EF;font-size:13px">G</span>Continue with Google</button>
+  <div class="row" style="gap:12px;color:var(--muted);font-size:13px"><span style="flex:1;height:1px;background:var(--line)"></span>or<span style="flex:1;height:1px;background:var(--line)"></span></div>
+  <button class="btn outline block" data-a="google"><span class="av" style="width:22px;height:22px;border-radius:11px;background:var(--inv-bg);color:var(--inv-fg);font-size:13px">G</span>Continue with Google</button>
   </div></div>`;};
 
 INIT.otp=()=>{S.draft={...S.draft,code:''};S.focus='f-code';};
 SC.otp=()=>`${tb('')}<div class="scroll nonav" style="padding:0 20px"><div class="stack" style="gap:18px">
-  <div><h1 class="hd" style="font-size:32px;margin:0 0 6px">Enter the code</h1><p class="muted" style="margin:0;line-height:1.5">We sent a 6-digit code to <b style="color:#F2F4EF">${esc(S.draft.method==='Phone'?'+234 '+S.draft.phone:S.draft.email)}</b>.</p></div>
+  <div><h1 class="hd" style="font-size:32px;margin:0 0 6px">Enter the code</h1><p class="muted" style="margin:0;line-height:1.5">We sent a 6-digit code to <b style="color:var(--text)">${esc(S.draft.method==='Phone'?'+234 '+S.draft.phone:S.draft.email)}</b>.</p></div>
   ${fld('code','Verification code',{cls:'otp',ph:'••••••',attrs:'inputmode="numeric" maxlength="6" autocomplete="one-time-code"',hint:'Prototype: any 6 digits work.'})}
   <button class="btn lime block" data-a="otpNext">Verify</button>
-  <button class="btn block" style="color:#A3ABA5;height:44px" data-a="resend">Resend code</button></div></div>`;
+  <button class="btn block" style="color:var(--muted);height:44px" data-a="resend">Resend code</button></div></div>`;
 
 INIT.profileSetup=()=>{S.draft={name:'',username:'',bio:'',photo:S.me.photo};};
 SC.profileSetup=()=>{const d=S.draft;const pv={photo:d.photo,initials:initials(d.name||'?'),color:'#C8F169'};
@@ -856,10 +903,10 @@ SC.journey=t=>{const d=S.draft,edit=d.mode==='edit';
   return `${tb(edit?'Correct service details':'',{right:edit?'':steps(2).replace('class="steps"','class="steps" style="flex:1;padding:0 8px 0 0"')})}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:14px">
   ${edit?'':`<div><h1 class="hd" style="font-size:30px;margin:0 0 6px">Where are you in your NYSC journey?</h1><p class="muted" style="margin:0">Add what you know. You can change it later.</p></div>`}
   <div class="stack" style="gap:8px" role="radiogroup">${STATUSES.map(([v,s])=>`<button class="opt ${d.status===v?'on':''}" role="radio" aria-checked="${d.status===v}" data-a="setDraft" data-k="status" data-v="${v}"><span class="radio"></span><span><b style="display:block;font-size:15px">${v==='Completed'?'Completed service':v==='Serving'?'Serving at my PPA':v==='In camp'?'In orientation camp':v}</b><span class="hint">${s}</span></span></button>`).join('')}</div>
-  ${d.status==='Awaiting deployment'?`<div class="card" style="border:1px dashed #4A5450;background:transparent"><b>No details yet? No problem.</b><div class="hint" style="margin-top:4px">Add your batch, state and camp when your call-up letter arrives. You can still browse and follow people.</div></div>`:`
+  ${d.status==='Awaiting deployment'?`<div class="card" style="border:1px dashed var(--line3);background:transparent"><b>No details yet? No problem.</b><div class="hint" style="margin-top:4px">Add your batch, state and camp when your call-up letter arrives. You can still browse and follow people.</div></div>`:`
   <div class="grid2">${fld('batch','Batch',{opts:BATCHES})}${fld('stream','Stream',{opts:['Stream 1','Stream 2','Not sure']})}</div>
   ${fld('state','State of deployment',{opts:STATES,rerender:true})}
-  <div class="card row" style="padding:12px 14px">${I('building',18,'style="color:#C8F169"')}<span style="font-size:14px"><span class="hint" style="display:block">Orientation camp</span>${esc(d.state)} Orientation Camp</span></div>
+  <div class="card row" style="padding:12px 14px">${I('building',18,'style="color:var(--accent-text)"')}<span style="font-size:14px"><span class="hint" style="display:block">Orientation camp</span>${esc(d.state)} Orientation Camp</span></div>
   ${d.status!=='In camp'?fld('lga','Current LGA',{ph:'e.g. Kano Municipal',opt:true}):''}
   ${d.status==='Serving'?fld('ppa','Place of Primary Assignment (PPA)',{ph:'School, hospital, company…',opt:true,hint:I('lock',12)+' Private by default. Only you can see this.'}):''}`}
   <button class="btn lime block" data-a="journeyNext">${edit?'Save changes':'Continue'}</button></div></div>`;};
@@ -869,17 +916,17 @@ SC.verify=t=>{const d=S.draft,ob=d.from==='onboarding';const awaiting=S.me.statu
   return `${tb(ob?'':'Verify membership',{right:ob?steps(3).replace('class="steps"','class="steps" style="flex:1;padding:0 8px 0 0"'):''})}<div class="scroll nonav" style="padding:0 20px 24px"><div class="stack" style="gap:16px">
   <span class="av" style="width:64px;height:64px;border-radius:22px;background:#C8F169">${I('shieldCheck',30)}</span>
   <div><h1 class="hd" style="font-size:30px;margin:0 0 6px">Verify you’re a corps member</h1><p class="muted" style="margin:0;line-height:1.5">Verification unlocks official batch and camp communities, listings and events. It confirms membership only. It doesn’t vouch for everything a member posts.</p></div>
-  ${awaiting?`<div class="card" style="border:1px dashed #4A5450;background:transparent"><b>Verify after deployment</b><div class="hint" style="margin-top:4px">You can submit once your call-up letter arrives. Until then you can browse, follow people and post in public spaces.</div></div>
+  ${awaiting?`<div class="card" style="border:1px dashed var(--line3);background:transparent"><b>Verify after deployment</b><div class="hint" style="margin-top:4px">You can submit once your call-up letter arrives. Until then you can browse, follow people and post in public spaces.</div></div>
   <button class="btn lime block" data-a="verifySkip">Continue</button>`:`
   ${fld('callup','Call-up number',{ph:'As shown on your call-up letter',attrs:'autocapitalize="characters"'})}
   <div class="field"><span class="flabel">NYSC ID card (issued at camp)</span>
-    <label for="vdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.doc?'#FF8A3D':'#4A5450'};background:transparent">
-      ${d.docUrl?`<img src="${d.docUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover;flex:none">`:`<span class="ico" style="width:44px;height:44px;border-radius:14px;background:#232927;display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}
+    <label for="vdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.doc?'#FF8A3D':'var(--line3)'};background:transparent">
+      ${d.docUrl?`<img src="${d.docUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover;flex:none">`:`<span class="ico" style="width:44px;height:44px;border-radius:14px;background:var(--raised);display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}
       <span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.docName?esc(d.docName):'Upload a photo of your NYSC ID card'}</b><span class="hint">${d.docName?'Tap to replace':'Name and photo must be clear. JPG or PNG.'}</span></span></label>
     <input id="vdoc" type="file" accept="image/*" class="vh" data-file="verifyDoc">${S.errors.doc?`<span class="err">${S.errors.doc}</span>`:''}</div>
-  <div class="stack" style="gap:8px">${[['lock','Only our verification team sees your document.'],['trash','It’s deleted after a decision is made.'],['users','Community moderators never see it.']].map(([i,s])=>`<div class="row" style="font-size:13px;color:#D3D8D4">${I(i,16,'style="color:#C8F169"')}${s}</div>`).join('')}</div>
+  <div class="stack" style="gap:8px">${[['lock','Only our verification team sees your document.'],['trash','It’s deleted after a decision is made.'],['users','Community moderators never see it.']].map(([i,s])=>`<div class="row" style="font-size:13px;color:var(--soft)">${I(i,16,'style="color:var(--accent-text)"')}${s}</div>`).join('')}</div>
   <button class="btn lime block" data-a="verifySubmit">Submit for review</button>
-  ${ob?'<button class="btn block" style="color:#A3ABA5;height:44px" data-a="verifySkip">I’ll do this later</button>':''}`}
+  ${ob?'<button class="btn block" style="color:var(--muted);height:44px" data-a="verifySkip">I’ll do this later</button>':''}`}
   </div></div>`;};
 
 INIT.interests=()=>{S.draft={interests:[...S.me.interests]};};
@@ -887,7 +934,7 @@ SC.interests=()=>`${tb('',{right:steps(3).replace('class="steps"','class="steps"
   <div><h1 class="hd" style="font-size:30px;margin:0 0 6px">What are you into?</h1><p class="muted" style="margin:0">We’ll suggest communities and posts. Pick as many as you like.</p></div>
   <div style="display:flex;flex-wrap:wrap;gap:8px">${INTERESTS.map(x=>{const on=S.draft.interests.includes(x);return `<button class="chip ${on?'on':''}" aria-pressed="${on}" data-a="toggleInterest" data-v="${x}">${on?'✓ ':''}${x}</button>`;}).join('')}</div>
   <button class="btn lime block" data-a="interestsNext">Continue</button>
-  <button class="btn block" style="color:#A3ABA5;height:44px" data-a="interestsNext">Skip</button></div></div>`;
+  <button class="btn block" style="color:var(--muted);height:44px" data-a="interestsNext">Skip</button></div></div>`;
 
 INIT.suggest=()=>{S.draft={joins:new Set()};};
 SC.suggest=()=>{const off=['batch-b-26','kano-camp','kano-cms'].map(i=>COMM[i]);const map={Tech:'Tech',Football:'Sports',Photography:'Creative',Anime:'Interest'};
@@ -919,11 +966,11 @@ function feedItem(r){return r.k==='post'?postCard(POSTS[r.id]):r.k==='listing'?l
 function verifBanner(){
   const m={unverified:['Get verified to unlock everything','Official communities, listings and events need verification.'],pending:['Verification in review','Usually within 48 hours. Some features stay locked until then.'],rejected:['Verification needs attention','See why and resubmit.']}[S.verif];
   if(!m) return '';
-  return `<div style="padding:4px 12px 10px"><button class="card" data-a="go" data-s="verification" style="width:100%;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid #FF8A3D;background:transparent;padding:12px 14px">${I(S.verif==='pending'?'clock':'shield',22,'style="color:#FF8A3D"')}<span style="flex:1"><b style="display:block;font-size:14px">${m[0]}</b><span class="hint">${m[1]}</span></span>${I('chevR',18)}</button></div>`;
+  return `<div style="padding:4px 12px 10px"><button class="card" data-a="go" data-s="verification" style="width:100%;text-align:left;display:flex;gap:12px;align-items:center;border:1px solid #FF8A3D;background:transparent;padding:12px 14px">${I(S.verif==='pending'?'clock':'shield',22,'style="color:var(--orange-text)"')}<span style="flex:1"><b style="display:block;font-size:14px">${m[0]}</b><span class="hint">${m[1]}</span></span>${I('chevR',18)}</button></div>`;
 }
 function campToday(){
   return `<div style="padding:0 12px 12px"><div class="card" style="padding:14px 0 14px 14px"><div class="row" style="padding-right:14px;justify-content:space-between"><span class="hd" style="font-weight:700;font-size:16px">Today at camp</span><span class="hint">Shared by camp admins</span></div>
-  <div class="chips" style="padding:10px 14px 0 0">${CAMP_TODAY.map(([t,a],i)=>`<div style="flex:none;background:${i===3?'#FF8A3D':'#232927'};color:${i===3?'#0F1211':'#F2F4EF'};border-radius:16px;padding:10px 12px;min-width:120px"><div style="font-size:12px;font-weight:700;opacity:.85">${t}</div><div style="font-weight:600;font-size:14px;margin-top:2px">${a}</div></div>`).join('')}</div></div></div>`;
+  <div class="chips" style="padding:10px 14px 0 0">${CAMP_TODAY.map(([t,a],i)=>`<div style="flex:none;background:${i===3?'#FF8A3D':'var(--raised)'};color:${i===3?'var(--ink)':'var(--text)'};border-radius:16px;padding:10px 12px;min-width:120px"><div style="font-size:12px;font-weight:700;opacity:.85">${t}</div><div style="font-weight:600;font-size:14px;margin-top:2px">${a}</div></div>`).join('')}</div></div></div>`;
 }
 SC.home=()=>{
   const me=S.me,unread=NOTIF.some(n=>!n.read);
@@ -949,12 +996,12 @@ SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return `${tb('Post')}${empty('T
   const cs=p.comments||[];
   return `${tb(p.type==='poll'?'Poll':p.type==='question'?'Question':p.type==='discussion'?'Discussion':'Post')}
   <div class="scroll" style="padding-bottom:96px"><div class="pad">${postCard(p,true)}
-  ${p.community?`<button class="row" data-a="go" data-s="communityDetail" data-id="${p.community}" style="margin:10px 4px 0;font-size:13px;color:#A3ABA5;min-height:36px">${I('users',14)}Posted in <b style="color:#F2F4EF">${esc(COMM[p.community].name)}</b></button>`:''}
+  ${p.community?`<button class="row" data-a="go" data-s="communityDetail" data-id="${p.community}" style="margin:10px 4px 0;font-size:13px;color:var(--muted);min-height:36px">${I('users',14)}Posted in <b style="color:var(--text)">${esc(COMM[p.community].name)}</b></button>`:''}
   ${p.type==='announcement'?'':`<div class="sec" style="padding-top:14px">Comments · ${p.cc}</div>
   ${cs.length?cs.map((c,i)=>{const u=user(c.u);return `<div class="row" style="align-items:flex-start;gap:10px;padding:12px 0 0">
     <button data-a="openUser" data-id="${c.u}" aria-label="${esc(u.name)}">${av(u,36)}</button>
-    <div style="flex:1;min-width:0"><div style="background:#1A1F1D;border-radius:4px 18px 18px 18px;padding:10px 12px"><div style="font-weight:600;font-size:13px;display:flex;gap:4px;align-items:center">${esc(u.name)}${vb(u,13)}</div><div style="font-size:14px;line-height:1.45;margin-top:2px;word-wrap:break-word">${esc(c.t)}</div></div>
-    <div class="row" style="gap:16px;font-size:12px;color:#A3ABA5;padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'#FF8A3D':'#A3ABA5'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}</div></div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
+    <div style="flex:1;min-width:0"><div style="background:var(--surface);border-radius:4px 18px 18px 18px;padding:10px 12px"><div style="font-weight:600;font-size:13px;display:flex;gap:4px;align-items:center">${esc(u.name)}${vb(u,13)}</div><div style="font-size:14px;line-height:1.45;margin-top:2px;word-wrap:break-word">${esc(c.t)}</div></div>
+    <div class="row" style="gap:16px;font-size:12px;color:var(--muted);padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'var(--orange-text)':'var(--muted)'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}</div></div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
   ${p.cc>cs.length&&cs.length?`<div class="hint" style="padding:14px 4px">Showing the most recent comments.</div>`:''}`}
   </div></div>
   ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="Add a comment…" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
@@ -969,11 +1016,11 @@ SC.community=()=>{
   <div class="scroll"><div class="pad stack">
   ${seg(['Joined','Discover'],S.commView,'commView')}
   ${S.commView==='Joined'?`
-    ${lockedOff.length&&!verified()?`<button class="card" data-a="go" data-s="verification" style="text-align:left;border:1px dashed #4A5450;background:transparent;display:flex;gap:12px;align-items:center">${I('lock',22,'style="color:#FF8A3D"')}<span style="flex:1"><b style="display:block;font-size:14px">${lockedOff.length} official communities waiting</b><span class="hint">Your batch, camp and state spaces open after verification.</span></span>${I('chevR',18)}</button>`:''}
+    ${lockedOff.length&&!verified()?`<button class="card" data-a="go" data-s="verification" style="text-align:left;border:1px dashed var(--line3);background:transparent;display:flex;gap:12px;align-items:center">${I('lock',22,'style="color:var(--orange-text)"')}<span style="flex:1"><b style="display:block;font-size:14px">${lockedOff.length} official communities waiting</b><span class="hint">Your batch, camp and state spaces open after verification.</span></span>${I('chevR',18)}</button>`:''}
     ${offJ.length?`<div class="sec">Official</div>${offJ.map(c=>commRow(c)).join('')}`:''}
     <div class="sec">Your communities</div>
     ${mine.length?mine.map(c=>commRow(c)).join(''):empty('You haven’t joined any yet','Find people who share your interests, sport or state.',`<button class="btn sm lime" data-a="commView" data-v="Discover">Discover communities</button>`)}`
-  :`<div style="position:relative"><span style="position:absolute;left:14px;top:15px;color:#A3ABA5">${I('search',20)}</span><label for="f-cq" class="vh">Search communities</label><input class="inp" id="f-cq" type="search" data-live="commQ" value="${esc(S.commQ)}" placeholder="Search communities" style="padding-left:44px"></div>
+  :`<div style="position:relative"><span style="position:absolute;left:14px;top:15px;color:var(--muted)">${I('search',20)}</span><label for="f-cq" class="vh">Search communities</label><input class="inp" id="f-cq" type="search" data-live="commQ" value="${esc(S.commQ)}" placeholder="Search communities" style="padding-left:44px"></div>
     <div style="margin:0 -12px">${chips(['All',...CATEGORIES],S.commCat,'commCat')}</div>
     <div id="commResults" class="stack">${commResults()}</div>`}
   </div></div>${nav('community')}`;
@@ -988,7 +1035,7 @@ SC.communityDetail=t=>{const c=COMM[t.id];const tab=S.commTab[c.id]||'Feed';
   let body='';
   if(tab==='Feed'||tab==='Discussions'){
     const list=tab==='Feed'?posts:posts.filter(p=>p.type==='discussion'||p.type==='question');
-    body=`${c.joined?`<button class="card row" data-a="create" data-comm="${c.id}" style="width:100%;text-align:left;padding:10px 12px;color:#A3ABA5;font-size:14px">${av(S.me,36)}<span style="flex:1">Share something with ${esc(c.name)}…</span>${I('image',20)}</button>`:''}
+    body=`${c.joined?`<button class="card row" data-a="create" data-comm="${c.id}" style="width:100%;text-align:left;padding:10px 12px;color:var(--muted);font-size:14px">${av(S.me,36)}<span style="flex:1">Share something with ${esc(c.name)}…</span>${I('image',20)}</button>`:''}
       ${list.length?list.map(p=>postCard(p)).join(''):empty(tab==='Feed'?'No posts yet':'No discussions yet',c.joined?'Start one from the box above.':'Join to start posting.')}`;
   } else if(tab==='Members'){
     const mods=[...(c.admin==='me'?['me']:[]),...c.mods];
@@ -1000,23 +1047,23 @@ SC.communityDetail=t=>{const c=COMM[t.id];const tab=S.commTab[c.id]||'Feed';
   } else if(tab==='Moderate'&&isMod(c)){
     body=modPanel(c);
   } else if(tab==='Pinned'){
-    body=c.pinned.length?c.pinned.map(x=>`<div class="card" style="display:flex;gap:12px;border:1px dashed #4A5450;background:transparent">${I('pin',20,'style="color:#FF8A3D"')}<div><span class="tag orange">Moderator notice</span><div style="font-size:15px;line-height:1.45;margin-top:4px">${esc(x)}</div></div></div>`).join(''):empty('Nothing pinned','');
+    body=c.pinned.length?c.pinned.map(x=>`<div class="card" style="display:flex;gap:12px;border:1px dashed var(--line3);background:transparent">${I('pin',20,'style="color:var(--orange-text)"')}<div><span class="tag orange">Moderator notice</span><div style="font-size:15px;line-height:1.45;margin-top:4px">${esc(x)}</div></div></div>`).join(''):empty('Nothing pinned','');
   } else {
-    body=`<div class="card"><div class="hd" style="font-weight:700;font-size:18px">About</div><p style="margin:6px 0 0;line-height:1.5;color:#D3D8D4">${esc(c.desc)}</p>
-      <div class="stack" style="gap:8px;margin-top:12px;font-size:14px">${[['users',c.members.toLocaleString()+' members'],['tag2',c.category],[c.join==='open'?'globe':'lock',c.join==='open'?'Anyone can join':c.join==='request'?'Join by request':'Invite only'],['shield',c.official?'Official space created and governed by the platform':'Created by a verified corps member']].map(([i,s])=>`<div class="row">${I(i==='tag2'?'bookmark':i,16,'style="color:#C8F169"')}${esc(s)}</div>`).join('')}</div></div>
-      <div class="card"><div class="hd" style="font-weight:700;font-size:18px">Rules</div><ol style="margin:8px 0 0;padding-left:20px;line-height:1.6;color:#D3D8D4">${c.rules.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></div>
+    body=`<div class="card"><div class="hd" style="font-weight:700;font-size:18px">About</div><p style="margin:6px 0 0;line-height:1.5;color:var(--soft)">${esc(c.desc)}</p>
+      <div class="stack" style="gap:8px;margin-top:12px;font-size:14px">${[['users',c.members.toLocaleString()+' members'],['tag2',c.category],[c.join==='open'?'globe':'lock',c.join==='open'?'Anyone can join':c.join==='request'?'Join by request':'Invite only'],['shield',c.official?'Official space created and governed by the platform':'Created by a verified corps member']].map(([i,s])=>`<div class="row">${I(i==='tag2'?'bookmark':i,16,'style="color:var(--accent-text)"')}${esc(s)}</div>`).join('')}</div></div>
+      <div class="card"><div class="hd" style="font-weight:700;font-size:18px">Rules</div><ol style="margin:8px 0 0;padding-left:20px;line-height:1.6;color:var(--soft)">${c.rules.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></div>
       ${c.official||c.admin==='me'?'':`<button class="btn dark block" data-a="modApply" data-id="${c.id}">${I('award',18)}Apply to moderate</button>`}
-      <button class="btn block" style="color:#FFA27F" data-a="report" data-kind="community" data-id="${c.id}">${I('flag',18)}Report community</button>`;
+      <button class="btn block" style="color:var(--err)" data-a="report" data-kind="community" data-id="${c.id}">${I('flag',18)}Report community</button>`;
   }
   return `<div class="scroll">
-  <div style="margin:12px;border-radius:28px;background:#1A1F1D;padding:14px 16px 18px;position:relative;overflow:hidden">
+  <div style="margin:12px;border-radius:28px;background:var(--surface);padding:14px 16px 18px;position:relative;overflow:hidden">
     <div style="position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:90px;background:${c.color};opacity:.14" aria-hidden="true"></div>
-    <div class="row" style="justify-content:space-between;position:relative"><button class="ib" style="background:#232927" data-a="back" aria-label="Back">${I('back')}</button><div class="row" style="gap:8px"><button class="ib" style="background:#232927" data-a="share" data-kind="community" data-id="${c.id}" aria-label="Share community">${I('share')}</button><button class="ib" style="background:#232927" data-a="commMenu" data-id="${c.id}" aria-label="More options">${I('more')}</button></div></div>
+    <div class="row" style="justify-content:space-between;position:relative"><button class="ib" style="background:var(--raised)" data-a="back" aria-label="Back">${I('back')}</button><div class="row" style="gap:8px"><button class="ib" style="background:var(--raised)" data-a="share" data-kind="community" data-id="${c.id}" aria-label="Share community">${I('share')}</button><button class="ib" style="background:var(--raised)" data-a="commMenu" data-id="${c.id}" aria-label="More options">${I('more')}</button></div></div>
     <div class="row" style="gap:6px;margin-top:14px;position:relative;flex-wrap:wrap">${c.official?`<span class="tag lime">${I('shield',12)}Official</span>`:`<span class="tag oranges">Member-run</span>`}<span class="tag line">${esc(c.sub)}</span>${S.mutedComms.has(c.id)?`<span class="tag grey">${I('mute',12)}Muted</span>`:''}</div>
     <h1 class="hd" style="margin:10px 0 0;font-weight:700;font-size:30px;letter-spacing:-1px;line-height:1.02;position:relative">${esc(c.name)}</h1>
     <div class="row" style="gap:18px;margin-top:14px;position:relative">
-      <div><div class="hd" style="font-weight:700;font-size:20px">${short(c.members)}</div><div style="font-size:12px;color:#A3ABA5">members</div></div>
-      <div><div class="hd" style="font-weight:700;font-size:20px">${c.today}</div><div style="font-size:12px;color:#A3ABA5">posts today</div></div>
+      <div><div class="hd" style="font-weight:700;font-size:20px">${short(c.members)}</div><div style="font-size:12px;color:var(--muted)">members</div></div>
+      <div><div class="hd" style="font-weight:700;font-size:20px">${c.today}</div><div style="font-size:12px;color:var(--muted)">posts today</div></div>
       <span style="margin-left:auto">${joinBtn(c,false)}</span>
     </div></div>
   <div class="chips">${['Feed','Discussions','Members','Pinned','About',...(isMod(c)?['Moderate']:[])].map(x=>`<button class="chip ${x===tab?'on':''}" data-a="commTab" data-id="${c.id}" data-v="${x}" aria-pressed="${x===tab}">${x}</button>`).join('')}</div>
@@ -1030,11 +1077,11 @@ SC.createCommunity=()=>{const d=S.draft;const made=S.myComms.length;
   ${fld('name','Community name',{ph:'e.g. Corpers in Nasarawa LGA',attrs:'maxlength="40"',hint:'Names that look like official NYSC spaces aren’t allowed.'})}
   ${fld('desc','What is it for?',{area:true,ph:'Tell people who it’s for and what to expect.',attrs:'maxlength="300"'})}
   ${fld('category','Category',{opts:CATEGORIES.filter(c=>c!=='Batch & camp')})}
-  <div class="field"><span class="flabel">Cover colour</span><div class="row" style="gap:10px;flex-wrap:wrap">${COLORS.map(c=>`<button data-a="setDraft" data-k="color" data-v="${c}" aria-label="Colour ${c}" aria-pressed="${d.color===c}" style="width:40px;height:40px;border-radius:14px;background:${c};${d.color===c?'outline:3px solid #F2F4EF;outline-offset:2px':''}"></button>`).join('')}</div></div>
+  <div class="field"><span class="flabel">Cover colour</span><div class="row" style="gap:10px;flex-wrap:wrap">${COLORS.map(c=>`<button data-a="setDraft" data-k="color" data-v="${c}" aria-label="Colour ${c}" aria-pressed="${d.color===c}" style="width:40px;height:40px;border-radius:14px;background:${c};${d.color===c?'outline:3px solid var(--text);outline-offset:2px':''}"></button>`).join('')}</div></div>
   <div class="field"><span class="flabel">Who can join</span>${seg(['Open','Request','Invite'],d.join,'setDraft','data-k="join"')}<span class="hint">${d.join==='Open'?'Anyone can join straight away.':d.join==='Request'?'You approve each request.':'Only people with an invite link can join.'}</span></div>
   <div class="field"><span class="flabel">Visibility</span>${seg(['Public','Private'],d.vis,'setDraft','data-k="vis"')}<span class="hint">${d.vis==='Public'?'Posts can show up in Explore.':'Only members can see posts.'}</span></div>
   ${fld('rules','Community rules',{area:true,hint:'One rule per line. Members see these before joining.'})}
-  <div class="card row" style="background:transparent;border:1px dashed #4A5450;font-size:13px;color:#D3D8D4;align-items:flex-start">${I('info',18,'style="color:#C8F169;margin-top:1px"')}<span>You’ll be the admin. You can create up to 3 communities (${made} of 3 used). The platform team can review reported communities.</span></div>
+  <div class="card row" style="background:transparent;border:1px dashed var(--line3);font-size:13px;color:var(--soft);align-items:flex-start">${I('info',18,'style="color:var(--accent-text);margin-top:1px"')}<span>You’ll be the admin. You can create up to 3 communities (${made} of 3 used). The platform team can review reported communities.</span></div>
   </div></div><div class="bottombar"><button class="btn lime block" data-a="createCommunity">Create community</button></div>`;};
 
 // ===== Compose =====
@@ -1043,14 +1090,14 @@ INIT.compose=p=>{S.draft={photos:[],dest:p.comm||'feed',alsoFeed:!p.comm,vis:'Pu
 function photoPicker(label,req,single){const d=S.draft;
   return `<div class="field"><span class="flabel">${label}${req?'':' <span class="muted" style="font-weight:500">(optional)</span>'}</span>
   <div class="chips" style="padding:0">${d.photos.map((u,i)=>`<span style="position:relative;flex:none"><span class="ph" style="width:${single?150:96}px;height:96px">${isVid(u)?`<video src="${u}" muted preload="metadata" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>`:`<img src="${u}" alt="Selected photo ${i+1}">`}</span><button class="ib" style="position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:10px;background:rgba(15,18,17,.85)" data-a="rmPhoto" data-i="${i}" aria-label="Remove photo ${i+1}">${I('x',14)}</button></span>`).join('')}
-  ${single&&d.photos.length?'':`<label for="cphotos" class="ph" style="width:96px;height:96px;border:1.5px dashed ${S.errors.photos?'#FF8A3D':'#4A5450'};background:transparent;color:#A3ABA5;flex-direction:column;gap:4px;font-size:12px;font-weight:600;cursor:pointer">${I('camera',22)}Add</label>`}</div>
+  ${single&&d.photos.length?'':`<label for="cphotos" class="ph" style="width:96px;height:96px;border:1.5px dashed ${S.errors.photos?'#FF8A3D':'var(--line3)'};background:transparent;color:var(--muted);flex-direction:column;gap:4px;font-size:12px;font-weight:600;cursor:pointer">${I('camera',22)}Add</label>`}</div>
   <input id="cphotos" type="file" accept="${topScreen().t==='photo'?'image/*,video/*':'image/*'}" ${single?'':'multiple'} class="vh" data-file="composePhotos">${S.errors.photos?`<span class="err">${S.errors.photos}</span>`:''}</div>`;}
 function destFields(){const d=S.draft;const joined=Object.values(COMM).filter(c=>c.joined);
   const inComm=d.dest!=='feed';const commOnly=inComm&&!d.alsoFeed;
   const vis=commOnly?'Community':(d.vis==='Community'?'Public':d.vis);
   return `${fld('dest','Post to',{opts:[['feed','My Home feed'],...joined.map(c=>[c.id,c.name])],rerender:true})}
   ${inComm?`<div class="list">${swRow('alsoFeed','Also share to my Home feed','Followers and Explore can see it too',d.alsoFeed)}</div>`:''}
-  <div class="field"><span class="flabel">Who can see this</span>${commOnly?`<div class="card row" style="padding:12px 14px;font-size:14px">${I('users',18,'style="color:#C8F169"')}Members of ${esc(COMM[d.dest].name)} only</div>`:seg(['Public','Followers'],vis,'setDraft','data-k="vis"')}
+  <div class="field"><span class="flabel">Who can see this</span>${commOnly?`<div class="card row" style="padding:12px 14px;font-size:14px">${I('users',18,'style="color:var(--accent-text)"')}Members of ${esc(COMM[d.dest].name)} only</div>`:seg(['Public','Followers'],vis,'setDraft','data-k="vis"')}
   <span class="hint">${commOnly?'It won’t appear in public search.':vis==='Public'?'Anyone can discover it in Explore across Nigeria.':'Only people who follow you.'}</span></div>`;}
 function contactFields(){const d=S.draft;
   return `<div class="field"><span class="flabel">How people can reach you</span><div class="list">${swRow('wa','WhatsApp','Opens a chat with a pre-filled message',d.wa)}${swRow('call','Phone call','Shows your number when someone taps Call',d.call)}</div>${S.errors.contact?`<span class="err">${S.errors.contact}</span>`:''}<span class="hint">There’s no in-app chat. Your number is never shown on your profile.</span></div>
@@ -1062,13 +1109,13 @@ SC.compose=t=>{const ty=t.t,d=S.draft;let f='';
   if(ty==='poll'){f=fld('text','Question',{ph:'e.g. Best spot at Mammy Market?',attrs:'maxlength="120"'})+`<div class="field"><span class="flabel">Options</span><div class="stack" style="gap:8px">${Array.from({length:d.optCount},(_,i)=>`<div class="row" style="gap:8px"><label for="f-opt${i}" class="vh">Option ${i+1}</label><input class="inp ${S.errors['opt'+i]?'bad':''}" id="f-opt${i}" data-k="opt${i}" value="${esc(d['opt'+i]||'')}" placeholder="Option ${i+1}" maxlength="40">${i>=2?`<button class="ib" data-a="rmOpt" data-i="${i}" aria-label="Remove option ${i+1}">${I('x',18)}</button>`:''}</div>`).join('')}</div>${S.errors.opts?`<span class="err">${S.errors.opts}</span>`:''}${d.optCount<5?`<button class="btn sm dark" style="align-self:flex-start;margin-top:4px" data-a="addOpt">${I('plus',16)}Add option</button>`:''}</div>`+fld('duration','Poll length',{opts:['1 day','3 days','1 week']})+`<div class="hint">One vote per member. Moderator elections use a separate, controlled process.</div>`+destFields();}
   if(ty==='sell') f=photoPicker('Photos',true)+fld('title','What are you selling?',{ph:'e.g. Rechargeable fan',attrs:'maxlength="60"'})+`<div class="grid2">${fld('price','Price',{type:'number',prefix:'₦',prefixW:30,ph:'0',attrs:'inputmode="numeric" min="0"'})}${fld('condition','Condition',{opts:['New','Like new','Fairly used','Used']})}</div>`+fld('text','Description',{area:true,ph:'Size, age, any faults, pick-up details…'})+`<div class="grid2">${fld('state','State',{opts:STATES})}${fld('area','Area',{ph:'e.g. Kano Municipal'})}</div>`+contactFields();
   if(ty==='job') f=fld('title','Job title',{ph:'e.g. Junior frontend developer',attrs:'maxlength="60"'})+fld('company','Employer or company',{ph:'e.g. Kano Digital Hub',attrs:'maxlength="60"'})+fld('jobType','Type',{opts:['Full-time','Part-time','Contract','Internship','Gig']})+`<div class="grid2">${fld('price','Pay',{type:'number',prefix:'₦',prefixW:30,ph:'0',attrs:'inputmode="numeric" min="0"'})}${fld('jobUnit','Paid',{opts:[['/ month','Per month'],['/ week','Per week'],['/ event','Per task or event']]})}</div>`+fld('text','Description',{area:true,ph:'What the role involves, who it suits, whether it fits around CDS and PPA hours…'})+`<div class="grid2">${fld('state','State',{opts:STATES})}${fld('area','Area or LGA',{ph:'e.g. Ikeja'})}</div>`+photoPicker('Logo or photo',false)+contactFields()
-    +`<div class="card row" style="background:transparent;border:1px solid #FF8A3D;font-size:13px;align-items:flex-start">${I('shield',18,'style="color:#FF8A3D;margin-top:1px"')}<span>Never ask applicants to pay. Listings that charge fees to apply are removed.</span></div>`;
+    +`<div class="card row" style="background:transparent;border:1px solid #FF8A3D;font-size:13px;align-items:flex-start">${I('shield',18,'style="color:var(--orange-text);margin-top:1px"')}<span>Never ask applicants to pay. Listings that charge fees to apply are removed.</span></div>`;
   if(ty==='accommodation'){f=photoPicker('Photos',true)+fld('title','Title',{ph:'e.g. Self-contain near Gwarzo Road',attrs:'maxlength="60"'})+fld('type','Type',{opts:['Self-contain','Room in shared flat','Mini flat','1-bedroom flat','Hostel or lodge','Roommate wanted']})
     +`<div class="card" style="padding:14px"><div class="hd" style="font-weight:700;font-size:16px;margin-bottom:10px">Rent and fees</div><div class="grid2">${fld('price','Rent',{type:'number',prefix:'₦',prefixW:30,ph:'0',attrs:'inputmode="numeric"'})}${fld('period','Paid',{opts:[['/ year','Per year'],['/ month','Per month']]})}</div>
     <div class="flabel" style="margin:14px 0 6px">One-off fees</div><div class="stack" style="gap:8px">${Array.from({length:d.fees},(_,i)=>`<div class="row" style="gap:8px"><label class="vh" for="f-fee${i}l">Fee name</label><input class="inp" id="f-fee${i}l" data-k="fee${i}l" value="${esc(d['fee'+i+'l']||'')}" placeholder="e.g. Caution fee" style="flex:1.2"><label class="vh" for="f-fee${i}a">Amount</label><input class="inp" id="f-fee${i}a" data-k="fee${i}a" type="number" inputmode="numeric" value="${esc(d['fee'+i+'a']||'')}" placeholder="₦ 0" style="flex:1"><button class="ib" data-a="rmFee" data-i="${i}" aria-label="Remove fee">${I('x',18)}</button></div>`).join('')}</div>
     <button class="btn sm dark" style="margin-top:8px" data-a="addFee">${I('plus',16)}Add a fee</button><div class="hint" style="margin-top:8px">Rent is paid every period. Fees are one-off: agency, caution, legal and so on. Keeping them separate helps people avoid surprises.</div></div>`
     +fld('avail','Available from',{ph:'e.g. 15 December or Now'})+fld('text','Description',{area:true,ph:'Water, light, distance to landmarks, what stays behind…'})+`<div class="grid2">${fld('state','State',{opts:STATES})}${fld('area','Area or LGA',{ph:'e.g. Ikeja'})}</div>`+contactFields()
-    +`<div class="card row" style="background:transparent;border:1px solid #FF8A3D;font-size:13px;align-items:flex-start">${I('shield',18,'style="color:#FF8A3D;margin-top:1px"')}<span>Only list places you’re allowed to rent or hand over. Listings reported as scams are reviewed first.</span></div>`;}
+    +`<div class="card row" style="background:transparent;border:1px solid #FF8A3D;font-size:13px;align-items:flex-start">${I('shield',18,'style="color:var(--orange-text);margin-top:1px"')}<span>Only list places you’re allowed to rent or hand over. Listings reported as scams are reviewed first.</span></div>`;}
   if(ty==='event'){const comms=S.myComms.map(id=>COMM[id]);f=photoPicker('Cover image',false,true)+fld('title','Event name',{ph:'e.g. Batch B Kano meetup',attrs:'maxlength="70"'})+fld('text','What’s happening?',{area:true,ph:'Who it’s for, what to bring, what to expect.'})+`<div class="grid2">${fld('date','Date',{type:'date'})}${fld('time','Time',{type:'time'})}</div>`+fld('loc','Location',{ph:'Venue or landmark'})+fld('state','State',{opts:STATES})+fld('organiser','Organised by',{opts:[['me','Me ('+S.me.name+')'],...comms.map(c=>[c.id,c.name])]})+fld('link','Registration link',{type:'url',opt:true,ph:'https://',hint:'No tickets or payments in the app. Add an external link if you need sign-ups.'});}
   return `${tb(CT[ty],{close:true})}<div class="scroll" style="padding-bottom:100px"><div class="pad stack" style="gap:16px">
   <div class="row" style="gap:10px">${av(S.me,40)}<span><b style="display:flex;gap:4px;align-items:center">${esc(S.me.name)}${vb(S.me,14)}</b><span class="hint">${shortBatch(S.me.batch)} · ${esc(S.me.state)}</span></span></div>
@@ -1076,7 +1123,7 @@ SC.compose=t=>{const ty=t.t,d=S.draft;let f='';
 
 // ===== Explore =====
 SC.explore=()=>`${tb('Explore',{back:false,right:`<span class="tag line" style="height:32px">${I('globe',13)}All of Nigeria</span>`})}
-  <div class="scroll"><div class="pad" style="padding-bottom:10px"><div style="position:relative"><span style="position:absolute;left:14px;top:15px;color:#A3ABA5">${I('search',20)}</span><label for="f-q" class="vh">Search</label><input class="inp" id="f-q" type="search" data-live="exploreQ" value="${esc(S.q)}" placeholder="Search people, posts, places, listings…" style="padding-left:44px"></div></div>
+  <div class="scroll"><div class="pad" style="padding-bottom:10px"><div style="position:relative"><span style="position:absolute;left:14px;top:15px;color:var(--muted)">${I('search',20)}</span><label for="f-q" class="vh">Search</label><input class="inp" id="f-q" type="search" data-live="exploreQ" value="${esc(S.q)}" placeholder="Search people, posts, places, listings…" style="padding-left:44px"></div></div>
   <div id="exResults">${exploreBody()}</div></div>${nav('explore')}`;
 function stateOk(s){return S.exploreState==='All'||s===S.exploreState;}
 function priceOk(p){return S.explorePrice==='Any'||(S.explorePrice==='lt20'&&p<20000)||(S.explorePrice==='mid'&&p>=20000&&p<=200000)||(S.explorePrice==='gt200'&&p>200000);}
@@ -1095,11 +1142,11 @@ function exploreBody(){
   if(tab==='For You'){body=forYouBody();}
   else if(tab==='Trending'){
     const top=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community').sort((a,b)=>b.likes-a.likes).slice(0,4);
-    body=`<div class="pad stack"><div class="card" style="padding:6px 4px"><div class="hd" style="font-weight:700;font-size:17px;padding:10px 12px 4px">Trending across Nigeria</div>${TRENDING.map(([h,c],i)=>`<button class="li" data-a="setQ" data-v="${h.slice(1)}" style="border-color:#232927"><span class="hd" style="width:26px;color:#A3ABA5;font-weight:700">${i+1}</span><span class="t"><b>${h}</b><span>${c}</span></span>${I('trend',18,'style="color:#C8F169"')}</button>`).join('')}</div>
+    body=`<div class="pad stack"><div class="card" style="padding:6px 4px"><div class="hd" style="font-weight:700;font-size:17px;padding:10px 12px 4px">Trending across Nigeria</div>${TRENDING.map(([h,c],i)=>`<button class="li" data-a="setQ" data-v="${h.slice(1)}" style="border-color:var(--raised)"><span class="hd" style="width:26px;color:var(--muted);font-weight:700">${i+1}</span><span class="t"><b>${h}</b><span>${c}</span></span>${I('trend',18,'style="color:var(--accent-text)"')}</button>`).join('')}</div>
     <div class="sec">Popular posts</div>${top.map(p=>postCard(p)).join('')}</div>`;
   } else if(tab==='Nationwide'){
     const ps=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&p.state&&p.state!==S.me.state&&stateOk(p.state)&&!hiddenAuthor(p.author));
-    body=exFilters(false)+`<div class="pad stack"><div class="hint" style="padding:0 4px">Posts from outside ${esc(S.me.state)}. Pick a state to narrow it down, for example before a redeployment.</div>${ps.length?ps.map(p=>`<div><div class="row" style="gap:6px;font-size:12px;color:#A3ABA5;padding:0 6px 6px">${I('mappin',13)}${esc(p.state)}</div>${postCard(p)}</div>`).join(''):empty('Nothing from this state yet','Try another state.')}</div>`;
+    body=exFilters(false)+`<div class="pad stack"><div class="hint" style="padding:0 4px">Posts from outside ${esc(S.me.state)}. Pick a state to narrow it down, for example before a redeployment.</div>${ps.length?ps.map(p=>`<div><div class="row" style="gap:6px;font-size:12px;color:var(--muted);padding:0 6px 6px">${I('mappin',13)}${esc(p.state)}</div>${postCard(p)}</div>`).join(''):empty('Nothing from this state yet','Try another state.')}</div>`;
   } else if(tab==='Marketplace'){
     const l=lst('item');body=exFilters(true)+`<div class="pad">${l.length?`<div class="grid2">${l.map(itemTile).join('')}</div>`:empty('No items match','Try a different state or price.')}</div>`;
   } else if(tab==='Jobs'){
@@ -1126,7 +1173,7 @@ function searchResults(q){
   if(!ppl.length&&!com.length&&!pos.length&&!lis.length&&!evs.length&&!pl.length) return empty(`No results for “${esc(S.q)}”`,'Check the spelling or try a broader word.');
   const sec=(t,h)=>h?`<div class="sec">${t}</div>${h}`:'';
   return `<div class="pad stack">
-  ${sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:#C8F169"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Accommodation, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join(''))}
+  ${sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:var(--accent-text)"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Accommodation, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join(''))}
   ${sec('People',ppl.slice(0,3).map(userRow).join(''))}
   ${sec('Communities',com.slice(0,3).map(c=>commRow(c)).join(''))}
   ${sec('Listings',lis.slice(0,4).map(listingCard).join(''))}
@@ -1144,34 +1191,34 @@ SC.listing=t=>{const l=LISTINGS[t.id];if(!l||l.deleted)return `${tb('Listing')}$
   return `<div class="scroll" style="padding-bottom:110px">
   <div class="ph" style="margin:12px;height:300px;border-radius:28px;background:${l.color};color:rgba(242,244,239,.3)" role="img" aria-label="${src?'Listing photo':'Photo placeholder'}">${src?`<img src="${src}" alt="">`:I(job?'briefcase':acc?'building':'bag',56)}
     <div style="position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between">
-      <button class="ib" style="background:rgba(15,18,17,.75);color:#F2F4EF" data-a="back" aria-label="Back">${I('back')}</button>
-      <div class="row" style="gap:8px"><button class="ib" style="background:rgba(15,18,17,.75);color:#F2F4EF" data-a="share" data-kind="listing" data-id="${l.id}" aria-label="Share">${I('share')}</button>
-      <button class="ib" style="${l.saved?'background:#C8F169;color:#0F1211':'background:rgba(15,18,17,.75);color:#F2F4EF'}" data-a="saveListing" data-id="${l.id}" aria-pressed="${l.saved}" aria-label="Save listing">${I('bookmark',20,l.saved?'style="fill:currentColor"':'')}</button></div></div>
-    <div style="position:absolute;left:12px;bottom:12px;display:flex;gap:6px">${statusPill(l.status,l.kind).replace('padding:2px 7px','padding:5px 10px')}<span class="tag" style="background:rgba(15,18,17,.75);color:#F2F4EF;padding:5px 10px">${idx+1} / ${n}</span></div>
-    ${n>1?`<button class="ib" style="position:absolute;right:12px;bottom:10px;background:rgba(15,18,17,.75);color:#F2F4EF;width:40px;height:40px" data-a="nextPhoto" data-id="${l.id}" data-n="${n}" aria-label="Next photo">${I('chevR',18)}</button>`:''}
+      <button class="ib" style="background:rgba(15,18,17,.75);color:var(--on-dark)" data-a="back" aria-label="Back">${I('back')}</button>
+      <div class="row" style="gap:8px"><button class="ib" style="background:rgba(15,18,17,.75);color:var(--on-dark)" data-a="share" data-kind="listing" data-id="${l.id}" aria-label="Share">${I('share')}</button>
+      <button class="ib" style="${l.saved?'background:#C8F169;color:var(--ink)':'background:rgba(15,18,17,.75);color:var(--on-dark)'}" data-a="saveListing" data-id="${l.id}" aria-pressed="${l.saved}" aria-label="Save listing">${I('bookmark',20,l.saved?'style="fill:currentColor"':'')}</button></div></div>
+    <div style="position:absolute;left:12px;bottom:12px;display:flex;gap:6px">${statusPill(l.status,l.kind).replace('padding:2px 7px','padding:5px 10px')}<span class="tag" style="background:rgba(15,18,17,.75);color:var(--on-dark);padding:5px 10px">${idx+1} / ${n}</span></div>
+    ${n>1?`<button class="ib" style="position:absolute;right:12px;bottom:10px;background:rgba(15,18,17,.75);color:var(--on-dark);width:40px;height:40px" data-a="nextPhoto" data-id="${l.id}" data-n="${n}" aria-label="Next photo">${I('chevR',18)}</button>`:''}
   </div>
   <div style="padding:4px 18px 0" class="stack">
-    <div><div class="eyebrow" style="color:#FF8A3D;font-weight:700">${job?'Job · '+esc(l.jobType):acc?esc(l.type):'For sale · '+esc(l.condition)} · ${esc(l.area)}</div>
+    <div><div class="eyebrow" style="color:var(--orange-text);font-weight:700">${job?'Job · '+esc(l.jobType):acc?esc(l.type):'For sale · '+esc(l.condition)} · ${esc(l.area)}</div>
     <h1 class="hd" style="margin:6px 0 0;font-weight:700;font-size:28px;letter-spacing:-.8px;line-height:1.05">${esc(l.title)}</h1></div>
-    ${job?`<div class="card" style="padding:14px"><div class="hint">${esc(l.company)}</div><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="hd" style="font-weight:700;font-size:32px;color:#C8F169;line-height:1.05">${naira(l.price)}<span style="font-family:Inter;font-weight:500;font-size:14px;color:#A3ABA5"> ${esc(l.unit)}</span></div></div><span class="tag line">${esc(l.jobType)}</span></div></div>`
-    :acc?`<div class="card" style="padding:14px"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="hint">Rent ${l.unit==='/ month'?'per month':'per year'}</div><div class="hd" style="font-weight:700;font-size:32px;color:#C8F169;line-height:1.05">${naira(l.price)}</div></div><span class="tag line">Recurring</span></div>
-      ${l.fees.length?`<div style="border-top:1px solid #2F3633;margin-top:12px;padding-top:10px" class="stack">${l.fees.map(([a,b])=>`<div class="row" style="justify-content:space-between;font-size:14px"><span class="muted">${esc(a)} <span style="font-size:12px">(one-off)</span></span><b>${naira(b)}</b></div>`).join('')}<div class="row" style="justify-content:space-between;font-size:14px;border-top:1px dashed #2F3633;padding-top:8px"><span>Total to move in</span><b class="hd" style="font-size:17px">${naira(l.price+l.fees.reduce((a,f)=>a+f[1],0))}</b></div></div>`:''}</div>`
-    :`<div class="hd" style="font-weight:700;font-size:34px;color:#C8F169;line-height:1">${naira(l.price)}</div>`}
+    ${job?`<div class="card" style="padding:14px"><div class="hint">${esc(l.company)}</div><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="hd" style="font-weight:700;font-size:32px;color:var(--accent-text);line-height:1.05">${naira(l.price)}<span style="font-family:Inter;font-weight:500;font-size:14px;color:var(--muted)"> ${esc(l.unit)}</span></div></div><span class="tag line">${esc(l.jobType)}</span></div></div>`
+    :acc?`<div class="card" style="padding:14px"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="hint">Rent ${l.unit==='/ month'?'per month':'per year'}</div><div class="hd" style="font-weight:700;font-size:32px;color:var(--accent-text);line-height:1.05">${naira(l.price)}</div></div><span class="tag line">Recurring</span></div>
+      ${l.fees.length?`<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px" class="stack">${l.fees.map(([a,b])=>`<div class="row" style="justify-content:space-between;font-size:14px"><span class="muted">${esc(a)} <span style="font-size:12px">(one-off)</span></span><b>${naira(b)}</b></div>`).join('')}<div class="row" style="justify-content:space-between;font-size:14px;border-top:1px dashed var(--line);padding-top:8px"><span>Total to move in</span><b class="hd" style="font-size:17px">${naira(l.price+l.fees.reduce((a,f)=>a+f[1],0))}</b></div></div>`:''}</div>`
+    :`<div class="hd" style="font-weight:700;font-size:34px;color:var(--accent-text);line-height:1">${naira(l.price)}</div>`}
     <div class="row" style="gap:8px">
       <button class="pill ${l.liked?'on-like':''}" data-a="likeListing" data-id="${l.id}" aria-pressed="${l.liked}">${I('heart',18,l.liked?'style="fill:currentColor"':'')}${l.likes}</button>
       <button class="pill" data-a="share" data-kind="listing" data-id="${l.id}">${I('repost',18)}Share</button>
       <button class="pill ${l.saved?'on-lime':''}" data-a="saveListing" data-id="${l.id}" aria-pressed="${l.saved}">${I('bookmark',18)}${l.saved?'Saved':'Save'}</button>
       <span class="hint" style="margin-left:auto">No comments on listings</span></div>
     <div class="list">${li({icon:'mappin',title:esc(l.area)+', '+esc(l.state),sub:'Exact address shared by the advertiser'})}${job?li({icon:'briefcase',title:esc(l.jobType),sub:esc(l.company)}):acc?li({icon:'cal',title:'Available '+esc(l.avail),sub:esc(l.type)}):li({icon:'bag',title:esc(l.condition),sub:'Condition'})}${li({icon:'clock',title:'Listed '+esc(l.date)})}</div>
-    <button class="card row" data-a="openUser" data-id="${l.owner}" style="width:100%;text-align:left;padding:12px">${av(o,46)}<span style="flex:1;min-width:0"><b style="display:flex;gap:5px;align-items:center;font-size:15px">${esc(o.name)}${mine?' (you)':''}</b><span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:${(mine?verified():o.verified)?'#C8F169':'#FFA27F'}">${(mine?verified():o.verified)?vb(o,13)+'Verified corps member':I('info',13)+'Not verified'}</span></span>${I('chevR',18)}</button>
-    <p style="margin:0;font-size:15px;line-height:1.55;color:#D3D8D4">${esc(l.desc)}</p>
-    <div style="border:1px solid #FF8A3D;border-radius:20px;padding:14px"><div class="row" style="gap:8px;color:#FF8A3D;font-weight:700">${I('shield',18)}${job?'Check it’s real before you apply':acc?'See it before you pay':'Stay safe'}</div><ul style="margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:#E4E8E5">${tips.map(x=>`<li>${x}</li>`).join('')}</ul><div class="hint" style="margin-top:8px">The verified badge confirms NYSC membership, not that a job, property or item is genuine.</div></div>
-    ${mine?'':`<button class="btn block" style="color:#FFA27F" data-a="report" data-kind="listing" data-id="${l.id}">${I('flag',18)}Report listing</button>`}
+    <button class="card row" data-a="openUser" data-id="${l.owner}" style="width:100%;text-align:left;padding:12px">${av(o,46)}<span style="flex:1;min-width:0"><b style="display:flex;gap:5px;align-items:center;font-size:15px">${esc(o.name)}${mine?' (you)':''}</b><span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:${(mine?verified():o.verified)?'var(--accent-text)':'var(--err)'}">${(mine?verified():o.verified)?vb(o,13)+'Verified corps member':I('info',13)+'Not verified'}</span></span>${I('chevR',18)}</button>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:var(--soft)">${esc(l.desc)}</p>
+    <div style="border:1px solid #FF8A3D;border-radius:20px;padding:14px"><div class="row" style="gap:8px;color:var(--orange-text);font-weight:700">${I('shield',18)}${job?'Check it’s real before you apply':acc?'See it before you pay':'Stay safe'}</div><ul style="margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--soft)">${tips.map(x=>`<li>${x}</li>`).join('')}</ul><div class="hint" style="margin-top:8px">The verified badge confirms NYSC membership, not that a job, property or item is genuine.</div></div>
+    ${mine?'':`<button class="btn block" style="color:var(--err)" data-a="report" data-kind="listing" data-id="${l.id}">${I('flag',18)}Report listing</button>`}
   </div></div>
-  <div style="position:absolute;left:12px;right:12px;bottom:18px;display:flex;gap:8px;padding:8px;border-radius:30px;background:#232927;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:4">
-  ${mine?`<button class="btn dark" style="flex:1;background:#2F3633" data-a="listingManage" data-id="${l.id}">${I('edit',18)}Manage</button><button class="btn lime" style="flex:1.3" data-a="quickStatus" data-id="${l.id}">${l.status==='Available'?(job?'Mark filled':acc?'Mark rented':'Mark sold'):(job?'Reopen':'Mark available')}</button>`
-  :l.status!=='Available'?`<div class="btn" style="flex:1;color:#A3ABA5">This ${job?'role':'listing'} is ${l.status.toLowerCase()}</div>`
-  :`${l.contact.call?`<button class="ib" style="width:52px;height:52px;border-radius:26px;background:#2F3633" data-a="contact" data-m="call" data-id="${l.id}" aria-label="Call">${I('phone')}</button>`:''}${l.contact.wa?`<button class="btn lime" style="flex:1" data-a="contact" data-m="wa" data-id="${l.id}">${I(job?'briefcase':'comment')}${job?'Apply on WhatsApp':'Chat on WhatsApp'}</button>`:`<button class="btn lime" style="flex:1" data-a="contact" data-m="call" data-id="${l.id}">${I('phone')}Call ${esc(first(o))}</button>`}`}
+  <div style="position:absolute;left:12px;right:12px;bottom:18px;display:flex;gap:8px;padding:8px;border-radius:30px;background:var(--raised);box-shadow:0 10px 30px var(--shadow);z-index:4">
+  ${mine?`<button class="btn dark" style="flex:1;background:var(--line)" data-a="listingManage" data-id="${l.id}">${I('edit',18)}Manage</button><button class="btn lime" style="flex:1.3" data-a="quickStatus" data-id="${l.id}">${l.status==='Available'?(job?'Mark filled':acc?'Mark rented':'Mark sold'):(job?'Reopen':'Mark available')}</button>`
+  :l.status!=='Available'?`<div class="btn" style="flex:1;color:var(--muted)">This ${job?'role':'listing'} is ${l.status.toLowerCase()}</div>`
+  :`${l.contact.call?`<button class="ib" style="width:52px;height:52px;border-radius:26px;background:var(--line)" data-a="contact" data-m="call" data-id="${l.id}" aria-label="Call">${I('phone')}</button>`:''}${l.contact.wa?`<button class="btn lime" style="flex:1" data-a="contact" data-m="wa" data-id="${l.id}">${I(job?'briefcase':'comment')}${job?'Apply on WhatsApp':'Chat on WhatsApp'}</button>`:`<button class="btn lime" style="flex:1" data-a="contact" data-m="call" data-id="${l.id}">${I('phone')}Call ${esc(first(o))}</button>`}`}
   </div>`;};
 
 // ===== Event detail =====
@@ -1180,8 +1227,8 @@ SC.event=t=>{const e=EVENTS[t.id];if(!e||e.deleted)return `${tb('Event')}${empty
   const r=(v,ic,l)=>`<button class="btn ${e.rsvp===v?'lime':'dark'}" style="flex:1" data-a="rsvp" data-id="${e.id}" data-v="${v}" aria-pressed="${e.rsvp===v}" ${off?'disabled':''}>${I(ic,18,e.rsvp===v&&v==='interested'?'style="fill:currentColor"':'')}${l}</button>`;
   return `<div class="scroll" style="padding-bottom:40px">
   <div class="ph" style="margin:12px;height:220px;border-radius:28px;background:${e.color};color:rgba(242,244,239,.3)">${e.photo?`<img src="${e.photo}" alt="Event cover">`:I('cal',56)}
-    <div style="position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between"><button class="ib" style="background:rgba(15,18,17,.75);color:#F2F4EF" data-a="back" aria-label="Back">${I('back')}</button><button class="ib" style="background:rgba(15,18,17,.75);color:#F2F4EF" data-a="share" data-kind="event" data-id="${e.id}" aria-label="Share">${I('share')}</button></div>
-    <div style="position:absolute;left:12px;bottom:12px;width:62px;height:70px;border-radius:18px;background:${off?'#2F3633':'#C8F169'};color:${off?'#A3ABA5':'#0F1211'};display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="hd" style="font-size:26px;font-weight:700;line-height:1">${e.day}</span><span style="font-size:11px;font-weight:800;letter-spacing:1px">${e.mon}</span></div></div>
+    <div style="position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between"><button class="ib" style="background:rgba(15,18,17,.75);color:var(--on-dark)" data-a="back" aria-label="Back">${I('back')}</button><button class="ib" style="background:rgba(15,18,17,.75);color:var(--on-dark)" data-a="share" data-kind="event" data-id="${e.id}" aria-label="Share">${I('share')}</button></div>
+    <div style="position:absolute;left:12px;bottom:12px;width:62px;height:70px;border-radius:18px;background:${off?'var(--line)':'#C8F169'};color:${off?'var(--muted)':'var(--ink)'};display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="hd" style="font-size:26px;font-weight:700;line-height:1">${e.day}</span><span style="font-size:11px;font-weight:800;letter-spacing:1px">${e.mon}</span></div></div>
   <div class="pad stack" style="padding:0 18px">
     <div class="row" style="gap:6px">${off?`<span class="tag ${e.status==='Cancelled'?'oranges':'blue'}">${e.status}</span>`:'<span class="tag lime">Upcoming</span>'}<span class="tag line">${esc(e.state)}</span></div>
     <h1 class="hd" style="margin:0;font-weight:700;font-size:28px;letter-spacing:-.8px;line-height:1.05">${esc(e.title)}</h1>
@@ -1191,10 +1238,10 @@ SC.event=t=>{const e=EVENTS[t.id];if(!e||e.deleted)return `${tb('Event')}${empty
     ${off?'':`<div class="list"><button class="li" data-a="eventRemind" data-id="${e.id}" role="switch" aria-checked="${!!e.remind}"><span class="t"><b>Remind me</b><span>Notify me the day before</span></span><span class="sw ${e.remind?'on':''}" aria-hidden="true"></span></button></div>`}
     <div class="hint" style="text-align:center">${e.interested} interested · ${e.going} going</div>
     <button class="card row" data-a="openUser" data-id="${e.organiser}" style="width:100%;text-align:left;padding:12px">${av(o,46)}<span style="flex:1;min-width:0"><span class="hint" style="display:block">Organised by</span><b style="display:flex;gap:5px;align-items:center">${esc(e.orgName||o.name)}${vb(o,14)}</b></span>${I('chevR',18)}</button>
-    <p style="margin:0;font-size:15px;line-height:1.55;color:#D3D8D4">${esc(e.desc)}</p>
-    <div class="card row" style="background:transparent;border:1px dashed #4A5450;font-size:13px;align-items:flex-start;color:#D3D8D4">${I('shield',18,'style="color:#C8F169;margin-top:1px"')}<span>Meet in public places, tell a friend where you’re going, and don’t share personal details you’re not comfortable with.</span></div>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:var(--soft)">${esc(e.desc)}</p>
+    <div class="card row" style="background:transparent;border:1px dashed var(--line3);font-size:13px;align-items:flex-start;color:var(--soft)">${I('shield',18,'style="color:var(--accent-text);margin-top:1px"')}<span>Meet in public places, tell a friend where you’re going, and don’t share personal details you’re not comfortable with.</span></div>
     ${mine?`<div class="sec">Manage your event</div><div class="list">${li({icon:'edit',title:'Change date, time or place',a:'eventManage',data:`data-id="${e.id}"`,right:chev})}${off?'':li({icon:'check',title:'Mark as completed',a:'eventStatus',data:`data-id="${e.id}" data-v="Completed"`})}${off?'':li({icon:'x',title:'Cancel event',danger:true,a:'eventCancelAsk',data:`data-id="${e.id}"`})}</div>`
-    :`<button class="btn block" style="color:#FFA27F" data-a="report" data-kind="event" data-id="${e.id}">${I('flag',18)}Report event</button>`}
+    :`<button class="btn block" style="color:var(--err)" data-a="report" data-kind="event" data-id="${e.id}">${I('flag',18)}Report event</button>`}
   </div></div>`;};
 
 // ===== Profile =====
@@ -1204,8 +1251,8 @@ function journey(u,own){
   const ms=[['Registered for NYSC',shortBatch(u.batch),true],['Received deployment',`Posted to ${u.state}`,ix>=1],['Reported to camp',u.camp||`${u.state} Orientation Camp`,ix>=1],['Completed orientation','Sworn in',ix>=2],['Posted to PPA','Details kept private',ix>=2]];
   (u.history||[]).forEach(h=>ms.push(['Redeployed',`${h.from} → ${h.to}`,true]));
   ms.push(['Completed service','Passed out',ix>=3]);
-  const html=ms.map(([t,s,done])=>`<div class="m ${done&&vOk?'v':''}"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-size:15px;${done?'':'color:#7D8681'}">${t}</b>${done?(vOk?'<span class="tag lime" style="padding:2px 6px;font-size:10px">Verified</span>':'<span class="tag grey" style="padding:2px 6px;font-size:10px">Self-reported</span>'):'<span class="tag line" style="padding:2px 6px;font-size:10px">Up next</span>'}</div><div class="hint">${esc(s)}</div></div>`).join('');
-  const pers=(own?S.me.milestones:[]).map(m=>`<div class="m p"><div class="row" style="gap:8px"><b style="font-size:15px">${esc(m.t)}</b><span class="tag" style="border:1px solid #FF8A3D;color:#FF8A3D;padding:2px 6px;font-size:10px">Personal</span></div><div class="hint">${esc(m.d)}</div></div>`).join('');
+  const html=ms.map(([t,s,done])=>`<div class="m ${done&&vOk?'v':''}"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-size:15px;${done?'':'color:var(--ph)'}">${t}</b>${done?(vOk?'<span class="tag lime" style="padding:2px 6px;font-size:10px">Verified</span>':'<span class="tag grey" style="padding:2px 6px;font-size:10px">Self-reported</span>'):'<span class="tag line" style="padding:2px 6px;font-size:10px">Up next</span>'}</div><div class="hint">${esc(s)}</div></div>`).join('');
+  const pers=(own?S.me.milestones:[]).map(m=>`<div class="m p"><div class="row" style="gap:8px"><b style="font-size:15px">${esc(m.t)}</b><span class="tag" style="border:1px solid #FF8A3D;color:var(--orange-text);padding:2px 6px;font-size:10px">Personal</span></div><div class="hint">${esc(m.d)}</div></div>`).join('');
   const pend=own&&S.me.redeploy?`<div class="m p"><b style="font-size:15px">Redeployment to ${esc(S.me.redeploy.state)}</b><div class="hint">Under review</div></div>`:'';
   return `<div class="card" style="padding:18px 16px 2px"><div class="tl">${html}${pend}${pers}</div></div>
   ${own?`<div class="row" style="gap:8px"><button class="btn dark" style="flex:1" data-a="milestoneAdd">${I('plus',18)}Add milestone</button><button class="btn dark" style="flex:1" data-a="go" data-s="service">${I('swap',18)}Service info</button></div><div class="hint" style="padding:0 4px">Verified milestones come from your confirmed NYSC details. Personal ones are added by you and labelled.</div>`:''}`;
@@ -1230,7 +1277,7 @@ function profileHeader(u,own){
     <div class="hint" style="font-size:14px">@${esc(u.username)}</div>
     <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap">${vtag}${statusTag(u)}${!own&&u.followsMe?'<span class="tag grey">Follows you</span>':''}${!own&&u.followsMe&&f?'<span class="tag grey">Mutual</span>':''}</div>
     ${u.bio?`<p style="margin:12px 0 0;font-size:15px;line-height:1.45">${esc(u.bio)}</p>`:''}
-    <div class="stack" style="gap:6px;margin-top:12px;font-size:13px;color:#D3D8D4">${meta.map(([i,t,hid])=>`<div class="row" style="gap:8px"><span style="color:#C8F169">${i}</span>${t}${hid?`<span class="hint row" style="gap:3px">${I('lock',12)}Only you</span>`:''}</div>`).join('')}</div>
+    <div class="stack" style="gap:6px;margin-top:12px;font-size:13px;color:var(--soft)">${meta.map(([i,t,hid])=>`<div class="row" style="gap:8px"><span style="color:var(--accent-text)">${i}</span>${t}${hid?`<span class="hint row" style="gap:3px">${I('lock',12)}Only you</span>`:''}</div>`).join('')}</div>
     <div class="row" style="gap:8px;margin-top:16px">${own?`<button class="btn light sm" style="flex:1;height:42px" data-a="go" data-s="editProfile">Edit profile</button><button class="btn dark sm" style="flex:1;height:42px" data-a="go" data-s="${verified()?'service':'verification'}">${verified()?'Service info':'Get verified'}</button>`
       :`<button class="btn ${f?'dark':'lime'} sm" style="flex:1;height:42px" data-a="follow" data-id="${u.id}">${f?I('check',16)+'Following':'Follow'}</button><button class="btn dark sm" style="height:42px" data-a="share" data-kind="profile" data-id="${u.id}" aria-label="Share profile">${I('share',16)}</button>`}</div>
     </div></div></div>`;
@@ -1276,9 +1323,9 @@ SC.notifications=()=>{const tab=S.notifTab;
   const list=NOTIF.filter(n=>tab==='All'||(tab==='Social'&&n.cat==='social')||(tab==='Communities'&&n.cat==='community'));
   return `${tb('Notifications',{right:`<button class="btn sm dark" data-a="readAll">Mark all read</button>`})}<div class="scroll nonav">
   ${chips(['All','Social','Communities'],tab,'notifTab')}
-  <div class="pad stack">${list.length?`<div class="list">${list.map(n=>`<button class="li" data-a="openNotif" data-id="${n.id}" style="${n.read?'':'background:#202725'}">
-    ${n.u?av(user(n.u),42):`<span class="ico" style="width:42px;height:42px;border-radius:14px;background:${n.cat==='service'?'#FF8A3D':'#2F3633'};color:${n.cat==='service'?'#0F1211':'#F2F4EF'}">${I(n.cat==='service'?'megaphone':'users',18)}</span>`}
-    <span class="t"><span style="color:#F2F4EF;font-size:14px;line-height:1.4;margin:0">${n.cat==='service'?'<span class="tag oranges" style="padding:1px 6px;font-size:10px;margin-right:4px">Service</span>':''}${n.text}</span><span>${n.time}</span></span>
+  <div class="pad stack">${list.length?`<div class="list">${list.map(n=>`<button class="li" data-a="openNotif" data-id="${n.id}" style="${n.read?'':'background:var(--unread)'}">
+    ${n.u?av(user(n.u),42):`<span class="ico" style="width:42px;height:42px;border-radius:14px;background:${n.cat==='service'?'#FF8A3D':'var(--line)'};color:${n.cat==='service'?'var(--ink)':'var(--text)'}">${I(n.cat==='service'?'megaphone':'users',18)}</span>`}
+    <span class="t"><span class="nt" style="color:var(--text);font-size:14px;line-height:1.4;margin:0">${n.cat==='service'?'<span class="tag oranges" style="padding:1px 6px;font-size:10px;margin-right:4px">Service</span>':''}${n.text}</span><span>${n.time}</span></span>
     ${n.read?'':'<span style="width:10px;height:10px;border-radius:5px;background:#C8F169;flex:none"><span class="vh">Unread</span></span>'}</button>`).join('')}</div>`:empty('You’re all caught up','')}
   <button class="btn dark block" data-a="go" data-s="notifSettings">${I('gear',18)}Notification settings</button></div></div>`;};
 
@@ -1295,6 +1342,7 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
   <div class="sec">Preferences</div><div class="list">
     ${li({icon:'eye',title:'Privacy & visibility',sub:'Who sees your service details',a:'go',data:'data-s="privacy"',right:chev})}
     ${li({icon:'bell',title:'Notifications',sub:S.settings.push?'Push on'+(S.settings.quiet?' · quiet hours set':''):'Push off',a:'go',data:'data-s="notifSettings"',right:chev})}
+    ${li({icon:'moon',title:'Appearance',sub:'Theme: '+CCTheme.label()+(CCTheme.get()==='system'?' (follows your device)':''),a:'appearance',right:chev})}
     ${li({icon:'wifi',title:'Data & media',sub:S.settings.dataSaver?'Data saver on':'Data saver off',a:'go',data:'data-s="dataSettings"',right:chev})}</div>
   <div class="sec">Safety</div><div class="list">
     ${li({icon:'ban',title:'Blocked & muted',sub:`${S.blocked.size} blocked · ${S.muted.size} muted`,a:'go',data:'data-s="blocked"',right:chev})}
@@ -1316,7 +1364,7 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
 INIT.editProfile=()=>{S.draft={name:S.me.name,username:S.me.username,bio:S.me.bio,photo:S.me.photo,interests:[...S.me.interests]};};
 SC.editProfile=()=>{const d=S.draft;const pv={photo:d.photo,initials:initials(d.name||'?'),color:S.me.color};
   return `${tb('Edit profile',{close:true,right:`<button class="btn sm lime" data-a="saveProfile">Save</button>`})}<div class="scroll nonav"><div class="pad stack" style="gap:16px">
-  <div class="row" style="gap:16px"><label for="pf2" style="cursor:pointer">${av(pv,84)}</label><div class="stack" style="gap:6px"><label for="pf2" class="btn sm dark" style="cursor:pointer">${I('camera',16)}Change photo</label>${d.photo?'<button class="btn sm" style="color:#FFA27F" data-a="rmDraftPhoto">Remove photo</button>':''}</div><input type="file" id="pf2" accept="image/*" class="vh" data-file="draftPhoto"></div>
+  <div class="row" style="gap:16px"><label for="pf2" style="cursor:pointer">${av(pv,84)}</label><div class="stack" style="gap:6px"><label for="pf2" class="btn sm dark" style="cursor:pointer">${I('camera',16)}Change photo</label>${d.photo?'<button class="btn sm" style="color:var(--err)" data-a="rmDraftPhoto">Remove photo</button>':''}</div><input type="file" id="pf2" accept="image/*" class="vh" data-file="draftPhoto"></div>
   ${fld('name','Full name')}${fld('username','Username',{prefix:'@',prefixW:32,attrs:'autocapitalize="off"'})}${fld('bio','Bio',{area:true,attrs:'maxlength="160"',hint:'Up to 160 characters.'})}
   <div class="field"><span class="flabel">Interests</span><div style="display:flex;flex-wrap:wrap;gap:8px">${INTERESTS.map(x=>{const on=d.interests.includes(x);return `<button class="chip ${on?'on':''}" aria-pressed="${on}" data-a="toggleInterest" data-v="${x}">${x}</button>`;}).join('')}</div></div>
   <div class="hint">NYSC details like batch and state are changed from Service information so they can be reviewed.</div></div></div>`;};
@@ -1331,36 +1379,36 @@ SC.account=()=>`${tb('Account & security')}<div class="scroll nonav"><div class=
   <div class="hint">Security emails (new sign-ins, password changes) are always sent.</div></div></div>`;
 
 SC.verification=()=>{const v=S.verif;
-  const m={unverified:['shield','#2F3633','#F2F4EF','Not verified yet','Submit your call-up number and a document to unlock official communities, listings and events.'],pending:['clock','#FF8A3D','#0F1211','In review','We received your details. Reviews usually take up to 48 hours. We’ll email you and send a notification.'],verified:['shieldCheck','#C8F169','#0F1211','You’re verified','Your NYSC membership is confirmed. You have full corps-member access.'],rejected:['info','#FF8A3D','#0F1211','We couldn’t verify you','Reason: the call-up letter photo was too blurry to read. Upload a clearer copy and resubmit, or appeal if you think this is wrong.']}[v];
+  const m={unverified:['shield','var(--line)','var(--text)','Not verified yet','Submit your call-up number and a document to unlock official communities, listings and events.'],pending:['clock','#FF8A3D','var(--ink)','In review','We received your details. Reviews usually take up to 48 hours. We’ll email you and send a notification.'],verified:['shieldCheck','#C8F169','var(--ink)','You’re verified','Your NYSC membership is confirmed. You have full corps-member access.'],rejected:['info','#FF8A3D','var(--ink)','We couldn’t verify you','Reason: the call-up letter photo was too blurry to read. Upload a clearer copy and resubmit, or appeal if you think this is wrong.']}[v];
   const stp=[['Submitted',v!=='unverified'],['Under review',v==='pending'||v==='verified'||v==='rejected'],['Decision',v==='verified'||v==='rejected']];
   const access=[['Browse and follow',true],['Post in public feeds',true],['Join official communities',v==='verified'],['Create communities',v==='verified'],['Jobs, marketplace and accommodation listings',v==='verified'],['Create events',v==='verified']];
   return `${tb('Verification')}<div class="scroll nonav"><div class="pad stack">
-  <div class="card" style="padding:20px"><span class="av" style="width:60px;height:60px;border-radius:20px;background:${m[1]};color:${m[2]}">${I(m[0],28)}</span><h2 class="hd" style="font-size:26px;margin:14px 0 6px">${m[3]}</h2><p style="margin:0;color:#D3D8D4;line-height:1.5;font-size:14px">${m[4]}</p>
+  <div class="card" style="padding:20px"><span class="av" style="width:60px;height:60px;border-radius:20px;background:${m[1]};color:${m[2]}">${I(m[0],28)}</span><h2 class="hd" style="font-size:26px;margin:14px 0 6px">${m[3]}</h2><p style="margin:0;color:var(--soft);line-height:1.5;font-size:14px">${m[4]}</p>
     ${v==='unverified'?`<button class="btn lime block" style="margin-top:16px" data-a="go" data-s="verify" data-t="settings">Start verification</button>`:''}
     ${v==='rejected'?`<div class="row" style="gap:8px;margin-top:16px"><button class="btn lime" style="flex:1" data-a="go" data-s="verify" data-t="settings">Resubmit</button><button class="btn dark" style="flex:1" data-a="appeal">Appeal</button></div>`:''}</div>
-  ${v!=='unverified'?`<div class="card"><div class="row" style="gap:0">${stp.map(([t,on],i)=>`<div style="flex:1;text-align:center"><div style="height:4px;border-radius:2px;background:${on?(v==='rejected'&&i===2?'#FF8A3D':'#C8F169'):'#2F3633'};margin-bottom:8px"></div><span style="font-size:12px;font-weight:600;color:${on?'#F2F4EF':'#7D8681'}">${t}</span></div>`).join('<span style="width:6px"></span>')}</div></div>`:''}
-  <div class="sec">What verification unlocks</div><div class="list">${access.map(([t,on])=>`<div class="li"><span class="ico" style="${on?'background:#C8F169;color:#0F1211':''}">${I(on?'check':'lock',16)}</span><span class="t"><b style="font-weight:500">${t}</b></span></div>`).join('')}</div>
+  ${v!=='unverified'?`<div class="card"><div class="row" style="gap:0">${stp.map(([t,on],i)=>`<div style="flex:1;text-align:center"><div style="height:4px;border-radius:2px;background:${on?(v==='rejected'&&i===2?'#FF8A3D':'#C8F169'):'var(--line)'};margin-bottom:8px"></div><span style="font-size:12px;font-weight:600;color:${on?'var(--text)':'var(--ph)'}">${t}</span></div>`).join('<span style="width:6px"></span>')}</div></div>`:''}
+  <div class="sec">What verification unlocks</div><div class="list">${access.map(([t,on])=>`<div class="li"><span class="ico" style="${on?'background:#C8F169;color:var(--ink)':''}">${I(on?'check':'lock',16)}</span><span class="t"><b style="font-weight:500">${t}</b></span></div>`).join('')}</div>
   <div class="hint" style="padding:0 4px">Verification confirms membership, not the truth of every post or the legitimacy of every listing.</div>
-  <div class="card" style="border:1px dashed #4A5450;background:transparent"><div class="row" style="gap:8px;font-weight:700;font-size:14px">${I('info',16,'style="color:#C8F169"')}Prototype controls</div><div class="hint" style="margin:4px 0 10px">Simulate the review team’s decision to see each state.</div>
+  <div class="card" style="border:1px dashed var(--line3);background:transparent"><div class="row" style="gap:8px;font-weight:700;font-size:14px">${I('info',16,'style="color:var(--accent-text)"')}Prototype controls</div><div class="hint" style="margin:4px 0 10px">Simulate the review team’s decision to see each state.</div>
   <div class="grid2"><button class="btn sm lime" data-a="verifDemo" data-v="verified">Approve</button><button class="btn sm dark" data-a="verifDemo" data-v="rejected">Reject</button><button class="btn sm dark" data-a="verifDemo" data-v="pending">Set pending</button><button class="btn sm dark" data-a="verifDemo" data-v="unverified">Reset</button></div></div>
   </div></div>`;};
 
 SC.service=()=>{const m=S.me;
   return `${tb('Service information')}<div class="scroll nonav"><div class="pad stack">
-  <div class="list">${[['Status',m.status],['Batch',m.batch],['Stream',m.stream],['Orientation camp',m.status==='Awaiting deployment'?'—':m.camp],['State of deployment',m.state],['LGA',m.lga||'Not added'],['PPA',(m.ppa||'Not added')+' · private']].map(([a,b])=>`<div class="li"><span class="t"><span style="margin:0">${a}</span><b>${esc(b)}</b></span>${a==='PPA'?I('lock',16,'style="color:#A3ABA5"'):''}</div>`).join('')}</div>
+  <div class="list">${[['Status',m.status],['Batch',m.batch],['Stream',m.stream],['Orientation camp',m.status==='Awaiting deployment'?'—':m.camp],['State of deployment',m.state],['LGA',m.lga||'Not added'],['PPA',(m.ppa||'Not added')+' · private']].map(([a,b])=>`<div class="li"><span class="t"><span style="margin:0">${a}</span><b>${esc(b)}</b></span>${a==='PPA'?I('lock',16,'style="color:var(--muted)"'):''}</div>`).join('')}</div>
   <button class="btn dark block" data-a="go" data-s="journey" data-t="edit">${I('edit',18)}Correct my details</button>
   ${m.redeploy?`<div class="card" style="border:1px solid #FF8A3D;background:transparent"><b>Redeployment to ${esc(m.redeploy.state)} in review</b><div class="hint" style="margin:4px 0 10px">Reason: ${esc(m.redeploy.reason)}. Your original batch and camp stay on your profile.</div><button class="btn sm lime" data-a="redeployApprove">Prototype: approve</button></div>`:`<button class="btn dark block" data-a="go" data-s="redeploy">${I('swap',18)}Request redeployment</button>`}
   ${m.history.length?`<div class="sec">History</div><div class="list">${m.history.map(h=>li({icon:'swap',title:`${esc(h.from)} → ${esc(h.to)}`,sub:'Redeployed · '+esc(h.when)})).join('')}</div>`:''}
-  ${m.status!=='Completed'?(m.alumniReq?`<div class="card" style="border:1px solid #FF8A3D;background:transparent"><b>Passing-out confirmation in review</b><div class="hint" style="margin:4px 0 10px">Once confirmed, your status changes to Alumni. Your account, posts and connections stay.</div><button class="btn sm lime" data-a="alumniApprove">Prototype: confirm</button></div>`:`<button class="btn outline block" data-a="alumniAsk">${I('award',18)}I’ve completed my service</button>`):`<div class="card row">${I('award',22,'style="color:#B9CEFF"')}<span><b>Alumni</b><span class="hint" style="display:block">You’ve completed national service. Welcome to the alumni side.</span></span></div>`}
+  ${m.status!=='Completed'?(m.alumniReq?`<div class="card" style="border:1px solid #FF8A3D;background:transparent"><b>Passing-out confirmation in review</b><div class="hint" style="margin:4px 0 10px">Once confirmed, your status changes to Alumni. Your account, posts and connections stay.</div><button class="btn sm lime" data-a="alumniApprove">Prototype: confirm</button></div>`:`<button class="btn outline block" data-a="alumniAsk">${I('award',18)}I’ve completed my service</button>`):`<div class="card row">${I('award',22,'style="color:var(--blue-text)"')}<span><b>Alumni</b><span class="hint" style="display:block">You’ve completed national service. Welcome to the alumni side.</span></span></div>`}
   </div></div>`;};
 
 INIT.redeploy=()=>{S.draft={state:'Lagos',lga:'',reason:'Health',docName:''};};
 SC.redeploy=()=>`${tb('Redeployment')}<div class="scroll" style="padding-bottom:100px"><div class="pad stack" style="gap:16px">
-  <div class="card row" style="align-items:flex-start">${I('info',20,'style="color:#C8F169;margin-top:2px"')}<span style="font-size:14px;line-height:1.5;color:#D3D8D4">Don’t create a new account. Your posts, followers and communities stay. Your original batch and camp stay in your history.</span></div>
+  <div class="card row" style="align-items:flex-start">${I('info',20,'style="color:var(--accent-text);margin-top:2px"')}<span style="font-size:14px;line-height:1.5;color:var(--soft)">Don’t create a new account. Your posts, followers and communities stay. Your original batch and camp stay in your history.</span></div>
   <div class="card row" style="padding:12px 14px"><span class="hint">Currently</span><b style="margin-left:auto">${esc(S.me.state)}</b></div>
   ${fld('state','New state',{opts:STATES.filter(s=>s!==S.me.state)})}${fld('lga','New LGA',{opt:true,ph:'If you know it'})}
   ${fld('reason','Reason',{opts:['Health','Marriage','Security','Other approved reason']})}
-  <div class="field"><span class="flabel">Redeployment letter</span><label for="rdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.doc?'#FF8A3D':'#4A5450'};background:transparent"><span style="color:${S.draft.docName?'#C8F169':'#A3ABA5'}">${I(S.draft.docName?'check':'file',22)}</span><span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${S.draft.docName?esc(S.draft.docName):'Upload approval letter'}</b><span class="hint">Only the verification team sees it</span></span></label><input id="rdoc" type="file" accept="image/*,.pdf" class="vh" data-file="redeployDoc">${S.errors.doc?`<span class="err">${S.errors.doc}</span>`:''}</div>
+  <div class="field"><span class="flabel">Redeployment letter</span><label for="rdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.doc?'#FF8A3D':'var(--line3)'};background:transparent"><span style="color:${S.draft.docName?'var(--accent-text)':'var(--muted)'}">${I(S.draft.docName?'check':'file',22)}</span><span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${S.draft.docName?esc(S.draft.docName):'Upload approval letter'}</b><span class="hint">Only the verification team sees it</span></span></label><input id="rdoc" type="file" accept="image/*,.pdf" class="vh" data-file="redeployDoc">${S.errors.doc?`<span class="err">${S.errors.doc}</span>`:''}</div>
   <button class="btn dark block" data-a="exPlace" data-v="${esc(S.draft.state)}">${I('compass',18)}Explore ${esc(S.draft.state)} first</button>
   </div></div><div class="bottombar"><button class="btn lime block" data-a="redeploySubmit">Submit for review</button></div>`;
 
@@ -1369,7 +1417,7 @@ SC.privacy=()=>{const s=S.settings;const row=(k,t,sub)=>`<div class="li"><span c
   <div class="field"><span class="flabel">Who can see your profile</span>${seg(['Everyone','Corps members','Followers'],s.vis,'setSetting','data-k="vis"')}<span class="hint">${s.vis==='Everyone'?'Anyone using the app, including unverified accounts.':s.vis==='Corps members'?'Only verified corps members and alumni.':'Only people who follow you.'}</span></div>
   <div class="sec">Service details on your profile</div><div class="list">${row('showBatch','Batch and camp','Helps campmates find you')}${row('showState','Current state')}${row('showLga','LGA')}${row('showPpa','PPA','Off by default. We recommend keeping it private.')}</div>
   <div class="sec">Activity</div><div class="list">${row('showLists','Followers and following lists')}${row('showLoc','Location on posts','Only a general place name, never precise location')}</div>
-  <div class="card"><div class="hd" style="font-weight:700;font-size:16px;margin-bottom:8px">Others see</div><div class="stack" style="gap:6px;font-size:14px">${[['Batch & camp',s.showBatch],['State',s.showState],['LGA',s.showLga],['PPA',s.showPpa],['Follower lists',s.showLists]].map(([a,on])=>`<div class="row" style="justify-content:space-between"><span class="muted">${a}</span><span style="color:${on?'#C8F169':'#A3ABA5'};display:flex;align-items:center;gap:4px">${I(on?'eye':'lock',14)}${on?'Visible':'Hidden'}</span></div>`).join('')}</div></div>
+  <div class="card"><div class="hd" style="font-weight:700;font-size:16px;margin-bottom:8px">Others see</div><div class="stack" style="gap:6px;font-size:14px">${[['Batch & camp',s.showBatch],['State',s.showState],['LGA',s.showLga],['PPA',s.showPpa],['Follower lists',s.showLists]].map(([a,on])=>`<div class="row" style="justify-content:space-between"><span class="muted">${a}</span><span style="color:${on?'var(--accent-text)':'var(--muted)'};display:flex;align-items:center;gap:4px">${I(on?'eye':'lock',14)}${on?'Visible':'Hidden'}</span></div>`).join('')}</div></div>
   </div></div>`;};
 
 SC.notifSettings=()=>{const s=S.settings;const row=(k,t,sub)=>`<div class="li" style="${!s.push&&k!=='push'&&k!=='emailProduct'?'opacity:.45':''}"><span class="t"><b>${t}</b>${sub?`<span>${sub}</span>`:''}</span>${sw(s[k],k,t)}</div>`;
@@ -1387,6 +1435,7 @@ SC.notifSettings=()=>{const s=S.settings;const row=(k,t,sub)=>`<div class="li" s
 SC.dataSettings=()=>{const s=S.settings;
   return `${tb('Data & media')}<div class="scroll nonav"><div class="pad stack">
   <div class="list"><div class="li"><span class="t"><b>Data saver</b><span>Photos load only when you tap them</span></span>${sw(s.dataSaver,'dataSaver','Data saver')}</div><div class="li"><span class="t"><b>Autoplay videos</b><span>Off saves data. Videos never autoplay in high resolution.</span></span>${sw(s.autoplay,'autoplay','Autoplay videos')}</div></div>
+  <div class="field"><span class="flabel">Appearance</span><div class="seg" role="radiogroup" aria-label="Appearance">${['system','light','dark'].map(x=>`<button role="radio" aria-checked="${CCTheme.get()===x}" class="${CCTheme.get()===x?'on':''}" data-a="setTheme" data-v="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div><span class="hint">System follows your phone or computer setting.</span></div>
   <div class="field"><span class="flabel">Upload quality</span>${seg(['Standard','High'],s.quality,'setSetting','data-k="quality"')}<span class="hint">Standard uploads faster and uses less data.</span></div>
   <div class="list"><div class="li"><span class="t"><b>Simulate offline</b><span>Demo of the no-connection state</span></span>${sw(s.offline,'offline','Simulate offline')}</div></div>
   <div class="list">${li({icon:'trash',title:'Clear cached media',sub:'Frees up space on your phone',a:'clearCache'})}</div></div></div>`;};
@@ -1400,20 +1449,22 @@ SC.safety=t=>{const g=t.t==='guidelines';
   const tips=[['building','Accommodation',['Always inspect in person before paying anything.','Confirm the person can legally rent or hand over the place.','Get rent and every fee in writing.','Report listings that pressure you to pay quickly.']],['bag','Marketplace',['Meet in public, busy places.','Check items before paying.','Be careful with payment in advance.']],['briefcase','Jobs',['Never pay a fee to get a job or interview.','Check the employer is real before sharing documents.','Be wary of pay that sounds too good to be true.','Report listings that ask for money.']],['cal','Meetups & events',['Tell a friend where you’re going.','Meet in public venues.','Leave if something feels off.']],['lock','Personal information',['Keep your PPA private unless you trust someone.','Never share your call-up number or documents in posts.','No one from the platform will ask for your password.']]];
   const rules=['Treat every corps member with respect. No harassment or bullying.','Don’t pretend to be NYSC, the platform or another person.','Only authorised accounts post official announcements. Label rumours as rumours.','No scams, fake listings or misleading prices.','No hate speech, threats or sexual content.','Report problems instead of escalating them.'];
   return `${tb(g?'Community guidelines':'Safety tips')}<div class="scroll nonav"><div class="pad stack">
-  ${g?`<div class="card"><ol style="margin:0;padding-left:20px;line-height:1.65;color:#D3D8D4">${rules.map(r=>`<li style="margin-bottom:6px">${r}</li>`).join('')}</ol></div><div class="hint" style="padding:0 4px">Moderators are corps members who run communities. Serious issues go to the platform team. Significant decisions can be appealed.</div>`
-  :tips.map(([i,t,l])=>`<div class="card"><div class="row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:#0F1211;display:flex;align-items:center;justify-content:center">${I(i,20)}</span><b class="hd" style="font-size:18px">${t}</b></div><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:#D3D8D4;font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+  ${g?`<div class="card"><ol style="margin:0;padding-left:20px;line-height:1.65;color:var(--soft)">${rules.map(r=>`<li style="margin-bottom:6px">${r}</li>`).join('')}</ol></div><div class="hint" style="padding:0 4px">Moderators are corps members who run communities. Serious issues go to the platform team. Significant decisions can be appealed.</div>`
+  :tips.map(([i,t,l])=>`<div class="card"><div class="row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center">${I(i,20)}</span><b class="hd" style="font-size:18px">${t}</b></div><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:var(--soft);font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
   </div></div>`;};
 // ---------- Bottom sheets ----------
 const SH={};
+SH.appearance=()=>{const cur=CCTheme.get();const o=(v,t,sub)=>`<button class="opt ${cur===v?'on':''}" style="background:var(--raised);border-color:${cur===v?'var(--accent-border)':'var(--raised)'};padding:12px 14px" data-a="setTheme" data-v="${v}" data-close="1" role="radio" aria-checked="${cur===v}"><span class="radio"></span><span style="font-size:15px"><b style="display:block">${t}</b><span class="hint">${sub}</span></span></button>`;
+  return `<h2>Appearance</h2><p class="hint" style="margin:0 0 12px">Choose how Corpers Connect looks on this device.</p><div class="stack" style="gap:8px" role="radiogroup" aria-label="Theme">${o('system','System (default)','Matches your phone or computer, light by day and dark by night if it does')}${o('light','Light','Bright background for daytime')}${o('dark','Dark','Dark background, easier on the eyes at night')}</div>`;};
 SH.create=s=>{const lock=!verified();
-  const tile=(t,ic,l,sub)=>`<button class="card" data-a="compose" data-t="${t}" style="background:#232927;text-align:left;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:104px"><span class="av" style="width:40px;height:40px;border-radius:14px;background:#C8F169">${I(ic,20)}</span><span><b style="display:block;font-size:15px">${l}</b><span class="hint">${sub}</span></span></button>`;
-  const row=(t,ic,l,sub)=>`<button class="li" data-a="compose" data-t="${t}"><span class="ico" style="background:#FF8A3D;color:#0F1211">${I(ic,18)}</span><span class="t"><b>${l}</b><span>${sub}</span></span>${lock?`<span class="tag grey">${I('lock',11)}Verified</span>`:chev}</button>`;
+  const tile=(t,ic,l,sub)=>`<button class="card" data-a="compose" data-t="${t}" style="background:var(--raised);text-align:left;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:104px"><span class="av" style="width:40px;height:40px;border-radius:14px;background:#C8F169">${I(ic,20)}</span><span><b style="display:block;font-size:15px">${l}</b><span class="hint">${sub}</span></span></button>`;
+  const row=(t,ic,l,sub)=>`<button class="li" data-a="compose" data-t="${t}"><span class="ico" style="background:#FF8A3D;color:var(--ink)">${I(ic,18)}</span><span class="t"><b>${l}</b><span>${sub}</span></span>${lock?`<span class="tag grey">${I('lock',11)}Verified</span>`:chev}</button>`;
   return `<h2>What would you like to share?</h2>${s.comm?`<div class="hint" style="margin-bottom:6px">Posting in ${esc(COMM[s.comm].name)}</div>`:''}
   <div class="sec" style="padding:10px 2px 8px">Share something</div><div class="grid2">${tile('photo','camera','Photo / video','Camp moments')}${tile('discussion','disc','Discussion','Start a conversation')}${tile('question','help','Question','Ask corpers')}${tile('poll','poll','Poll','Get a quick vote')}</div>
   ${s.comm?'':`<div class="sec" style="padding:16px 2px 8px">Opportunities and listings</div><div class="list">${row('job','briefcase','Share a job','Openings, gigs, internships')}${row('sell','bag','Sell an item','Mattress, fan, khaki…')}${row('accommodation','building','Accommodation','Rooms, handovers, roommates')}${row('event','cal','Create an event','Meetups, reunions, CDS outreach')}</div>`}`;};
 SH.gate=s=>`<span class="av" style="width:56px;height:56px;border-radius:18px;background:#FF8A3D;margin-top:4px">${I('lock',26)}</span><h2 style="margin-top:14px">Verified members only</h2>
-  <p style="color:#D3D8D4;line-height:1.5;margin:0 0 18px;font-size:14px">${esc(s.why||'This feature')} is available once your NYSC membership is verified. ${S.verif==='pending'?'Your verification is already in review.':'It takes a couple of minutes to submit.'}</p>
-  <button class="btn lime block" data-a="go" data-s="verification">${S.verif==='pending'?'Check status':'Get verified'}</button><button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="closeSheet">Not now</button>`;
+  <p style="color:var(--soft);line-height:1.5;margin:0 0 18px;font-size:14px">${esc(s.why||'This feature')} is available once your NYSC membership is verified. ${S.verif==='pending'?'Your verification is already in review.':'It takes a couple of minutes to submit.'}</p>
+  <button class="btn lime block" data-a="go" data-s="verification">${S.verif==='pending'?'Check status':'Get verified'}</button><button class="btn block" style="color:var(--muted);margin-top:6px" data-a="closeSheet">Not now</button>`;
 SH.postMenu=s=>{const p=POSTS[s.id],mine=p.author==='me',u=p.author?user(p.author):null,f=u&&S.following.has(u.id);
   return `<div class="list">${li({icon:'bookmark',title:p.saved?'Remove from saved':'Save post',a:'save',data:`data-id="${p.id}"`})}${li({icon:'link',title:'Copy link',a:'copyLink'})}
   ${mine&&p.type!=='poll'?li({icon:'edit',title:'Edit post',a:'editPost',data:`data-id="${p.id}"`}):''}
@@ -1435,7 +1486,7 @@ const REASONS=['Harassment or bullying','Impersonation','Scam or fraud','Spam','
 SH.report=s=>{const r=s.kind==='listing'?['Fake or misleading listing','Scam or fraud','Asks for money to apply','Wrong price or hidden fees','Already sold, rented or filled','Spam','Other']:s.kind==='moderator'?['Abuse of moderator powers','Removing posts unfairly','Inactive moderator','Harassment','Other']:REASONS;
   const lbl={post:'post',comment:'comment',user:'account',listing:'listing',event:'event',community:'community',moderator:'moderator'}[s.kind];
   return `<h2>Report ${lbl}</h2><p class="hint" style="margin:0 0 12px">Reports are private. The ${s.kind==='moderator'||s.kind==='community'?'platform team':'community moderators and platform team'} will review it.</p>
-  <div class="stack" style="gap:8px" role="radiogroup">${r.map(x=>`<button class="opt ${s.reason===x?'on':''}" style="background:#232927;border-color:${s.reason===x?'#C8F169':'#232927'};padding:12px 14px" role="radio" aria-checked="${s.reason===x}" data-a="reportReason" data-v="${esc(x)}"><span class="radio"></span><span style="font-size:15px">${x}</span></button>`).join('')}</div>
+  <div class="stack" style="gap:8px" role="radiogroup">${r.map(x=>`<button class="opt ${s.reason===x?'on':''}" style="background:var(--raised);border-color:${s.reason===x?'var(--accent-border)':'var(--raised)'};padding:12px 14px" role="radio" aria-checked="${s.reason===x}" data-a="reportReason" data-v="${esc(x)}"><span class="radio"></span><span style="font-size:15px">${x}</span></button>`).join('')}</div>
   <div style="margin-top:12px">${fld('rdetail','Anything else?',{area:true,opt:true,ph:'Add details or links that help us understand.'})}</div>
   <label for="rev" class="btn sm dark" style="margin-top:10px;cursor:pointer">${I('image',16)}${S.draft.revName?esc(S.draft.revName):'Attach screenshot (optional)'}</label><input id="rev" type="file" accept="image/*" class="vh" data-file="reportEvidence">
   <button class="btn lime block" style="margin-top:16px" data-a="submitReport" ${s.reason?'':'disabled'}>Submit report</button>`;};
@@ -1444,24 +1495,24 @@ SH.share=s=>{const url='https://corpersconnect.com/'+s.kind+'/'+(s.id||'');const
   ${s.kind==='post'&&POSTS[s.id].author!=='me'?li({icon:'repost',title:POSTS[s.id].reposted?'Undo repost':'Repost to your followers',a:'repost',data:`data-id="${s.id}"`}):''}</div>`;};
 SH.contact=s=>{const l=LISTINGS[s.id],o=user(l.owner);const msg=l.kind==='job'?`Hello, I saw the ${l.title} role on the Corpers Connect app. I’d like to apply. Is it still open?`:`Hello, I saw your ${l.title} on the Corpers Connect app. Is it still available?`;
   if(s.m==='wa') return `<h2>Message ${esc(first(o))} on WhatsApp</h2><p class="hint" style="margin:0 0 12px">There’s no in-app chat. We’ll open WhatsApp with this message ready to send:</p>
-    <div class="card" style="background:#1F2A1A;border-radius:18px 18px 4px 18px;font-size:15px;line-height:1.45">${esc(msg)}</div>
+    <div class="card" style="background:var(--bubble);border-radius:18px 18px 4px 18px;font-size:15px;line-height:1.45">${esc(msg)}</div>
     <a class="btn lime block" style="margin-top:14px" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${I('comment',18)}Open WhatsApp</a>
     <button class="btn dark block" style="margin-top:8px" data-a="copyText" data-v="${esc(msg)}">${I('copy',18)}Copy message</button>
-    <div class="hint" style="margin-top:12px;display:flex;gap:6px">${I('shield',14,'style="color:#FF8A3D;flex:none;margin-top:1px"')}Never send a deposit before you’ve inspected it in person.</div>`;
+    <div class="hint" style="margin-top:12px;display:flex;gap:6px">${I('shield',14,'style="color:var(--orange-text);flex:none;margin-top:1px"')}Never send a deposit before you’ve inspected it in person.</div>`;
   return `<h2>Call ${esc(first(o))}</h2><p class="hint" style="margin:0 0 12px">${esc(o.name)} chose to share a phone number for this listing.</p>
-    <div class="card hd" style="background:#232927;font-size:28px;font-weight:700;text-align:center;letter-spacing:1px">${S.reveal===l.id?'0803 555 0142':'0803 ••• ••••'}</div>
+    <div class="card hd" style="background:var(--raised);font-size:28px;font-weight:700;text-align:center;letter-spacing:1px">${S.reveal===l.id?'0803 555 0142':'0803 ••• ••••'}</div>
     ${S.reveal===l.id?`<a class="btn lime block" style="margin-top:14px" href="tel:+2348035550142">${I('phone',18)}Call now</a><button class="btn dark block" style="margin-top:8px" data-a="copyText" data-v="08035550142">${I('copy',18)}Copy number</button><div class="hint" style="margin-top:8px;text-align:center">Sample number for this prototype.</div>`
     :`<button class="btn lime block" style="margin-top:14px" data-a="revealNum" data-id="${l.id}">${I('eye',18)}Show number</button>`}`;};
 SH.listingManage=s=>{const l=LISTINGS[s.id];const opts=l.kind==='accommodation'?['Available','Rented','Closed']:l.kind==='job'?['Available','Filled','Closed']:['Available','Sold','Closed'];
-  return `<h2>Manage listing</h2><div class="sec" style="padding:4px 2px 8px">Status</div><div class="stack" style="gap:8px">${opts.map(o=>`<button class="opt ${l.status===o?'on':''}" style="background:#232927;border-color:${l.status===o?'#C8F169':'#232927'};padding:12px 14px" data-a="setListingStatus" data-id="${l.id}" data-v="${o}" role="radio" aria-checked="${l.status===o}"><span class="radio"></span><span style="font-size:15px">${o}</span></button>`).join('')}</div>
+  return `<h2>Manage listing</h2><div class="sec" style="padding:4px 2px 8px">Status</div><div class="stack" style="gap:8px">${opts.map(o=>`<button class="opt ${l.status===o?'on':''}" style="background:var(--raised);border-color:${l.status===o?'var(--accent-border)':'var(--raised)'};padding:12px 14px" data-a="setListingStatus" data-id="${l.id}" data-v="${o}" role="radio" aria-checked="${l.status===o}"><span class="radio"></span><span style="font-size:15px">${o}</span></button>`).join('')}</div>
   <div class="list" style="margin-top:14px">${li({icon:'edit',title:'Edit details',a:'editListing',data:`data-id="${l.id}"`})}${li({icon:'refresh',title:'Renew listing',sub:'Listings expire after 30 days',a:'renewListing'})}${li({icon:'trash',title:'Delete listing',danger:true,a:'deleteListing',data:`data-id="${l.id}"`})}</div>`;};
 P.briefcase='<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>';
 P.refresh='<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/>';
 SH.eventManage=s=>`<h2>Change details</h2><p class="hint" style="margin:0 0 12px">Everyone who’s interested or going gets notified.</p><div class="stack">${fld('edate','Date',{type:'date'})}${fld('etime','Time',{type:'time'})}${fld('eloc','Location')}</div><button class="btn lime block" style="margin-top:16px" data-a="eventSave" data-id="${s.id}">Save and notify</button>`;
-SH.confirm=s=>`<h2>${s.title}</h2><p style="color:#D3D8D4;line-height:1.5;margin:0 0 18px;font-size:14px">${s.body}</p><button class="btn ${s.danger?'danger':'lime'} block" data-a="${s.act}" data-id="${s.id||''}" data-v="${s.v||''}">${s.cta}</button><button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="closeSheet">Cancel</button>`;
+SH.confirm=s=>`<h2>${s.title}</h2><p style="color:var(--soft);line-height:1.5;margin:0 0 18px;font-size:14px">${s.body}</p><button class="btn ${s.danger?'danger':'lime'} block" data-a="${s.act}" data-id="${s.id||''}" data-v="${s.v||''}">${s.cta}</button><button class="btn block" style="color:var(--muted);margin-top:6px" data-a="closeSheet">Cancel</button>`;
 SH.milestone=()=>`<h2>Add a personal milestone</h2><p class="hint" style="margin:0 0 12px">These show on your journey with a “Personal” label so people can tell them apart from verified milestones.</p><div class="stack">${fld('mt','Milestone',{ph:'e.g. Won the camp football final'})}${fld('md','When',{ph:'e.g. Nov 2026'})}</div><button class="btn lime block" style="margin-top:16px" data-a="addMilestone">Add to journey</button>`;
 SH.modApply=s=>`<h2>Apply to moderate</h2><p class="hint" style="margin:0 0 12px">${esc(COMM[s.id].name)} · The platform team reviews applications and makes the final call. Moderators are not NYSC officials.</p><div class="stack">${fld('mwhy','Why do you want to moderate?',{area:true})}${fld('mexp','Relevant experience',{area:true,opt:true,ph:'Running groups, leadership roles…'})}</div><div class="hint" style="margin-top:8px">${I('lock',12)} Your verification is checked automatically. We don’t ask for more documents.</div><button class="btn lime block" style="margin-top:16px" data-a="submitModApply" data-id="${s.id}">Send application</button>`;
-SH.deleteAccount=()=>`<span class="av" style="width:56px;height:56px;border-radius:18px;background:#3A1E17;color:#FFB59A">${I('trash',26)}</span><h2 style="margin-top:14px">Delete your account?</h2><p style="color:#D3D8D4;line-height:1.5;margin:0 0 14px;font-size:14px">Your profile, posts, listings and connections will be removed after 30 days. You can cancel by signing in before then. Verification documents are deleted.</p>${fld('confirmDel','Type DELETE to confirm',{attrs:'autocapitalize="characters"'})}<button class="btn danger block" style="margin-top:14px" data-a="deleteAccount">Delete account</button><button class="btn block" style="color:#A3ABA5;margin-top:6px" data-a="closeSheet">Keep my account</button>`;
+SH.deleteAccount=()=>`<span class="av" style="width:56px;height:56px;border-radius:18px;background:var(--danger-bg);color:var(--danger-text)">${I('trash',26)}</span><h2 style="margin-top:14px">Delete your account?</h2><p style="color:var(--soft);line-height:1.5;margin:0 0 14px;font-size:14px">Your profile, posts, listings and connections will be removed after 30 days. You can cancel by signing in before then. Verification documents are deleted.</p>${fld('confirmDel','Type DELETE to confirm',{attrs:'autocapitalize="characters"'})}<button class="btn danger block" style="margin-top:14px" data-a="deleteAccount">Delete account</button><button class="btn block" style="color:var(--muted);margin-top:6px" data-a="closeSheet">Keep my account</button>`;
 // ---------- Actions ----------
 const MONS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const fmtTime=t=>{if(!t)return '';let [h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return `${h}:${String(m).padStart(2,'0')} ${ap}`;};
@@ -1690,7 +1741,7 @@ NOTIF.unshift({id:'n18',cat:'service',text:'<b>Moderation:</b> your post in Kano
 
 const isMod=c=>c.admin==='me'||(c.mods||[]).includes('me');
 const MOD_REASONS=['Spam','Harassment or bullying','Off-topic','Scam or fraud','Misinformation'];
-const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span style="color:#C8F169;font-weight:600">$2</span>');
+const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span style="color:var(--accent-text);font-weight:600">$2</span>');
 const offlineHtml=()=>`<div class="pad">${empty('You’re offline','Check your connection. Saved posts and listings are still available in Profile.',`<button class="btn sm lime" data-a="retry">Try again</button>`)}</div>`;
 
 // ---- Moderator panel
@@ -1698,10 +1749,10 @@ function modPanel(c){
   const reps=Object.values(POSTS).filter(p=>p.community===c.id&&p.author&&!p.deleted&&p.author!=='me').slice(0,3);
   const open=reps.filter(p=>!S.modDone.has(c.id+':'+p.id));
   const mem=['ahmed','segun','halima','david'].filter(id=>!S.removedMembers.has(c.id+':'+id));
-  return `<div class="card" style="border:1px solid #C8F169;background:transparent"><div class="row" style="gap:8px">${I('shield',18,'style="color:#C8F169"')}<b>Moderator tools</b></div><div class="hint" style="margin-top:4px">You can act in ${esc(c.name)} only. Serious cases go to the platform team. You can’t make official NYSC announcements.</div></div>
+  return `<div class="card" style="border:1px solid var(--accent-border);background:transparent"><div class="row" style="gap:8px">${I('shield',18,'style="color:var(--accent-text)"')}<b>Moderator tools</b></div><div class="hint" style="margin-top:4px">You can act in ${esc(c.name)} only. Serious cases go to the platform team. You can’t make official NYSC announcements.</div></div>
   <button class="btn dark sm" style="height:42px" data-a="commEdit" data-id="${c.id}">${I('edit',16)}Edit info and rules</button>
   <div class="sec">Reported content · ${open.length}</div>
-  ${open.length?open.map((p,i)=>{const u=user(p.author);return `<div class="card stack" style="gap:8px"><div class="row" style="gap:8px">${av(u,32)}<span style="flex:1;min-width:0;font-size:14px;font-weight:600">${esc(u.name)}</span><span class="tag oranges">${MOD_REASONS[(i+p.id.length)%MOD_REASONS.length]}</span></div><div style="font-size:14px;line-height:1.4;color:#D3D8D4">${esc((p.title||p.text).slice(0,140))}</div><div class="hint">Reported by ${2+i} members</div><div class="row" style="gap:6px"><button class="btn sm danger" style="flex:1" data-a="modRemove" data-id="${p.id}">Remove</button><button class="btn sm dark" style="flex:1" data-a="modDismiss" data-id="${p.id}">Keep</button><button class="btn sm dark" data-a="modEscalate" data-id="${p.id}">Escalate</button></div></div>`;}).join(''):empty('No open reports','You’re all caught up.')}
+  ${open.length?open.map((p,i)=>{const u=user(p.author);return `<div class="card stack" style="gap:8px"><div class="row" style="gap:8px">${av(u,32)}<span style="flex:1;min-width:0;font-size:14px;font-weight:600">${esc(u.name)}</span><span class="tag oranges">${MOD_REASONS[(i+p.id.length)%MOD_REASONS.length]}</span></div><div style="font-size:14px;line-height:1.4;color:var(--soft)">${esc((p.title||p.text).slice(0,140))}</div><div class="hint">Reported by ${2+i} members</div><div class="row" style="gap:6px"><button class="btn sm danger" style="flex:1" data-a="modRemove" data-id="${p.id}">Remove</button><button class="btn sm dark" style="flex:1" data-a="modDismiss" data-id="${p.id}">Keep</button><button class="btn sm dark" data-a="modEscalate" data-id="${p.id}">Escalate</button></div></div>`;}).join(''):empty('No open reports','You’re all caught up.')}
   <div class="sec">Members</div>
   <div class="list">${mem.map(id=>{const u=USERS[id];return `<div class="li">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></span><button class="btn sm dark" data-a="modKick" data-id="${c.id}" data-u="${id}">Remove</button></div>`;}).join('')}</div>
   <div class="hint">Tip: use a post’s ••• menu to pin it or remove it.</div>`;
@@ -1722,7 +1773,7 @@ A.modApply=d=>{Object.assign(S.draft,{mwhy:'',mexp:'',mdocName:'',mdocUrl:''});s
 A.submitModApply=d=>{S.errors={};let ok=need('mwhy','Tell us a bit more (at least 20 characters).',x=>x.length>=20);if(!S.draft.mdocName){S.errors.mdoc='Upload a photo of your NYSC ID card.';ok=false;}if(!ok)return render();closeSheet();toast('Application sent. The platform team will check your ID.');};
 SH.modApply=s=>{const d=S.draft;return `<h2>Apply to moderate</h2><p class="hint" style="margin:0 0 12px">${esc(COMM[s.id].name)} · The platform team reviews applications and makes the final call. Moderators are not NYSC officials.</p><div class="stack">${fld('mwhy','Why do you want to moderate?',{area:true})}${fld('mexp','Relevant experience',{area:true,opt:true,ph:'Running groups, leadership roles…'})}
   <div class="field"><span class="flabel">NYSC ID card (issued at camp)</span>
-  <label for="mdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.mdoc?'#FF8A3D':'#4A5450'};background:transparent;padding:10px">${d.mdocUrl?`<img src="${d.mdocUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover">`:`<span style="width:44px;height:44px;border-radius:14px;background:#232927;display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}<span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.mdocName?esc(d.mdocName):'Upload a photo of your ID card'}</b><span class="hint">${d.mdocName?'Tap to replace':'Required for moderators'}</span></span></label>
+  <label for="mdoc" class="card" style="cursor:pointer;display:flex;gap:12px;align-items:center;border:1.5px dashed ${S.errors.mdoc?'#FF8A3D':'var(--line3)'};background:transparent;padding:10px">${d.mdocUrl?`<img src="${d.mdocUrl}" alt="Your ID card" style="width:64px;height:44px;border-radius:10px;object-fit:cover">`:`<span style="width:44px;height:44px;border-radius:14px;background:var(--raised);display:flex;align-items:center;justify-content:center">${I('camera',20)}</span>`}<span style="flex:1;min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.mdocName?esc(d.mdocName):'Upload a photo of your ID card'}</b><span class="hint">${d.mdocName?'Tap to replace':'Required for moderators'}</span></span></label>
   <input id="mdoc" type="file" accept="image/*" class="vh" data-file="modDoc">${S.errors.mdoc?`<span class="err">${S.errors.mdoc}</span>`:''}</div></div>
   <div class="hint" style="margin-top:8px">${I('lock',12)} Only the verification team sees your ID. Community admins never do. It’s deleted after the decision.</div><button class="btn lime block" style="margin-top:16px" data-a="submitModApply" data-id="${s.id}">Send application</button>`;};
 
@@ -1737,9 +1788,9 @@ SH.editListing=s=>{const l=LISTINGS[s.id];return `<h2>Edit ${l.kind==='job'?'job
 // ---- Moderation notice and appeal
 INIT.modNotice=()=>{S.draft={appeal:''};};
 SC.modNotice=()=>`${tb('Moderation decision')}<div class="scroll nonav"><div class="pad stack">
-  <div class="card stack" style="gap:10px"><span class="tag oranges">Post removed</span><b class="hd" style="font-size:20px">Your post in Kano Orientation Camp was removed</b><div class="card" style="background:#232927;font-size:14px;color:#D3D8D4">“Anyone selling a mattress? Message me.”</div>
-  <div class="row" style="gap:8px;font-size:14px">${I('flag',16,'style="color:#FF8A3D"')}Rule 3: No selling here. Use Marketplace.</div><div class="hint">Decided by a community moderator · 3 hours ago</div></div>
-  ${S.appealed?`<div class="card row" style="gap:10px;border:1px solid #C8F169;background:transparent">${I('check',18,'style="color:#C8F169"')}<span><b>Appeal in review</b><span class="hint" style="display:block">A different reviewer from the platform team will look at it. You’ll get a notification.</span></span></div>`
+  <div class="card stack" style="gap:10px"><span class="tag oranges">Post removed</span><b class="hd" style="font-size:20px">Your post in Kano Orientation Camp was removed</b><div class="card" style="background:var(--raised);font-size:14px;color:var(--soft)">“Anyone selling a mattress? Message me.”</div>
+  <div class="row" style="gap:8px;font-size:14px">${I('flag',16,'style="color:var(--orange-text)"')}Rule 3: No selling here. Use Marketplace.</div><div class="hint">Decided by a community moderator · 3 hours ago</div></div>
+  ${S.appealed?`<div class="card row" style="gap:10px;border:1px solid var(--accent-border);background:transparent">${I('check',18,'style="color:var(--accent-text)"')}<span><b>Appeal in review</b><span class="hint" style="display:block">A different reviewer from the platform team will look at it. You’ll get a notification.</span></span></div>`
   :`<div class="sec">Think we got it wrong?</div>${fld('appeal','Tell us why',{area:true,ph:'Add context for the reviewer.'})}<button class="btn lime block" data-a="submitAppeal">Appeal this decision</button>`}
   <div class="hint">Moderators can’t ban you from the platform. Serious actions are decided by the platform team and can be appealed.</div></div></div>`;
 A.submitAppeal=()=>{S.errors={};if(!need('appeal','Add a short reason (10 characters or more).',x=>x.length>=10))return render();S.appealed=true;render();toast('Appeal submitted');};
@@ -1750,9 +1801,9 @@ const LEGAL={
  privacy:['Privacy Notice',[['What we collect','Name, username, contact details, NYSC information you add, and the ID card photo you submit for verification.'],['Your ID card','Only the verification team can see it. Community moderators never can. It is deleted after a decision.'],['What others see','PPA and precise location are private by default. You control who sees your profile and service information.'],['Contact details on listings','Your phone number is only shown when you choose a contact method on a listing, and only when someone taps to reveal it.'],['Your choices','You can edit your profile, download your data, deactivate or delete your account at any time.'],['Prototype notice','This is sample copy for the prototype and is not legal advice.']]],
  about:['About Corpers Connect',[['What it is','A social network and an opportunity marketplace for NYSC corps members. Share camp life, find jobs, items, accommodation and events, and keep friendships after passing out.'],['Two equal halves','Social posts and communities sit beside jobs, marketplace, accommodation and events. Neither is a side feature.'],['Not affiliated with NYSC','Corpers Connect is independent. Moderators and verified members are not NYSC officials.'],['Version','Prototype 1.0 · sample data only']]]
 };
-SC.legal=t=>{const [title,secs]=LEGAL[t.t]||LEGAL.terms;return `${tb(title)}<div class="scroll nonav"><div class="pad stack">${secs.map(([h,b])=>`<div class="card"><b class="hd" style="font-size:17px">${h}</b><p style="margin:6px 0 0;line-height:1.55;color:#D3D8D4;font-size:14px">${b}</p></div>`).join('')}</div></div>`;};
+SC.legal=t=>{const [title,secs]=LEGAL[t.t]||LEGAL.terms;return `${tb(title)}<div class="scroll nonav"><div class="pad stack">${secs.map(([h,b])=>`<div class="card"><b class="hd" style="font-size:17px">${h}</b><p style="margin:6px 0 0;line-height:1.55;color:var(--soft);font-size:14px">${b}</p></div>`).join('')}</div></div>`;};
 const FAQ=[['How do I get the verified badge?','Upload a clear photo of the NYSC ID card issued at camp, plus your call-up number. Our team reviews it by hand, usually within 48 hours.'],['Why was my verification rejected?','Common reasons are a blurry photo, a cropped card or details that do not match your profile. Fix it and resubmit, or appeal.'],['Can anyone see my ID card?','No. Only the verification team. It is deleted after a decision.'],['How do I become a moderator?','Open a community, choose Apply to moderate, and upload your ID card. The platform team makes the final decision.'],['Are the jobs safe to apply for?','Verified badges confirm NYSC membership, not that a job is genuine. Never pay to get a job. Report listings that ask for money.'],['I was redeployed. Do I need a new account?','No. Update your service information under Profile → Service information → Redeployment.'],['What happens when I pass out?','Your account stays. Your status changes to Alumni and you keep your posts, followers and communities.'],['Is there messaging?','Not yet. Contact happens through WhatsApp or phone on listings, chosen by the owner.']];
-SC.help=()=>`${tb('Help centre')}<div class="scroll nonav"><div class="pad stack"><div class="list">${FAQ.map(([q,a],i)=>`<button class="li" data-a="faq" data-i="${i}" aria-expanded="${S.faq===i}" style="flex-wrap:wrap"><span class="t" style="flex:1"><b>${q}</b></span>${I(S.faq===i?'x':'plus',16)}${S.faq===i?`<span style="flex-basis:100%;color:#D3D8D4;font-size:14px;line-height:1.5;padding-top:6px">${a}</span>`:''}</button>`).join('')}</div>
+SC.help=()=>`${tb('Help centre')}<div class="scroll nonav"><div class="pad stack"><div class="list">${FAQ.map(([q,a],i)=>`<button class="li" data-a="faq" data-i="${i}" aria-expanded="${S.faq===i}" style="flex-wrap:wrap"><span class="t" style="flex:1"><b>${q}</b></span>${I(S.faq===i?'x':'plus',16)}${S.faq===i?`<span style="flex-basis:100%;color:var(--soft);font-size:14px;line-height:1.5;padding-top:6px">${a}</span>`:''}</button>`).join('')}</div>
   <button class="btn dark block" data-a="go" data-s="contact">Still stuck? Contact support</button></div></div>`;
 A.faq=d=>{S.faq=S.faq===+d.i?null:+d.i;render();};
 INIT.contact=()=>{S.draft={topic:'Verification',msg:''};};
@@ -1764,13 +1815,13 @@ A.forgot=()=>go('forgot');
 A.sendReset=()=>{S.errors={};if(!need('email','Enter a valid email address.',x=>EMAIL.test(x)))return render();S.draft.sent=true;render();};
 
 // ---- Lightbox
-function lbHtml(){const L=S.lb,src=L.list[L.i];return `<div style="position:absolute;inset:0;z-index:70;background:rgba(0,0,0,.96);display:flex;flex-direction:column" role="dialog" aria-modal="true" aria-label="Photo viewer"><div class="row" style="padding:14px;justify-content:space-between"><span class="tag" style="background:#232927">${L.i+1} / ${L.list.length}</span><button class="ib" data-a="lbClose" aria-label="Close">${I('x')}</button></div><div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"><img src="${src}" alt="Photo ${L.i+1}" style="max-width:100%;max-height:100%;object-fit:contain"></div>${L.list.length>1?`<div class="row" style="justify-content:center;gap:16px;padding:16px"><button class="ib" data-a="lbStep" data-d="-1" aria-label="Previous photo">${I('back')}</button><button class="ib" data-a="lbStep" data-d="1" aria-label="Next photo">${I('chevR')}</button></div>`:''}</div>`;}
+function lbHtml(){const L=S.lb,src=L.list[L.i];return `<div data-theme="dark" style="color:var(--text);position:absolute;inset:0;z-index:70;background:rgba(0,0,0,.96);display:flex;flex-direction:column" role="dialog" aria-modal="true" aria-label="Photo viewer"><div class="row" style="padding:14px;justify-content:space-between"><span class="tag" style="background:var(--raised)">${L.i+1} / ${L.list.length}</span><button class="ib" data-a="lbClose" aria-label="Close">${I('x')}</button></div><div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0"><img src="${src}" alt="Photo ${L.i+1}" style="max-width:100%;max-height:100%;object-fit:contain"></div>${L.list.length>1?`<div class="row" style="justify-content:center;gap:16px;padding:16px"><button class="ib" data-a="lbStep" data-d="-1" aria-label="Previous photo">${I('back')}</button><button class="ib" data-a="lbStep" data-d="1" aria-label="Next photo">${I('chevR')}</button></div>`:''}</div>`;}
 A.lightbox=d=>{const l=(S.mediaLists[d.key]||[]).filter(x=>!x.startsWith('#')&&!isVid(x));if(!l.length)return;S.lb={list:l,i:Math.max(0,l.indexOf(d.src))};render();};
 A.lbClose=()=>{S.lb=null;render();};
 A.lbStep=d=>{const L=S.lb;L.i=(L.i+ +d.d+L.list.length)%L.list.length;render();};
 
 // ---- Mentions in comments
-LIVE.commentLive=val=>{const box=document.getElementById('mentionBox');if(!box)return;const m=val.match(/@([A-Za-z0-9_.]*)$/);if(!m){box.innerHTML='';return;}const q=m[1].toLowerCase();const us=Object.values(USERS).filter(u=>u.username.toLowerCase().includes(q)||u.name.toLowerCase().includes(q)).slice(0,4);box.innerHTML=us.length?`<div class="chips" style="padding:0">${us.map(u=>`<button class="chip on" data-a="pickMention" data-u="${u.username}" style="background:#232927;color:#F2F4EF;border-color:#3A423E">@${u.username}</button>`).join('')}</div>`:'';};
+LIVE.commentLive=val=>{const box=document.getElementById('mentionBox');if(!box)return;const m=val.match(/@([A-Za-z0-9_.]*)$/);if(!m){box.innerHTML='';return;}const q=m[1].toLowerCase();const us=Object.values(USERS).filter(u=>u.username.toLowerCase().includes(q)||u.name.toLowerCase().includes(q)).slice(0,4);box.innerHTML=us.length?`<div class="chips" style="padding:0">${us.map(u=>`<button class="chip on" data-a="pickMention" data-u="${u.username}" style="background:var(--raised);color:var(--text);border-color:var(--line2)">@${u.username}</button>`).join('')}</div>`:'';};
 A.pickMention=d=>{const el=document.getElementById('f-comment');if(!el)return;el.value=el.value.replace(/@[A-Za-z0-9_.]*$/,'@'+d.u+' ');S.draft.comment=el.value;const box=document.getElementById('mentionBox');if(box)box.innerHTML='';el.focus();};
 
 // ---- Explore: For You, job filter, search filters, recent searches
@@ -1783,8 +1834,8 @@ function forYouBody(){
   const evs=Object.values(EVENTS).filter(e=>!e.deleted&&e.status==='Upcoming').slice(0,2);
   const ppl=Object.values(USERS).filter(u=>!S.following.has(u.id)&&!S.blocked.has(u.id)).slice(0,3);
   const comms=Object.values(COMM).filter(c=>!c.joined).slice(0,3);
-  const sec=(t,h,tab)=>`<div class="row" style="justify-content:space-between;padding:14px 2px 8px"><span class="eyebrow">${t}</span>${tab?`<button data-a="exTab" data-v="${tab}" style="font-size:13px;font-weight:700;color:#C8F169;min-height:32px">See all</button>`:''}</div>${h}`;
-  const rec=S.recent.length?`<div class="pad" style="padding-bottom:0"><div class="row" style="justify-content:space-between"><span class="eyebrow">Recent searches</span><button data-a="clearRecent" style="font-size:13px;font-weight:700;color:#A3ABA5;min-height:32px">Clear</button></div><div class="chips" style="padding:8px 0 0">${S.recent.map(r=>`<button class="chip" data-a="setQ" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>`:'';
+  const sec=(t,h,tab)=>`<div class="row" style="justify-content:space-between;padding:14px 2px 8px"><span class="eyebrow">${t}</span>${tab?`<button data-a="exTab" data-v="${tab}" style="font-size:13px;font-weight:700;color:var(--accent-text);min-height:32px">See all</button>`:''}</div>${h}`;
+  const rec=S.recent.length?`<div class="pad" style="padding-bottom:0"><div class="row" style="justify-content:space-between"><span class="eyebrow">Recent searches</span><button data-a="clearRecent" style="font-size:13px;font-weight:700;color:var(--muted);min-height:32px">Clear</button></div><div class="chips" style="padding:8px 0 0">${S.recent.map(r=>`<button class="chip" data-a="setQ" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>`:'';
   return rec+`<div class="pad stack" style="gap:10px">${sec('Jobs for you',jobs.map(listingCard).join(''),'Jobs')}${sec('Marketplace picks',`<div class="grid2">${items.map(itemTile).join('')}</div>`,'Marketplace')}${sec('Places to stay',places.map(listingCard).join(''),'Accommodation')}${sec('Happening soon',evs.map(eventCard).join(''),'Events')}${sec('People to follow',ppl.map(userRow).join(''),'People')}${sec('Communities for you',comms.map(c=>commRow(c)).join(''),'Communities')}</div>`;
 }
 A.jobType=d=>{S.jobType=d.v;render();};
@@ -1804,7 +1855,7 @@ function searchResults(q){
   if(tag&&!pos.length) pos=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&p.vis==='Public').sort((a,b)=>b.likes-a.likes).slice(0,4);
   const sec=(t,h)=>h?`<div class="sec">${t}</div>${h}`:'';
   const parts=[
-    on('Places')?sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:#C8F169"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Rentals, jobs, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join('')):'',
+    on('Places')?sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:var(--accent-text)"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Rentals, jobs, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join('')):'',
     on('People')?sec('People',ppl.slice(0,T==='People'?20:3).map(userRow).join('')):'',
     on('Communities')?sec('Communities',com.slice(0,T==='Communities'?20:3).map(c=>commRow(c)).join('')):'',
     on('Jobs')?sec('Jobs',lis.filter(l=>l.kind==='job').slice(0,T==='Jobs'?20:3).map(listingCard).join('')):'',
@@ -1814,7 +1865,7 @@ function searchResults(q){
     on('Posts')?sec('Posts',pos.slice(0,T==='Posts'?20:4).map(p=>postCard(p)).join('')):''
   ];
   const row=chips(['All','People','Posts','Communities','Jobs','Items','Rentals','Events','Places'],T,'searchType');
-  const head=tag?`<div class="pad" style="padding-bottom:8px"><div class="card row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:#0F1211;display:flex;align-items:center;justify-content:center">${I('trend',20)}</span><span><b class="hd" style="font-size:18px">${esc(tag[0])}</b><span class="hint" style="display:block">${tag[1]} across Nigeria</span></span></div></div>`:'';
+  const head=tag?`<div class="pad" style="padding-bottom:8px"><div class="card row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center">${I('trend',20)}</span><span><b class="hd" style="font-size:18px">${esc(tag[0])}</b><span class="hint" style="display:block">${tag[1]} across Nigeria</span></span></div></div>`:'';
   return row+head+(parts.some(Boolean)?`<div class="pad stack">${parts.join('')}</div>`:`<div class="pad">${empty(`No ${T==='All'?'':T.toLowerCase()+' '}results for “${esc(S.q)}”`,'Check the spelling or try a broader word.')}</div>`);
 }
 A.eventRemind=d=>{const e=EVENTS[d.id];e.remind=!e.remind;render();toast(e.remind?'We’ll remind you the day before':'Reminder off');};
@@ -1824,13 +1875,19 @@ function renderRail(){
   const r=document.getElementById('rail');if(!r)return;
   if(!document.querySelector('#view .nav')){r.innerHTML='';return;}
   const ppl=Object.values(USERS).filter(u=>!S.following.has(u.id)&&!S.blocked.has(u.id)).slice(0,3);
-  r.innerHTML=`<button class="card row" data-a="tab" data-t="explore" style="width:100%;text-align:left;color:#A3ABA5;padding:12px 14px">${I('search',18)}<span>Search people, posts, listings</span></button>
-  <div class="card"><div class="hd" style="font-weight:700;font-size:17px;margin-bottom:6px">Trending in Nigeria</div>${TRENDING.slice(0,5).map(([t,c])=>`<button class="rl" data-a="railQ" data-v="${t.slice(1)}"><span style="flex:1"><b style="display:block;font-size:14px">${t}</b><span class="hint">${c}</span></span>${I('trend',16,'style="color:#C8F169"')}</button>`).join('')}</div>
+  r.innerHTML=`<button class="card row" data-a="tab" data-t="explore" style="width:100%;text-align:left;color:var(--muted);padding:12px 14px">${I('search',18)}<span>Search people, posts, listings</span></button>
+  <div class="card"><div class="hd" style="font-weight:700;font-size:17px;margin-bottom:6px">Trending in Nigeria</div>${TRENDING.slice(0,5).map(([t,c])=>`<button class="rl" data-a="railQ" data-v="${t.slice(1)}"><span style="flex:1"><b style="display:block;font-size:14px">${t}</b><span class="hint">${c}</span></span>${I('trend',16,'style="color:var(--accent-text)"')}</button>`).join('')}</div>
   <div class="card"><div class="hd" style="font-weight:700;font-size:17px;margin-bottom:6px">People to follow</div>${ppl.map(u=>`<div class="row" style="padding:6px 0"><button data-a="openUser" data-id="${u.id}" style="display:flex;gap:10px;align-items:center;flex:1;min-width:0;text-align:left">${av(u,38)}<span style="min-width:0"><b style="display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</b><span class="hint">@${esc(u.username)}</span></span></button><button class="btn sm lime" data-a="follow" data-id="${u.id}">Follow</button></div>`).join('')}</div>
-  <div class="hint" style="padding:0 6px;line-height:1.9"><button data-a="go" data-s="legal" data-t="terms" style="color:#A3ABA5">Terms</button> · <button data-a="go" data-s="legal" data-t="privacy" style="color:#A3ABA5">Privacy</button> · <button data-a="go" data-s="help" style="color:#A3ABA5">Help</button> · <button data-a="go" data-s="legal" data-t="about" style="color:#A3ABA5">About</button><br>Corpers Connect prototype · sample data</div>`;
+`;
 }
 // Videos load only when tapped, so a feed with many videos never floods the connection
 A.playVideo=(d,el)=>{const v=document.createElement('video');v.src=d.src;v.controls=true;v.autoplay=true;v.playsInline=true;v.setAttribute('aria-label','Video');v.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0';const w=document.createElement('span');w.className='ph';w.style.cssText='height:100%;width:100%;background:#000';w.appendChild(v);el.replaceWith(w);v.play().catch(()=>{});};
+A.appearance=()=>sheet({type:'appearance'});
+A.setTheme=d=>{CCTheme.set(d.v);if(d.close)S.sheet=null;render();toast('Appearance: '+CCTheme.label());};
+A.cycleTheme=()=>{CCTheme.next();renderRail();toast('Theme: '+CCTheme.label());};
+window.addEventListener('cc-theme',()=>{try{renderRail();}catch(e){}});
+A.navExplore=d=>{S.exploreTab=d.v;S.q='';tabTo('explore');};
+A.navSaved=()=>{S.profileTab='Saved';tabTo('profile');};
 A.railQ=d=>{S.q=d.v;S.exploreTab='Trending';tabTo('explore');};
 
 document.addEventListener('click',e=>{
