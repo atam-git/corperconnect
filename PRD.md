@@ -1164,6 +1164,22 @@ Scam reports, especially involving accommodation and sales, should receive prior
 
 The platform should not claim to guarantee transactions or verify property ownership merely because an advertiser has a verified member badge.
 
+### Light scam protection (agreed baseline for launch)
+
+Keep protection light. Add heavier controls only if abuse data shows a need.
+
+1. **Required fields.** Jobs need employer, pay and location. Rentals list rent and one-off fees separately.
+2. **Safety reminder** on every job, item and accommodation listing.
+3. **Easy reporting** with a "asks for money" reason. Scam reports are reviewed first.
+4. **Keyword check at publish.** Flag or block listings with phrases such as "registration fee", "pay to apply" or "send deposit first".
+5. **New-account limit.** New accounts may keep 1–2 active listings until they have a clean record.
+6. **One strike.** A confirmed pay-to-apply scam removes the listing and suspends the account.
+7. **Auto-hide on reports.** A listing with 3 or more reports is hidden until a person reviews it.
+
+Not at launch: business accounts, CAC or company checks, scam-score models.
+
+Who may post jobs: all verified corps members. Business or employer accounts are a possible later upgrade.
+
 ## 14.8 Appeals
 
 Users should have a way to appeal significant moderation decisions. Appeals should be reviewed by someone other than the original decision-maker where practical.
@@ -1572,6 +1588,9 @@ The following decisions were established during product discovery and form the c
 24. The platform team retains oversight of official communities, verification, serious moderation and moderator appointments.
 
 # 24. Recommendations and Items to Validate
+
+**Decision:** no Home feed quota at launch. Launch, observe what the feed looks like, and add a mix cap only if needed. Explore stays uncapped. Candidate rule if needed: listings and events at most about 4 in 10 Home items, jobs at most about 1 in 10, no two listings back to back.
+
 
 These recommendations should guide implementation but require confirmation where noted.
 
