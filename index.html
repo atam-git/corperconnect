@@ -42,14 +42,21 @@ a{color:var(--accent-text)}
   #app[data-nav="0"]:not([data-s="welcome"]) #view{inset:24px auto 24px calc(50% - 280px);width:560px;max-width:calc(100% - 32px);border:1px solid var(--line);border-radius:32px;overflow:hidden;box-shadow:0 20px 60px var(--shadow)}
   #app[data-s="welcome"]{--col:860px}
   #app[data-s="welcome"] #view{border:0;background:transparent}
-  #app[data-s="welcome"] .w-page{display:grid!important;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto auto 1fr;column-gap:56px;padding:36px 40px!important;align-content:stretch}
-  #app[data-s="welcome"] .w-logo{grid-column:1/-1;grid-row:1}
-  #app[data-s="welcome"] .w-art{grid-column:2;grid-row:2/6;align-self:center;height:340px!important;zoom:1.15;margin:0!important}
-  #app[data-s="welcome"] .w-h{grid-column:1;grid-row:3;font-size:56px!important;line-height:1!important;align-self:end;margin:0 0 16px!important}
-  #app[data-s="welcome"] .w-p{grid-column:1;grid-row:4;font-size:18px!important;margin:0 0 26px!important}
-  #app[data-s="welcome"] .w-btns{grid-column:1;grid-row:5;margin-top:0!important;align-self:start;max-width:420px}
+  #app[data-s="welcome"] .w-page{display:grid!important;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto auto auto 1fr;column-gap:56px;padding:64px 40px 24px!important;align-content:stretch}
+  /* Logo sits exactly where it does in the landing page header */
+  #app[data-s="welcome"] .w-logo{position:fixed;top:0;left:max(20px,calc((100vw - 1120px)/2 + 20px));height:64px;margin:0!important;align-items:center;z-index:5}
+  #app[data-s="welcome"] .w-logo .av{width:34px!important;height:34px!important;border-radius:11px!important;font-size:19px!important}
+  #app[data-s="welcome"] .w-logo .hd{font-size:20px!important}
+  #app[data-s="welcome"] .w-art{grid-column:1;grid-row:1/6;align-self:center;height:340px!important;zoom:1.15;margin:0!important}
+  /* Text block: centred in the right half, artwork on the left */
+  #app[data-s="welcome"] .w-h,#app[data-s="welcome"] .w-p,#app[data-s="welcome"] .w-btns{grid-column:2;justify-self:center;width:min(100%,460px)}
+  #app[data-s="welcome"] .w-h{grid-row:2;font-size:56px!important;line-height:1!important;align-self:end;margin:0 0 16px!important}
+  #app[data-s="welcome"] .w-p{grid-row:3;font-size:18px!important;margin:0 0 26px!important}
+  #app[data-s="welcome"] .w-btns{grid-row:4;margin-top:0!important;align-self:start}
 }
 @media (min-width:1200px){#app[data-s="welcome"]{--col:1100px}#app[data-s="welcome"] .w-art{zoom:1.35}}
+@media (min-width:1500px){#app[data-s="welcome"] .w-logo{left:max(20px,calc((100vw - 1360px)/2 + 20px))}}
+@media (min-width:1900px){#app[data-s="welcome"] .w-logo{left:max(20px,calc((100vw - 1560px)/2 + 20px))}}
 @media (min-width:1100px){
   #app{--col:700px;--rail:320px;--navw:200px;--shift:calc((var(--rail) + 16px - var(--navw) - 14px)/2)}
   #app .nav{align-items:stretch;padding:12px;gap:6px;border-radius:30px}
@@ -57,7 +64,7 @@ a{color:var(--accent-text)}
   #app .nav .lb{display:inline;font-weight:600;font-size:15px}
   #app .nav .dx{display:flex}
   #app .nav .sep.dx{display:block}
-  #app .nav{top:20px;transform:none;max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:none}
+  #app .nav{top:50%;transform:translateY(-50%);max-height:calc(100vh - 40px);overflow-y:auto;scrollbar-width:none}
   #app .nav::-webkit-scrollbar{display:none}
   #app .nav button{flex:none}
   #app .nav{justify-content:flex-start}
@@ -860,7 +867,7 @@ SC.welcome=()=>`<div class="scroll nonav w-page" style="display:flex;flex-direct
     <div style="position:absolute;right:18px;bottom:-8px;transform:rotate(3deg);background:#C8F169;color:var(--ink);font-weight:700;font-size:13px;padding:8px 12px;border-radius:14px">Hiring: junior dev</div>
   </div>
   <h1 class="hd w-h" style="font-size:40px;line-height:1;margin:8px 0 12px;font-weight:700">Your service year, together.</h1>
-  <p class="muted w-p" style="font-size:16px;line-height:1.5;margin:0 0 22px">A social network and opportunity marketplace for corpers. Share camp photos and stories, find a roommate, sell what you don’t need, post or find a job, and keep the friendships after passing out.</p>
+  <p class="muted w-p" style="font-size:16px;line-height:1.5;margin:0 0 22px">Share camp life. Find everything you need.</p>
   <div class="stack w-btns" style="gap:10px;margin-top:auto">
     <button class="btn lime block" data-a="go" data-s="signup" data-t="signup">Create account</button>
     <button class="btn outline block" data-a="go" data-s="signup" data-t="signin">I already have an account</button>
