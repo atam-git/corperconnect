@@ -57,6 +57,8 @@ a{color:var(--accent-text)}
 @media (min-width:1200px){#app[data-s="welcome"]{--col:1100px}#app[data-s="welcome"] .w-art{zoom:1.35}}
 @media (min-width:1500px){#app[data-s="welcome"] .w-logo{left:max(20px,calc((100vw - 1360px)/2 + 20px))}}
 @media (min-width:1900px){#app[data-s="welcome"] .w-logo{left:max(20px,calc((100vw - 1560px)/2 + 20px))}}
+/* Phone and tablet: nudge the welcome artwork down from the top edge */
+@media (max-width:899px){#app[data-s="welcome"] .w-art{margin-top:44px!important}}
 @media (min-width:1100px){
   #app{--col:700px;--rail:320px;--navw:200px;--shift:calc((var(--rail) + 16px - var(--navw) - 14px)/2)}
   #app .nav{align-items:stretch;padding:12px;gap:6px;border-radius:30px}
