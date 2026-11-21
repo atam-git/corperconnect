@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help, safety and legal — Corpers Connect</title>
+<meta name="description" content="Terms, privacy, community guidelines, safety tips, help centre and contact for Corpers Connect.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="public.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header id="site-header"></header>
+<main id="main" class="wrap">
+  <div class="info-wrap">
+    <nav class="info-nav" id="info-nav" aria-label="Pages"></nav>
+    <div class="info-main" id="info-main" tabindex="-1"></div>
+  </div>
+</main>
+<footer id="site-footer"></footer>
+<script src="public.js"></script>
+<script>
+const NOTE='<div class="notice">Prototype copy. This text is a draft for design purposes and has not been reviewed by a lawyer. It is not legal advice.</div>';
+const sec=(h,b)=>`<div class="doc"><h2>${h}</h2>${b}</div>`;
+const p=t=>`<p>${t}</p>`;
+const ul=a=>`<ul>${a.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+const ol=a=>`<ol>${a.map(x=>`<li>${x}</li>`).join('')}</ol>`;
+
+const FAQ=[
+['How do I get the verified badge?','Open Profile, then Verification. Upload a clear photo of the NYSC ID card issued at camp and enter your call-up number. Our team reviews it by hand, usually within 48 hours.'],
+['Why was my verification rejected?','Common reasons are a blurry photo, a cropped card, or details that do not match your profile. Fix it and resubmit, or appeal.'],
+['Can anyone see my ID card?','No. Only our verification team can open it. Moderators and community admins never can. The image is deleted 7 days after a decision.'],
+['Do I need verification to use the app?','No. Without verification you can browse, follow people, ask questions, post and join public communities. Verification unlocks jobs, items, rooms, events, creating communities and official communities.'],
+['How do I become a moderator?','Open a community, choose Apply to moderate, and upload your ID card. The platform team makes the final decision.'],
+['Are the jobs safe to apply for?','The verified badge confirms NYSC membership, not that a job is genuine. Never pay to get a job. Report listings that ask for money.'],
+['I was redeployed. Do I need a new account?','No. Update your service information under Profile, Service information, Redeployment.'],
+['What happens when I pass out?','Your account stays. Your status changes to Alumni after you upload your passing-out certificate. You keep your posts, followers and communities.'],
+['Is there messaging?','Not yet. Contact happens through WhatsApp or phone on listings, chosen by the owner.'],
+['How do I delete my account?','Settings, Account and security, Delete account. You have 30 days to change your mind before it is final.']
+];
+
+const PAGES={
+terms:{t:'Terms of Service',lede:'The rules for using Corpers Connect.',html:()=>NOTE+
+ sec('1. Who we are',p('Corpers Connect is a social network and opportunity marketplace for NYSC corps members. It is independent. It is not affiliated with, endorsed by or run by the National Youth Service Corps.'))+
+ sec('2. Who can use it',p('Prospective, serving and former corps members who are 18 or older. One account per person. Give accurate information and keep your sign-in details safe.'))+
+ sec('3. Verification',p('Verification confirms NYSC membership only. We may reject or revoke it. ID images are reviewed by our team and deleted shortly after a decision.'))+
+ sec('4. Your content',p('You own what you post. You allow us to host and show it on the service. You are responsible for it. We may remove content that breaks these rules.'))+
+ sec('5. Acceptable use',ul(['No harassment, hate, threats or sexual content.','No scams, fake listings or impersonation.','No spam or scraping.','Respect other people’s privacy.']))+
+ sec('6. Jobs, items, rooms and events',p('Listings are posted by members. We do not guarantee any listing or transaction and we do not handle payments. <b>You must not charge people to apply for a job.</b> Do your own checks before you pay anyone.'))+
+ sec('7. Moderation and appeals',p('Reports are reviewed by community moderators and our team. You can appeal significant decisions.'))+
+ sec('8. Ending your account',p('You can delete your account at any time. We may suspend or remove accounts that break these terms.'))+
+ sec('9. Changes and contact',p('We will tell you about important changes. Questions? Use the contact page.'))},
+privacy:{t:'Privacy Notice',lede:'What we collect, why, and the choices you have.',html:()=>NOTE+
+ sec('What we collect',ul(['Account details: email or phone, password (stored securely).','Profile: name, username, bio, photo, interests.','NYSC information you add: batch, stream, state, LGA, camp, PPA.','Posts, comments, listings and media you share.','If you verify: a photo of your NYSC ID card and your call-up number.']))+
+ sec('Your ID card',p('Only our verification team can see it. Community moderators and admins never can. We delete the image 7 days after we make a decision. We keep only the decision, reviewer, reason and time.'))+
+ sec('Who sees what',p('PPA and exact location are private by default. You control who sees your profile and service information. Phone numbers on listings appear only when someone taps to reveal.'))+
+ sec('How we use it',ul(['To run the app and show you relevant content.','To keep the platform safe and review reports.','To send notifications you choose.','To improve the product with usage statistics that do not include sensitive data.']))+
+ sec('Who we share it with',p('Service providers that help us run the app (hosting, storage, email, SMS, notifications, error tracking). We do not sell personal data.'))+
+ sec('Your rights',ul(['See and download your data.','Correct your details.','Delete your account.','Control notifications and visibility.']))+
+ sec('How long we keep it',p('Your data stays while your account is active. ID images are deleted 7 days after a decision. Deleted accounts are removed and content is anonymised after 30 days.'))+
+ sec('Contact',p('Questions or requests about your data? Use the contact page and choose Account.'))},
+about:{t:'About Corpers Connect',lede:'A home for the NYSC experience.',html:()=>
+ sec('What it is',p('Corpers Connect is a social network and an opportunity marketplace for NYSC corps members. Share camp life, find jobs, rooms, items and events, and keep your friends after passing out.'))+
+ sec('Two equal halves',p('Social posts and communities sit beside jobs, marketplace, accommodation and events. Neither is a side feature.'))+
+ sec('Independent',p('We are not affiliated with NYSC. Moderators and verified members are corps members, not NYSC officials.'))+
+ sec('Built for phones',p('Most corps members use a phone, often on mobile data. The app is light, works on weak networks and can be added to your home screen.'))+
+ sec('Get in touch',p('Visit the <a href="#contact">contact page</a> or the <a href="#help">help centre</a>.'))},
+guidelines:{t:'Community guidelines',lede:'How we keep the community respectful and safe.',html:()=>
+ sec('The basics',ol(['Treat every corps member with respect. No harassment, bullying or hate speech.','Do not pretend to be NYSC, the platform, a moderator or another person.','Only authorised accounts post official announcements. Label rumours as rumours.','No scams, fake listings or misleading prices. Never ask people to pay to get a job, an interview or a place.','Keep listings in Marketplace, Jobs and Accommodation, not community feeds.','No sexual content, threats or graphic violence.','Do not share other people’s private information, including phone numbers, addresses, ID details or PPA locations.','Do not spam. No repeated promotions, referral links or mass tagging.','Report problems instead of escalating them yourself.','Moderators are volunteers. Be kind to them.']))+
+ sec('What happens if rules are broken',p('Content may be removed, accounts may be restricted, suspended or banned, depending on how serious it is. Confirmed job or rental scams lead to immediate suspension. You can appeal significant decisions.'))},
+safety:{t:'Safety tips',lede:'Stay safe when you meet, pay or share.',html:()=>
+ sec('Jobs',ul(['Never pay a fee to get a job or an interview.','Check the employer is real before you share documents.','Be careful with pay that sounds too good to be true.','Report listings that ask for money.']))+
+ sec('Accommodation',ul(['Always inspect the place in person before paying anything.','Confirm the person has the right to rent or hand it over.','Get the rent and every fee in writing.','Report listings that pressure you to pay quickly.']))+
+ sec('Marketplace',ul(['Meet in public, busy places.','Check items before paying.','Be careful with payment in advance.']))+
+ sec('Meetups and events',ul(['Tell a friend where you are going.','Meet in public venues.','Leave if something feels off.']))+
+ sec('Personal information',ul(['Keep your PPA private unless you trust someone.','Never share your call-up number or documents in posts.','No one from the platform will ever ask for your password or a code.']))},
+help:{t:'Help centre',lede:'Answers to common questions.',html:()=>`<div class="faq" style="max-width:none">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div><p class="muted" style="margin-top:20px">Still stuck? <a href="#contact">Contact support</a>.</p>`},
+contact:{t:'Contact support',lede:'Tell us what happened. We reply by email within 2 working days.',html:()=>`<div class="ok-card" id="ok"><b class="hd" style="font-size:20px">Message sent</b><p class="muted" style="margin:6px 0 0">Thanks. We will reply by email. This is a prototype, so nothing was actually sent.</p></div>
+ <form id="cf" novalidate>
+  <div class="field"><label for="c-topic">Topic</label><select class="inp" id="c-topic"><option>Verification</option><option>Moderator application</option><option>Report a scam</option><option>Account</option><option>Something else</option></select></div>
+  <div class="field"><label for="c-email">Your email</label><input class="inp" id="c-email" type="email" placeholder="you@example.com" autocomplete="email"><span class="err" id="e-email"></span></div>
+  <div class="field"><label for="c-msg">Message</label><textarea class="inp" id="c-msg" placeholder="Tell us what happened. Never include your password."></textarea><span class="err" id="e-msg"></span></div>
+  <button class="btn lime" type="submit">Send message</button>
+ </form>`,init(){
+  const f=document.getElementById('cf');
+  f.addEventListener('submit',e=>{e.preventDefault();let ok=true;
+   const em=document.getElementById('c-email').value.trim(),ms=document.getElementById('c-msg').value.trim();
+   document.getElementById('e-email').textContent=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)?'':'Enter a valid email address.';
+   document.getElementById('e-msg').textContent=ms.length>=10?'':'Add a few more details (10 characters or more).';
+   ok=!document.querySelector('.err:not(:empty)');
+   if(ok){f.style.display='none';document.getElementById('ok').classList.add('show');}
+  });}}
+};
+const ORDER=['terms','privacy','guidelines','safety','help','contact','about'];
+function current(){const h=location.hash.replace('#','');if(PAGES[h])return h;const seg=location.pathname.split('/').filter(Boolean).pop()||'';const s=seg.replace('.html','');if(PAGES[s])return s;return 'help';}
+function render(){
+  const k=current(),pg=PAGES[k];
+  document.title=pg.t+' — Corpers Connect';
+  document.getElementById('info-nav').innerHTML=ORDER.map(x=>`<a href="#${x}" class="${x===k?'on':''}" ${x===k?'aria-current="page"':''}>${PAGES[x].t}</a>`).join('');
+  const m=document.getElementById('info-main');
+  m.innerHTML=`<h1 class="hd">${pg.t}</h1><p class="lede">${pg.lede}</p>${pg.html()}`;
+  if(pg.init)pg.init();
+  window.scrollTo({top:0});
+}
+window.addEventListener('hashchange',render);render();
+</script>
+</body>
+</html>
