@@ -37,7 +37,14 @@ The platform follows a member through the full NYSC journey:
 6. At completion of national service.
 7. After passing out, as an alumnus.
 
-The product must feel native to the NYSC experience. It should not be a generic social network with an NYSC label, nor a jobs or recruitment platform.
+The product has two equal pillars:
+
+1. **A social network for corpers:** photos and videos from camp, stories, discussions, questions, polls and communities.
+2. **An opportunity marketplace for corpers:** jobs and gigs, items for sale, accommodation and roommates, and events.
+
+Users post whatever they need or want to share. Examples: a camp video, a roommate request, a job lead, an item for sale, a new community. Neither pillar is secondary. Onboarding, navigation, Explore and Create must show both from the first screen.
+
+The product must feel native to the NYSC experience. It should not be a generic social network with an NYSC label, nor a generic classifieds site.
 
 ## 1.2 Product vision
 
@@ -45,18 +52,18 @@ To become the digital home of the NYSC experience in Nigeria, connecting corps m
 
 ## 1.3 Core value proposition
 
-The product combines three connected experiences:
+The product combines two equal pillars, joined by NYSC communities:
 
-- **Social connection:** Share experiences, follow people, discuss topics and build relationships.
-- **NYSC communities:** Connect with people from the same batch, camp, state, CDS activities and shared interests.
-- **Practical discovery:** Find accommodation, buy and sell items, discover events and access useful information from corps members nationwide.
+- **Social connection:** Share camp photos and videos, experiences, discussions and questions. Follow people and build relationships.
+- **Opportunities and marketplace:** Find and share jobs and gigs, accommodation and roommates, items for sale and events across Nigeria.
+- **NYSC communities:** Connect with people from the same batch, camp, state, CDS activities and shared interests. Communities carry both social posts and opportunities.
 
 These experiences should reinforce one another rather than operate as unrelated products.
 
 ## 1.4 Product principles
 
 1. **NYSC-first:** Product structure, terminology and journeys should reflect the actual NYSC lifecycle.
-2. **Social at the centre:** Social participation and community are the primary product; listings and commerce are supporting features.
+2. **Two equal pillars:** Social participation and opportunities (jobs, marketplace, accommodation, events) carry equal weight in navigation, onboarding, Explore and Create. Neither is a side feature.
 3. **Nationwide discovery:** Explore must expose users to relevant content and opportunities across Nigeria, not only their current state or batch.
 4. **Low-friction onboarding:** Users should be able to create an account before they have every NYSC detail.
 5. **Trust with clear limits:** Verification confirms membership, not the truthfulness of every post or the legitimacy of every transaction.
@@ -73,7 +80,7 @@ These experiences should reinforce one another rather than operate as unrelated 
 - Make it easy to find and connect with people from the same batch, camp and state.
 - Encourage meaningful interaction through posts, discussions, comments, reactions and communities.
 - Help members discover useful information and people across Nigeria.
-- Support practical needs such as accommodation and buying or selling items.
+- Support practical needs: finding and sharing jobs and gigs, accommodation and roommates, and buying or selling items.
 - Make it easy to organise meetups, reunions and other events.
 - Preserve friendships, communities and memories beyond the service year.
 - Establish a trustworthy environment through membership verification, reporting and moderation.
@@ -82,7 +89,7 @@ These experiences should reinforce one another rather than operate as unrelated 
 
 The initial product is not intended to provide:
 
-- A jobs board, recruitment marketplace or hiring platform.
+- Applicant tracking, in-app applications, CV storage or recruiter tooling. Jobs are shared as listings with external contact (see section 11).
 - In-app direct messaging or group chat.
 - In-app payments, escrow or transaction processing.
 - Complex ticketing and event-payment infrastructure.
@@ -255,6 +262,7 @@ Notifications should be accessible from a notification icon in the main interfac
 - Discussion
 - Question
 - Poll
+- Share a job
 - Sell an item
 - Accommodation
 - Create an event
@@ -264,6 +272,7 @@ Notifications should be accessible from a notification icon in the main interfac
 - For You
 - Nationwide
 - Marketplace
+- Jobs
 - Accommodation
 - Events
 - Communities
@@ -651,10 +660,11 @@ Two broad intentions:
 3. Question.
 4. Poll.
 
-**Useful listings and activities**
-5. Sell an item.
-6. Accommodation.
-7. Create an event.
+**Opportunities and listings**
+5. Share a job.
+6. Sell an item.
+7. Accommodation.
+8. Create an event.
 
 ## 8.3 Photo/video post
 
@@ -692,6 +702,23 @@ Supports:
 - One vote per eligible user per poll, unless a future poll type explicitly supports multiple selections.
 
 Ordinary members may create polls. Moderator elections must use a controlled process managed by the relevant community administrators, not an unrestricted ordinary poll.
+
+## 8.6a Share a job
+
+Suggested fields:
+- Job title.
+- Employer or company.
+- Type: full-time, part-time, contract, internship, gig.
+- Pay in Nigerian naira and pay period.
+- Description, including whether it fits around CDS and PPA hours.
+- Location (state and area).
+- Optional logo or photo.
+- Contact method (WhatsApp or phone, owner's choice).
+- Listing status: open, filled, closed.
+
+Rules:
+- Applicants are never asked to pay. Listings that charge to apply are removed.
+- Applications happen outside the app through the contact method. No CV storage or applicant tracking.
 
 ## 8.7 Sell an item
 
@@ -817,6 +844,7 @@ Recommended sections:
 - Trending.
 - Nationwide.
 - Marketplace.
+- Jobs.
 - Accommodation.
 - Events.
 - Communities.
@@ -860,9 +888,9 @@ Explore should support both personalised recommendations and intentional search.
 
 ## 11.1 Purpose
 
-These are supporting utility features within the social platform, not the core product identity.
+Jobs, marketplace and accommodation form the opportunity pillar. They carry equal weight with the social pillar.
 
-They allow corps members to offer and discover useful items and accommodation.
+They allow corps members to offer and discover jobs and gigs, useful items and accommodation.
 
 ## 11.2 Listing detail
 
@@ -892,14 +920,17 @@ For WhatsApp, open a conversation with a prefilled contextual message, for examp
 
 "Hello, I saw your [listing title] on the NYSC app. Is it still available?"
 
+For jobs: "Hello, I saw the [job title] role on the app. I'd like to apply. Is it still open?"
+
 No in-app messaging is required.
 
 ## 11.4 Listing status
 
 The owner should be able to mark a listing:
-- Available.
+- Available (shown as Hiring for jobs).
 - Sold.
 - Rented.
+- Filled (jobs).
 - Closed or unavailable.
 
 Listings may also have an expiry or renewal mechanism. Exact expiry duration should be configurable.
@@ -912,6 +943,16 @@ Listings support:
 - Saves.
 
 Listings do not support comments.
+
+## 11.6a Job safety
+
+Display clear warnings encouraging users to:
+- Never pay a fee to get a job or interview.
+- Confirm the employer exists before sharing documents.
+- Be wary of pay that looks too good to be true.
+- Report listings that ask for money.
+
+Fake-job and pay-to-apply reports receive priority review, like accommodation scams.
 
 ## 11.6 Accommodation safety
 
@@ -1421,7 +1462,8 @@ Because users may rely on mobile data:
 - Verification management.
 - Listing safety and review workflows.
 
-## Phase 4 — Practical utility
+## Phase 4 — Opportunities and utility
+- Job listings.
 - Marketplace listings.
 - Accommodation listings.
 - External WhatsApp and phone contact.
@@ -1465,6 +1507,7 @@ Some work can run in parallel, but dependencies must be respected. For example, 
 | CRT-01 | Users can create photo/video posts | Must |
 | CRT-02 | Users can create discussions, questions and polls | Must |
 | CRT-03 | Verified users can create marketplace listings | Must |
+| CRT-06 | Verified users can share job listings | Must |
 | CRT-04 | Verified users can create accommodation listings | Must |
 | CRT-05 | Verified users can create events | Should |
 | LST-01 | Listings support likes, repost/share and saves | Must |
@@ -1494,7 +1537,7 @@ Some work can run in parallel, but dependencies must be respected. For example, 
 
 The following decisions were established during product discovery and form the current baseline:
 
-1. The product is an NYSC social and community platform, not a jobs or hiring platform.
+1. The product is an NYSC social network and opportunity marketplace with two equal pillars. Opportunities include jobs and gigs, items, accommodation and events. It has no applicant tracking or in-app hiring.
 2. The main navigation consists of Home, Community, Create, Explore and Profile.
 3. Home is personalised and gives meaningful priority to followed accounts.
 4. Explore is nationwide and is not limited to the user's state or batch.
@@ -1504,7 +1547,7 @@ The following decisions were established during product discovery and form the c
 8. Community moderators are not automatically NYSC officials.
 9. Being a platoon leader does not automatically grant moderator privileges.
 10. Moderator appointments are approved by the platform, with member recommendations or voting potentially introduced later.
-11. Create supports photo/video posts, discussions, questions, polls, item listings, accommodation and events.
+11. Create supports photo/video posts, discussions, questions, polls, job listings, item listings, accommodation and events.
 12. Structured listings are distinct from ordinary social posts that happen to mention an item or apartment.
 13. Listings can surface in multiple app locations without duplicating the underlying record.
 14. Social posts support comments; marketplace and accommodation listings do not.
@@ -1603,7 +1646,7 @@ The product should not be considered ready for a public launch until the followi
 - There is no chat functionality in the initial release.
 
 ## Listings and events
-- A verified member can create an item or accommodation listing.
+- A verified member can create a job, item or accommodation listing.
 - Listings can be saved, liked and shared.
 - Listings have no comments.
 - Contact options open the selected external channel.
