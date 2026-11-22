@@ -91,7 +91,7 @@ function shell(){
   const p=persona();
   const side=`<aside class="side ${S.sideOpen?'open':''}" aria-label="Main navigation"><div class="brand"><b>C</b><span>Corpers Connect<small>Admin</small></span></div>
   <nav>${NAV.map(([g,items])=>{const vis=items.filter(i=>i[3]());return vis.length?`<div class="grp">${g}</div>${vis.map(([id,label,ic,,cnt])=>{const c=cnt?cnt():0;return `<button class="nav-i ${S.route===id?'on':''}" data-a="go" data-v="${id}" ${S.route===id?'aria-current="page"':''}>${I(ic,18)}<span>${label}</span>${c?`<span class="cnt">${c}</span>`:''}</button>`;}).join('')}`:'';}).join('')}</nav>
-  <div class="foot">Signed in as<br><b class="soft">${esc(p.name)}</b><br>${p.roles.map(r=>roleOf(r)?.name).join(', ')}</div></aside>`;
+  <div class="foot">${themeSeg()}Signed in as<br><b class="soft">${esc(p.name)}</b><br>${p.roles.map(r=>roleOf(r)?.name).join(', ')}</div></aside>`;
   const top=`<header class="top"><button class="menu-btn" data-a="toggleSide" aria-label="Menu">${I('menu',20)}</button>
   <div class="search"><span>${I('search',16)}</span><label class="sr" for="gs">Search members</label><input id="gs" data-live="global" value="${esc(S.q.global||'')}" placeholder="Search members, listings, reports…"></div>
   <div class="persona"><label for="pers">Demo: view as</label><select id="pers" data-change="persona">${ADMINS.filter(a=>a.status==='ACTIVE').map(a=>`<option value="${a.id}" ${a.id===S.persona?'selected':''}>${esc(a.name)} · ${a.roles.map(r=>roleOf(r)?.name).join(' + ')}</option>`).join('')}</select></div>
@@ -150,6 +150,8 @@ A.acceptInvite=()=>{const p=val('i-pass'),p2=val('i-pass2');let ok=true;ok=ferr(
 const themeIcon=()=>{const t=CCTheme.get();const p=t==='light'?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>':t==='dark'?'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>':'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>';return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;};
 A.theme=()=>{CCTheme.next();render();};
 A.setTheme=d=>{CCTheme.set(d.v);render();};
+const themeSeg=()=>{const cur=CCTheme.get();const ic={system:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',light:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',dark:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'};
+  return `<div class="theme-seg" role="radiogroup" aria-label="Theme">${[['system','System'],['light','Light'],['dark','Dark']].map(([k,l])=>`<button role="radio" aria-checked="${cur===k}" aria-label="${l}" title="${l}" class="${cur===k?'on':''}" data-a="setTheme" data-v="${k}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic[k]}</svg></button>`).join('')}</div>`;};
 window.addEventListener('cc-theme',()=>{if(typeof render==='function')render();});
 A.logout=()=>{S.authed=false;sessionStorage.removeItem('ccadm');S.step='login';S.drawer=null;S.modal=null;render();};
 A.go=d=>{location.hash='#/'+d.v;};
