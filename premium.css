@@ -50,7 +50,8 @@
 #app article.card[style*="C8F169"] p.hd{font-size:17px;line-height:1.3;font-weight:600;letter-spacing:-.015em;color:var(--text)}
 #app article.card[style*="C8F169"] button{color:var(--accent-text)}
 #app article.card[style*="C8F169"] [style*="font-size:12px"]{color:var(--muted)}
-#app .pad.stack>article.card[style*="C8F169"]{margin:12px 16px}
+#app .pad.stack>article.card[style*="C8F169"]{margin:12px 16px;border-radius:0 16px 16px 0;box-shadow:inset 0 0 0 1px var(--line);border-bottom:0;border-left:3px solid #C8F169}
+[data-theme="light"] #app .pad.stack>article.card[style*="C8F169"]{border-left-color:#6E9E00}
 
 /* ---------- Banners ---------- */
 #app button.card[style*="border:1px solid #FF8A3D"]{border-color:rgba(255,138,61,.55)!important;border-radius:16px;box-shadow:none}
@@ -65,10 +66,57 @@
 
 /* ---------- Phone bottom nav: frosted glass, hairline border, lime-tint active state ---------- */
 @media (max-width:639px){
-  .nav{background:color-mix(in srgb,var(--raised) 68%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.07)}
+  .nav{bottom:max(8px,env(safe-area-inset-bottom));background:color-mix(in srgb,var(--raised) 68%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.07)}
   [data-theme="light"] .nav{box-shadow:0 12px 32px var(--shadow),inset 0 0 0 1px rgba(20,32,26,.07)}
   .nav button.on{background:rgba(200,241,105,.16);color:var(--accent-text)}
   [data-theme="light"] .nav button.on{background:rgba(110,158,0,.14)}
   .nav button.create{box-shadow:0 4px 14px rgba(200,241,105,.28)}
 }
 @media (prefers-reduced-motion:reduce){#app *,.nav button{transition:none!important}}
+
+/* =====================================================================
+   Everything else: forms, sheets, buttons, tags, icon tiles, bottom bars.
+   (Delete from here down to keep only the feed, nav and header changes.)
+   ===================================================================== */
+
+/* Forms */
+.field label,.flabel{font-size:13px;font-weight:600;color:var(--soft);letter-spacing:0}
+#app .inp,.sheet .inp{background:color-mix(in srgb,var(--surface) 55%,transparent);border:1px solid var(--line2);border-radius:14px;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+#app .inp:focus,.sheet .inp:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px rgba(200,241,105,.15);background:var(--surface)}
+[data-theme="light"] #app .inp:focus,[data-theme="light"] .sheet .inp:focus{box-shadow:0 0 0 3px rgba(110,158,0,.16)}
+#app .inp.bad,.sheet .inp.bad{border-color:rgba(255,138,61,.8);box-shadow:0 0 0 3px rgba(255,138,61,.12)}
+.seg{background:transparent;box-shadow:inset 0 0 0 1px var(--line);border-radius:16px}
+.seg button{transition:background .2s ease,color .2s ease}
+.seg button.on{background:rgba(200,241,105,.14);color:var(--accent-text);box-shadow:inset 0 0 0 1px rgba(200,241,105,.45)}
+[data-theme="light"] .seg button.on{background:rgba(110,158,0,.12);box-shadow:inset 0 0 0 1px rgba(110,158,0,.45)}
+
+/* Sheets and overlays */
+.sheet-wrap{background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.sheet{background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:26px 26px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -12px 40px var(--shadow)}
+[data-theme="light"] .sheet{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -12px 40px var(--shadow)}
+.sheet h2{font-weight:600;letter-spacing:-.02em}
+.sheet .list{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.sheet .li .ico{background:transparent;box-shadow:inset 0 0 0 1px var(--line2)}
+.bottombar{background:color-mix(in srgb,var(--bg) 78%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+
+/* Buttons */
+.btn{transition:transform .15s ease,box-shadow .2s ease,background .2s ease}
+.btn:active{transform:scale(.97)}
+.btn.lime{box-shadow:0 6px 20px rgba(200,241,105,.16)}
+[data-theme="light"] .btn.lime{box-shadow:0 6px 18px rgba(110,158,0,.2)}
+.btn.dark{background:transparent;box-shadow:inset 0 0 0 1px var(--line2)}
+.btn.dark:active{background:var(--raised)}
+
+/* Tags: tinted, not solid */
+.tag.lime{background:rgba(200,241,105,.16);color:var(--accent-text);box-shadow:inset 0 0 0 1px rgba(200,241,105,.32)}
+[data-theme="light"] .tag.lime{background:rgba(110,158,0,.12);box-shadow:inset 0 0 0 1px rgba(110,158,0,.35)}
+.tag.oranges{background:rgba(255,138,61,.16);color:var(--orange-text);box-shadow:inset 0 0 0 1px rgba(255,138,61,.35)}
+#app .li .t span.tag.oranges{color:var(--orange-text)}
+.tag.grey{background:transparent;box-shadow:inset 0 0 0 1px var(--line2)}
+
+/* Icon tiles and avatars */
+#app .li .ico{background:transparent;box-shadow:inset 0 0 0 1px var(--line2)}
+.av{box-shadow:0 0 0 1px rgba(255,255,255,.07)}
+[data-theme="light"] .av{box-shadow:0 0 0 1px rgba(20,32,26,.08)}
+.empty b{font-weight:600;letter-spacing:-.01em}
+.sec{letter-spacing:.12em}
