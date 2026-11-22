@@ -791,7 +791,7 @@ function postCard(p,full=false){
   }
   const u=user(p.author), mine=p.author==='me';
   const comm=p.community?COMM[p.community]:null;
-  const meta=[shortBatch(u.batch),comm?comm.name:null,p.time,p.edited?'edited':null].filter(Boolean).join(' · ');
+  const meta=[shortBatch(u.batch),comm?comm.name:null,p.loc?'📍 '+p.loc:null,p.time,p.edited?'edited':null].filter(Boolean).join(' · ');
   const tag={question:`<span class="tag orange">${I('help',13)}Question</span>`,discussion:`<span class="tag orange">${I('disc',13)}Discussion</span>`,poll:`<span class="tag orange">${I('poll',13)}Poll</span>`}[p.type]||'';
   const fol=!mine&&!S.following.has(p.author)?`<button class="btn sm dark" data-a="follow" data-id="${p.author}">Follow</button>`:'';
   const body=`${p.title?`<span class="hd" style="display:block;font-weight:700;font-size:18px;margin-top:10px;line-height:1.25">${esc(p.title)}</span>`:''}<span class="pt ${full?'':'clamp'}" style="display:${p.title?'block':'-webkit-box'};${p.title?'margin-top:4px':''};${full?'display:block':''}">${rich(p.text)}</span>`;
@@ -807,6 +807,7 @@ function postCard(p,full=false){
     ${tag?`<div style="margin-top:10px">${tag}</div>`:''}
     ${full?body:`<button data-a="openPost" data-id="${p.id}" style="display:block;width:100%;text-align:left">${body}</button>`}
     ${p.type==='poll'?pollBlock(p):''}
+    ${p.tags&&p.tags.length?`<div style="margin-top:8px;font-size:13px;color:var(--muted)">with ${p.tags.map(t=>`<button data-a="openUser" data-id="${t}" style="font-weight:600;color:var(--accent-text)">${esc(user(t).name)}</button>`).join(', ')}</div>`:''}
     ${photos(p.media,p.id,full?260:200)}
     <div class="row" style="gap:6px;margin-top:12px">
       <button class="pill ${p.liked?'on-like':''}" data-a="like" data-id="${p.id}" aria-pressed="${!!p.liked}" aria-label="Like, ${p.likes}">${I('heart',18,p.liked?'style="fill:currentColor"':'')}${short(p.likes)}</button>
@@ -1154,7 +1155,7 @@ SC.createCommunity=()=>{const d=S.draft;const made=S.myComms.length;
 
 // ===== Compose =====
 const CT={photo:'Photo or video',discussion:'Start a discussion',question:'Ask a question',poll:'Create a poll',sell:'Sell an item',accommodation:'List accommodation',job:'Share a job',event:'Create an event'};
-INIT.compose=p=>{S.draft={photos:[],dest:p.comm||'feed',alsoFeed:!p.comm,vis:'Public',optCount:2,duration:'1 day',condition:'Fairly used',state:S.me.state,type:'Self-contain',period:'/ year',jobType:'Full-time',jobUnit:'/ month',fees:1,fee0l:'Agency fee',wa:true,call:false,phone:'',organiser:'me',time:'16:00'};};
+INIT.compose=p=>{S.draft={tags:[],photos:[],dest:p.comm||'feed',alsoFeed:!p.comm,vis:'Public',optCount:2,duration:'1 day',condition:'Fairly used',state:S.me.state,type:'Self-contain',period:'/ year',jobType:'Full-time',jobUnit:'/ month',fees:1,fee0l:'Agency fee',wa:true,call:false,phone:'',organiser:'me',time:'16:00'};};
 function photoPicker(label,req,single){const d=S.draft;
   return `<div class="field"><span class="flabel">${label}${req?'':' <span class="muted" style="font-weight:500">(optional)</span>'}</span>
   <div class="chips" style="padding:0">${d.photos.map((u,i)=>`<span style="position:relative;flex:none"><span class="ph" style="width:${single?150:96}px;height:96px">${isVid(u)?`<video src="${u}" muted preload="metadata" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>`:`<img src="${u}" alt="Selected photo ${i+1}">`}</span><button class="ib" style="position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:10px;background:rgba(15,18,17,.85)" data-a="rmPhoto" data-i="${i}" aria-label="Remove photo ${i+1}">${I('x',14)}</button></span>`).join('')}
@@ -1171,9 +1172,9 @@ function contactFields(){const d=S.draft;
   return `<div class="field"><span class="flabel">How people can reach you</span><div class="list">${swRow('wa','WhatsApp','Opens a chat with a pre-filled message',d.wa)}${swRow('call','Phone call','Shows your number when someone taps Call',d.call)}</div>${S.errors.contact?`<span class="err">${S.errors.contact}</span>`:''}<span class="hint">There’s no in-app chat. Your number is never shown on your profile.</span></div>
   ${fld('phone','Phone number for this listing',{type:'tel',prefix:'+234',prefixW:62,ph:'803 000 0000',attrs:'inputmode="tel"'})}`;}
 SC.compose=t=>{const ty=t.t,d=S.draft;let f='';
-  if(ty==='photo') f=photoPicker('Photos or video',true)+fld('text','Caption',{area:true,ph:'What’s happening?'})+fld('loc','Location',{opt:true,ph:'e.g. Parade ground',hint:'Shown as a general place, never your exact location.'})+destFields();
-  if(ty==='discussion') f=fld('title','Title',{ph:'What do you want to talk about?',attrs:'maxlength="100"'})+fld('text','Details',{area:true,ph:'Share your thoughts, context or a story.'})+photoPicker('Photos',false)+destFields();
-  if(ty==='question') f=fld('text','Your question',{area:true,ph:'e.g. Can we still change platoons after Wednesday?',hint:'Clear questions get better answers. Add your state or camp if it matters.'})+photoPicker('Supporting photo',false)+destFields();
+  if(ty==='photo') f=photoPicker('Photos or video',true)+fld('text','Caption',{area:true,ph:'What’s happening?'})+fld('loc','Location',{opt:true,ph:'e.g. Parade ground',hint:'Shown as a general place, never your exact location.'})+tagField()+destFields();
+  if(ty==='discussion') f=fld('title','Title',{ph:'What do you want to talk about?',attrs:'maxlength="100"'})+fld('text','Details',{area:true,ph:'Share your thoughts, context or a story.'})+photoPicker('Photos',false)+fld('loc','Location',{opt:true,ph:'e.g. Kano camp or Yaba, Lagos',hint:'A general place, never your exact location.'})+tagField()+destFields();
+  if(ty==='question') f=fld('text','Your question',{area:true,ph:'e.g. Can we still change platoons after Wednesday?',hint:'Clear questions get better answers. Add your state or camp if it matters.'})+photoPicker('Supporting photo',false)+fld('loc','Location',{opt:true,ph:'e.g. Kano camp or Yaba, Lagos',hint:'A general place, never your exact location.'})+tagField()+destFields();
   if(ty==='poll'){f=fld('text','Question',{ph:'e.g. Best spot at Mammy Market?',attrs:'maxlength="120"'})+`<div class="field"><span class="flabel">Options</span><div class="stack" style="gap:8px">${Array.from({length:d.optCount},(_,i)=>`<div class="row" style="gap:8px"><label for="f-opt${i}" class="vh">Option ${i+1}</label><input class="inp ${S.errors['opt'+i]?'bad':''}" id="f-opt${i}" data-k="opt${i}" value="${esc(d['opt'+i]||'')}" placeholder="Option ${i+1}" maxlength="40">${i>=2?`<button class="ib" data-a="rmOpt" data-i="${i}" aria-label="Remove option ${i+1}">${I('x',18)}</button>`:''}</div>`).join('')}</div>${S.errors.opts?`<span class="err">${S.errors.opts}</span>`:''}${d.optCount<5?`<button class="btn sm dark" style="align-self:flex-start;margin-top:4px" data-a="addOpt">${I('plus',16)}Add option</button>`:''}</div>`+fld('duration','Poll length',{opts:['1 day','3 days','1 week']})+`<div class="hint">One vote per member. Moderator elections use a separate, controlled process.</div>`+destFields();}
   if(ty==='sell') f=photoPicker('Photos',true)+fld('title','What are you selling?',{ph:'e.g. Rechargeable fan',attrs:'maxlength="60"'})+`<div class="grid2">${fld('price','Price',{type:'number',prefix:'₦',prefixW:30,ph:'0',attrs:'inputmode="numeric" min="0"'})}${fld('condition','Condition',{opts:['New','Like new','Fairly used','Used']})}</div>`+fld('text','Description',{area:true,ph:'Size, age, any faults, pick-up details…'})+`<div class="grid2">${fld('state','State',{opts:STATES})}${fld('area','Area',{ph:'e.g. Kano Municipal'})}</div>`+contactFields();
   if(ty==='job') f=fld('title','Job title',{ph:'e.g. Junior frontend developer',attrs:'maxlength="60"'})+fld('company','Employer or company',{ph:'e.g. Kano Digital Hub',attrs:'maxlength="60"'})+fld('jobType','Type',{opts:['Full-time','Part-time','Contract','Internship','Gig']})+`<div class="grid2">${fld('price','Pay',{type:'number',prefix:'₦',prefixW:30,ph:'0',attrs:'inputmode="numeric" min="0"'})}${fld('jobUnit','Paid',{opts:[['/ month','Per month'],['/ week','Per week'],['/ event','Per task or event']]})}</div>`+fld('text','Description',{area:true,ph:'What the role involves, who it suits, whether it fits around CDS and PPA hours…'})+`<div class="grid2">${fld('state','State',{opts:STATES})}${fld('area','Area or LGA',{ph:'e.g. Ikeja'})}</div>`+photoPicker('Logo or photo',false)+contactFields()
@@ -1438,6 +1439,7 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
     ${li({icon:'eye',title:'Privacy & visibility',sub:'Who sees your service details',a:'go',data:'data-s="privacy"',right:chev})}
     ${li({icon:'bell',title:'Notifications',sub:S.settings.push?'Push on'+(S.settings.quiet?' · quiet hours set':''):'Push off',a:'go',data:'data-s="notifSettings"',right:chev})}
     ${showInstall()?li({icon:'download',title:'Install the app',sub:'Add to your home screen',a:'installApp',right:chev}):''}
+    ${li({icon:'users',title:'Invite friends',sub:'Share your invite link',a:'share',data:'data-kind="invite" data-id="'+esc(S.me.username)+'"',right:chev})}
     ${li({icon:'moon',title:'Appearance',sub:'Theme: '+CCTheme.label()+(CCTheme.get()==='system'?' (follows your device)':''),a:'appearance',right:chev})}
     ${li({icon:'wifi',title:'Data & media',sub:S.settings.dataSaver?'Data saver on':'Data saver off',a:'go',data:'data-s="dataSettings"',right:chev})}</div>
   <div class="sec">Safety</div><div class="list">
@@ -1587,7 +1589,7 @@ SH.report=s=>{const r=s.kind==='listing'?['Fake or misleading listing','Scam or 
   <div style="margin-top:12px">${fld('rdetail','Anything else?',{area:true,opt:true,ph:'Add details or links that help us understand.'})}</div>
   <label for="rev" class="btn sm dark" style="margin-top:10px;cursor:pointer">${I('image',16)}${S.draft.revName?esc(S.draft.revName):'Attach screenshot (optional)'}</label><input id="rev" type="file" accept="image/*" class="vh" data-file="reportEvidence">
   <button class="btn lime block" style="margin-top:16px" data-a="submitReport" ${s.reason?'':'disabled'}>Submit report</button>`;};
-SH.share=s=>{const url='https://corpersconnect.com/'+s.kind+'/'+(s.id||'');const text={post:'Check out this post on Corpers Connect',listing:'Check out this listing on Corpers Connect',event:'Check out this event on Corpers Connect',community:'Join this community on Corpers Connect',profile:'Find me on Corpers Connect'}[s.kind]||'Corpers Connect';
+SH.share=s=>{const url='https://corpersconnect.com/'+s.kind+'/'+(s.id||'');const text={post:'Check out this post on Corpers Connect',listing:'Check out this listing on Corpers Connect',event:'Check out this event on Corpers Connect',community:'Join this community on Corpers Connect',profile:'Find me on Corpers Connect',invite:'Join me on Corpers Connect, the app for NYSC corps members'}[s.kind]||'Corpers Connect';
   return `<h2>Share</h2><div class="list">${li({icon:'link',title:'Copy link',sub:url,a:'copyLink'})}${li({icon:'comment',title:'Share to WhatsApp',sub:'Opens WhatsApp',href:'https://wa.me/?text='+encodeURIComponent(text+' '+url),right:chev})}
   ${s.kind==='post'&&POSTS[s.id].author!=='me'?li({icon:'repost',title:POSTS[s.id].reposted?'Undo repost':'Repost to your followers',a:'repost',data:`data-id="${s.id}"`}):''}</div>`;};
 SH.contact=s=>{const l=LISTINGS[s.id],o=user(l.owner);const msg=l.kind==='job'?`Hello, I saw the ${l.title} role on the Corpers Connect app. I’d like to apply. Is it still open?`:`Hello, I saw your ${l.title} on the Corpers Connect app. Is it still available?`;
@@ -1737,7 +1739,7 @@ const A={
     if(!ok){render();return toast('Check the highlighted fields');}
     if(['photo','discussion','question','poll'].includes(ty)){
       const id=uid('p'),comm=x.dest!=='feed'?x.dest:null,commOnly=comm&&!x.alsoFeed;
-      POSTS[id]={id,type:ty,author:'me',community:comm,title:ty==='discussion'?v('title'):'',text:v('text'),media:[...x.photos],time:'Just now',likes:0,cc:0,reposts:0,batch:true,state:S.me.state,vis:commOnly?'Community':(x.vis==='Community'?'Public':x.vis),comments:[],
+      POSTS[id]={id,type:ty,author:'me',loc:v('loc')||'',tags:[...(S.draft.tags||[])],community:comm,title:ty==='discussion'?v('title'):'',text:v('text'),media:[...x.photos],time:'Just now',likes:0,cc:0,reposts:0,batch:true,state:S.me.state,vis:commOnly?'Community':(x.vis==='Community'?'Public':x.vis),comments:[],
         poll:ty==='poll'?{options:opts.map(o=>[o,0]),voted:null,ends:'Ends in '+x.duration}:undefined};
       FEED.unshift({k:'post',id});S.myPosts.unshift(id);S.homeFilter='For You';backToTop();toast(comm?'Posted to '+COMM[comm].name:'Posted');return;}
     if(ty==='sell'||ty==='accommodation'||ty==='job'){
@@ -2091,6 +2093,14 @@ A.notInterested=d=>{S.notInt.add('post:'+d.id);S.sheet=null;if(topScreen().s==='
 (function(){let x0=null;document.addEventListener('touchstart',e=>{x0=S.lb?e.touches[0].clientX:null;},{passive:true});
 document.addEventListener('touchend',e=>{if(x0==null||!S.lb||S.lb.list.length<2)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)A.lbStep({d:dx<0?1:-1});},{passive:true});
 document.addEventListener('keydown',e=>{if(!S.lb||S.lb.list.length<2)return;if(e.key==='ArrowRight')A.lbStep({d:1});if(e.key==='ArrowLeft')A.lbStep({d:-1});});})();
+
+// ---- tag people in a post, invite link
+function tagField(){const t=S.draft.tags||[];return `<div class="field"><span class="flabel">Tag people <span class="muted" style="font-weight:500">(optional)</span></span><button class="inp" data-a="tagPeople" style="text-align:left;display:flex;align-items:center;gap:8px;min-height:48px">${I('user',18)}<span style="flex:1;color:${t.length?'var(--text)':'var(--muted)'}">${t.length?t.map(x=>esc(user(x).name.split(' ')[0])).join(', '):'Add people'}</span>${chev}</button></div>`;}
+SH.tagPeople=()=>{const t=S.draft.tags||[];const ppl=[...S.following].map(id=>USERS[id]).filter(Boolean);
+  return `<h2>Tag people</h2><p class="hint" style="margin:0 0 12px">Only people you follow. They get a notification.</p><div class="list" style="max-height:46vh;overflow:auto">${ppl.map(u=>`<button class="li" data-a="tagToggle" data-id="${u.id}" role="checkbox" aria-checked="${t.includes(u.id)}">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></span><span style="width:24px;height:24px;border-radius:12px;border:2px solid var(--line3);display:flex;align-items:center;justify-content:center;background:${t.includes(u.id)?'#C8F169':'transparent'};color:var(--ink)">${t.includes(u.id)?I('check',14):''}</span></button>`).join('')}</div><button class="btn lime block" style="margin-top:14px" data-a="tagDone">Done${t.length?' ('+t.length+')':''}</button>`;};
+A.tagPeople=()=>{sheet({type:'tagPeople'});};
+A.tagToggle=d=>{const t=S.draft.tags=S.draft.tags||[];const i=t.indexOf(d.id);if(i<0){if(t.length>=5)return toast('You can tag up to 5 people');t.push(d.id);}else t.splice(i,1);render();};
+A.tagDone=()=>{S.sheet=null;render();};
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el||!app().contains(el))return;
