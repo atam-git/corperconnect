@@ -1801,3 +1801,20 @@ These refine the baseline above and are recorded in detail in the technical docu
 8. **Community moderators are live at launch,** alongside admins, approved by the platform team.
 9. **Responsive.** Mobile first, with tablet and desktop adaptations.
 10. **Hosting is decided after the app is built.**
+
+## Appendix B. Additions after prototype round 2 (22 November 2026)
+
+These were decided while reviewing the prototype and are part of the product.
+
+1. **Media is portrait first.** Single portrait photos and videos are large (3:4), landscape is 16:10, and several items form a horizontal swipe carousel.
+2. **Grouped notifications.** One row per kind and target, updated when more people act (likes, reposts, comments, follows, new jobs or items in a community). Never one notification per like.
+3. **Comment replies** are one level. The feed shows the most popular reply and "View N more replies".
+4. **Feed controls:** muted words, "Not interested", mute notifications for one post, a bell to get alerts for someone's posts, and a "New posts" pill.
+5. **Post controls:** who can reply (Everyone, People I follow, Nobody), tag up to 5 people, optional general location, drafts, and pin one post to the profile.
+6. **Trust tools:** verified members can add a context note to a post and others rate it. Risky links show a warning before leaving the app.
+7. **Discovery and saving:** saved searches with alerts, bookmark folders, and Trending scoped to Nigeria, My state or My camp. Profiles have underline tabs including Reposts.
+8. **Community tools:** join requests, invite links, and camp schedule submissions by camp moderators for staff approval.
+9. **Account:** signed-in devices list with sign-out, a "not available" page for removed content, age confirmation (18 or older) at sign-up, a simple invite link (no rewards or tracking), and an install prompt.
+10. **Admin sign-in is email and password. No MFA.**
+11. **Look and feel:** flat feed, dark announcement cards with a lime rule, hairline controls, frosted nav, header and sheets. The phone nav and Home header slide away on scroll down. See `docs/Design-System.md` section 5a.
+12. **Admin console:** the theme switch lives in Settings, Appearance, open to every role.
