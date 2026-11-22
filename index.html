@@ -799,7 +799,7 @@ function postCard(p,full=false){
   const fol=!mine&&!S.following.has(p.author)?`<button class="btn sm dark" data-a="follow" data-id="${p.author}">Follow</button>`:'';
   const body=`${p.title?`<span class="hd" style="display:block;font-weight:700;font-size:18px;margin-top:10px;line-height:1.25">${esc(p.title)}</span>`:''}<span class="pt ${full?'':'clamp'}" style="display:${p.title?'block':'-webkit-box'};${p.title?'margin-top:4px':''};${full?'display:block':''}">${rich(p.text)}</span>`;
   return `<article class="card">
-    <div class="row">
+    ${pinTag(p)}<div class="row">
       <button data-a="openUser" data-id="${p.author}" aria-label="${esc(u.name)}'s profile">${av(u,42)}</button>
       <button data-a="openUser" data-id="${p.author}" style="flex:1;min-width:0;text-align:left">
         <span style="display:flex;align-items:center;gap:5px;font-weight:600;font-size:15px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.name)}</span>${vb(u)}${u.status==='Completed'?'<span class="tag blue" style="padding:2px 6px;font-size:10px">Alumni</span>':''}</span>
@@ -812,6 +812,7 @@ function postCard(p,full=false){
     ${p.type==='poll'?pollBlock(p):''}
     ${p.tags&&p.tags.length?`<div style="margin-top:8px;font-size:13px;color:var(--muted)">with ${p.tags.map(t=>`<button data-a="openUser" data-id="${t}" style="font-weight:600;color:var(--accent-text)">${esc(user(t).name)}</button>`).join(', ')}</div>`:''}
     ${photos(p.media,p.id,full?260:200)}
+    ${noteBlock(p)}
     <div class="row" style="gap:6px;margin-top:12px">
       <button class="pill ${p.liked?'on-like':''}" data-a="like" data-id="${p.id}" aria-pressed="${!!p.liked}" aria-label="Like, ${p.likes}">${I('heart',18,p.liked?'style="fill:currentColor"':'')}${short(p.likes)}</button>
       <button class="pill" data-a="openPost" data-id="${p.id}" aria-label="Comments, ${p.cc}">${I('comment',18)}${short(p.cc)}</button>
@@ -907,7 +908,7 @@ function render(){
 }
 function go(s,params={}){S.errors={}; S.sheet=null; if(INIT[s]) INIT[s](params); S.stack.push({s,...params}); render();}
 function replace(s,params={}){S.errors={}; S.sheet=null; if(INIT[s]) INIT[s](params); S.stack[S.stack.length-1]={s,...params}; S.scrollMem[keyOf(topScreen())]=0; render();}
-function back(){S.errors={}; S.sheet=null; if(S.stack.length>1){delete S.scrollMem[keyOf(topScreen())]; S.stack.pop();} render();}
+function back(){{const t=topScreen();if(t.s==='compose'&&!S.noGuard&&draftHas()){sheet({type:'draftSave',t:t.t});return;}}S.errors={}; S.sheet=null; if(S.stack.length>1){delete S.scrollMem[keyOf(topScreen())]; S.stack.pop();} render();}
 function tabTo(t){S.errors={}; S.sheet=null; S.stack=[{s:t}]; render();}
 function sheet(o){S.sheet=o; render();}
 function closeSheet(){S.sheet=null; render();}
@@ -1023,7 +1024,8 @@ SC.suggest=()=>{const off=['batch-b-26','kano-camp','kano-cms'].map(i=>COMM[i]);
 function hiddenAuthor(id){return id&&id!=='me'&&(S.blocked.has(id)||S.muted.has(id));}
 function refObj(r){return r.k==='post'?POSTS[r.id]:r.k==='listing'?LISTINGS[r.id]:EVENTS[r.id];}
 function refAuthor(r){const o=refObj(r);return r.k==='post'?o.author:r.k==='listing'?o.owner:o.organiser;}
-function refOk(r){if(S.notInt&&S.notInt.has(r.k+':'+r.id))return false;const o=refObj(r);if(!o||o.deleted)return false;const a=refAuthor(r);if(hiddenAuthor(a))return false;
+function mutedHit(o){if(!o||!S.mutedWords||!S.mutedWords.length)return false;const t=((o.title||'')+' '+(o.text||'')+' '+(o.desc||'')).toLowerCase();return S.mutedWords.some(w=>t.includes(w));}
+function refOk(r){{const o=refObj(r);if(o&&mutedHit(o))return false;}if(S.notInt&&S.notInt.has(r.k+':'+r.id))return false;const o=refObj(r);if(!o||o.deleted)return false;const a=refAuthor(r);if(hiddenAuthor(a))return false;
   if(r.k==='post'){if(o.community&&S.mutedComms.has(o.community)&&o.type!=='announcement')return false;if(o.type==='announcement'&&!COMM[o.community].joined)return false;}
   return true;}
 function homeItems(){
@@ -1065,7 +1067,7 @@ SC.home=()=>{
 
 // ===== Post detail =====
 SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return unavailable('post');
-  const cs=p.comments||[];
+  const cs=(p.comments||[]).filter(c=>!mutedHit(c));
   return `${tb(p.type==='poll'?'Poll':p.type==='question'?'Question':p.type==='discussion'?'Discussion':'Post')}
   <div class="scroll" style="padding-bottom:96px"><div class="pad">${postCard(p,true)}
   ${p.community?`<button class="row" data-a="go" data-s="communityDetail" data-id="${p.community}" style="margin:10px 4px 0;font-size:13px;color:var(--muted);min-height:36px">${I('users',14)}Posted in <b style="color:var(--text)">${esc(COMM[p.community].name)}</b></button>`:''}
@@ -1076,7 +1078,7 @@ SC.post=t=>{const p=POSTS[t.id];if(!p||p.deleted)return unavailable('post');
     <div class="row" style="gap:16px;font-size:12px;color:var(--muted);padding:4px 4px 0"><span>${c.time}</span><button data-a="likeComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px;color:${c.liked?'var(--orange-text)':'var(--muted)'}">${c.liked?'Liked':'Like'}${c.likes?' · '+c.likes:''}</button>${c.u==='me'?`<button data-a="delComment" data-id="${p.id}" data-i="${i}" style="font-weight:700;min-height:32px">Delete</button>`:`<button data-a="report" data-kind="comment" data-id="${p.id}" style="font-weight:700;min-height:32px">Report</button>`}<button data-a="replyTo" data-i="${i}" style="font-weight:700;min-height:32px">Reply</button></div>${repList(p,i,c).map(([r,j])=>{const ru=user(r.u);return `<div class="row" style="align-items:flex-start;gap:8px;padding:8px 0 0"><button data-a="openUser" data-id="${r.u}" aria-label="${esc(ru.name)}">${av(ru,28)}</button><div style="flex:1;min-width:0"><div style="background:var(--raised);border-radius:4px 16px 16px 16px;padding:8px 10px"><div style="font-weight:600;font-size:12.5px;display:flex;gap:4px;align-items:center">${esc(ru.name)}${vb(ru,12)}</div><div style="font-size:13.5px;line-height:1.4;margin-top:2px;word-wrap:break-word">${rich(r.t)}</div></div><div class="row" style="gap:14px;font-size:12px;color:var(--muted);padding:2px 4px 0"><span>${r.time}</span><button data-a="likeReply" data-id="${p.id}" data-i="${i}" data-j="${j}" aria-pressed="${!!r.liked}" style="font-weight:700;min-height:28px;color:${r.liked?'var(--accent-text)':'inherit'}">Like${r.likes?' · '+r.likes:''}</button>${r.u==='me'?`<button data-a="delReply" data-id="${p.id}" data-i="${i}" data-j="${j}" style="font-weight:700;min-height:28px">Delete</button>`:''}</div></div></div>`;}).join('')}${repMore(p,i,c)}</div></div>`;}).join(''):empty('No comments yet','Start the conversation.')}
   ${p.cc>cs.length&&cs.length?`<div class="hint" style="padding:14px 4px">Showing the most recent comments.</div>`:''}`}
   </div></div>
-  ${p.type==='announcement'?'':`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${S.draft.replyTo!=null&&cs[S.draft.replyTo]?`<div class="row" style="position:absolute;left:16px;right:16px;bottom:74px;background:var(--raised);border-radius:12px;padding:6px 10px;font-size:12.5px;justify-content:space-between"><span>Replying to <b>${esc(user(cs[S.draft.replyTo].u).name)}</b></span><button data-a="cancelReply" style="font-weight:700;color:var(--muted)">Cancel</button></div>`:''}${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="${S.draft.replyTo!=null?'Write a reply…':'Add a comment…'}" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
+  ${p.type==='announcement'?'':replyLocked(p)||`<div class="bottombar row" style="gap:8px"><div id="mentionBox" style="position:absolute;left:12px;right:12px;bottom:68px"></div>${S.draft.replyTo!=null&&cs[S.draft.replyTo]?`<div class="row" style="position:absolute;left:16px;right:16px;bottom:74px;background:var(--raised);border-radius:12px;padding:6px 10px;font-size:12.5px;justify-content:space-between"><span>Replying to <b>${esc(user(cs[S.draft.replyTo].u).name)}</b></span><button data-a="cancelReply" style="font-weight:700;color:var(--muted)">Cancel</button></div>`:''}${av(S.me,36)}<label for="f-comment" class="vh">Add a comment</label><input class="inp" style="height:44px;border-radius:22px" id="f-comment" data-live="commentLive" data-k="comment" data-enter="addComment" data-id="${p.id}" placeholder="${S.draft.replyTo!=null?'Write a reply…':'Add a comment…'}" value="${esc(S.draft.comment||'')}"><button class="ib lime" data-a="addComment" data-id="${p.id}" aria-label="Send comment">${I('send',18)}</button></div>`}`;};
 INIT.post=()=>{S.draft={comment:'',replyTo:null};};
 
 // ===== Community =====
@@ -1214,7 +1216,7 @@ function exploreBody(){
   if(tab==='For You'){body=forYouBody();}
   else if(tab==='Trending'){
     const top=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community').sort((a,b)=>b.likes-a.likes).slice(0,4);
-    body=`<div class="pad stack"><div class="card" style="padding:6px 4px"><div class="hd" style="font-weight:700;font-size:17px;padding:10px 12px 4px">Trending across Nigeria</div>${TRENDING.map(([h,c],i)=>`<button class="li" data-a="setQ" data-v="${h.slice(1)}" style="border-color:var(--raised)"><span class="hd" style="width:26px;color:var(--muted);font-weight:700">${i+1}</span><span class="t"><b>${h}</b><span>${c}</span></span>${I('trend',18,'style="color:var(--accent-text)"')}</button>`).join('')}</div>
+    body=chips(['Nigeria','My state','My camp'],S.trendScope,'trendScope')+`<div class="pad stack"><div class="card" style="padding:6px 4px"><div class="hd" style="font-weight:700;font-size:17px;padding:10px 12px 4px">${S.trendScope==='Nigeria'?'Trending across Nigeria':S.trendScope==='My state'?'Trending in '+esc(S.me.state):'Trending in your camp'}</div>${trendList().map(([h,c],i)=>`<button class="li" data-a="setQ" data-v="${h.slice(1)}" style="border-color:var(--raised)"><span class="hd" style="width:26px;color:var(--muted);font-weight:700">${i+1}</span><span class="t"><b>${h}</b><span>${c}</span></span>${I('trend',18,'style="color:var(--accent-text)"')}</button>`).join('')}</div>
     <div class="sec">Popular posts</div>${top.map(p=>postCard(p)).join('')}</div>`;
   } else if(tab==='Nationwide'){
     const ps=Object.values(POSTS).filter(p=>p.type!=='announcement'&&!p.deleted&&p.state&&p.state!==S.me.state&&stateOk(p.state)&&!hiddenAuthor(p.author));
@@ -1356,11 +1358,12 @@ function profileHeader(u,own){
 }
 SC.profile=()=>{
   const tab=S.profileTab,u=S.me;let body='';
-  if(tab==='Posts'){const ps=S.myPosts.map(id=>POSTS[id]).filter(p=>!p.deleted);const rp=Object.values(POSTS).filter(p=>p.reposted&&!p.deleted);
+  if(tab==='Posts'){const ps=S.myPosts.map(id=>POSTS[id]).filter(p=>!p.deleted).sort((a,b)=>(b.id===S.pinned)-(a.id===S.pinned));const rp=Object.values(POSTS).filter(p=>p.reposted&&!p.deleted);
     body=ps.length||rp.length?ps.map(p=>postCard(p)).join('')+(rp.length?`<div class="sec">Reposts</div>`+rp.map(p=>postCard(p)).join(''):''):empty('No posts yet','Share your first camp moment.',`<button class="btn sm lime" data-a="create">Create a post</button>`);}
   if(tab==='Journey') body=journey(u,true);
   if(tab==='Saved'){const sp=Object.values(POSTS).filter(p=>p.saved&&!p.deleted),sl=Object.values(LISTINGS).filter(l=>l.saved&&!l.deleted),se=Object.values(EVENTS).filter(e=>e.rsvp&&!e.deleted);
-    body=sp.length||sl.length||se.length?`${sl.length?'<div class="sec">Listings</div>'+sl.map(listingCard).join(''):''}${se.length?'<div class="sec">Events you’re attending</div>'+se.map(eventCard).join(''):''}${sp.length?'<div class="sec">Posts</div>'+sp.map(p=>postCard(p)).join(''):''}`:empty('Nothing saved yet','Tap the bookmark on posts and listings to keep them here. Only you can see this.');}
+    const fl=S.savedFolder,inF=k=>fl==='All'||folderOf(k)===fl;const sp2=sp.filter(p=>inF('post:'+p.id)),sl2=sl.filter(l=>inF('listing:'+l.id));
+    body=chips(['All','Unfiled',...S.folders,'+ New folder'],fl,'savedFolder')+(sp2.length||sl2.length||(fl==='All'&&se.length)?`${sl2.length?'<div class="sec">Listings</div>'+sl2.map(l=>listingCard(l)+folderBar('listing:'+l.id)).join(''):''}${fl==='All'&&se.length?'<div class="sec">Events you’re attending</div>'+se.map(eventCard).join(''):''}${sp2.length?'<div class="sec">Posts</div>'+sp2.map(p=>postCard(p)+folderBar('post:'+p.id)).join(''):''}`:(sp.length||sl.length?empty('Nothing in this folder','Use Change under a saved item to move it here.'):empty('Nothing saved yet','Tap the bookmark on posts and listings to keep them here. Only you can see this.')));}
   if(tab==='Listings'){const ml=S.myListings.map(id=>LISTINGS[id]).filter(l=>!l.deleted),me=S.myEvents.map(id=>EVENTS[id]).filter(e=>!e.deleted);
     body=ml.length||me.length?`${ml.length?'<div class="sec">Your listings</div>'+ml.map(listingCard).join(''):''}${me.length?'<div class="sec">Your events</div>'+me.map(eventCard).join(''):''}`:empty('No listings or events','Sell an item, hand over your apartment or organise a meetup.',`<button class="btn sm lime" data-a="create">Create</button>`);}
   return `<div class="scroll"><div class="topbar"><h1>Profile</h1><button class="ib" data-a="share" data-kind="profile" data-id="me" aria-label="Share profile">${I('share')}</button><button class="ib" data-a="go" data-s="settings" aria-label="Settings">${I('gear')}</button></div>
@@ -1371,13 +1374,13 @@ SC.profile=()=>{
 SC.user=t=>{const u=USERS[t.id];
   if(S.blocked.has(u.id)) return `${tb('@'+esc(u.username))}<div class="scroll nonav">${empty('You blocked '+esc(u.name),'You won’t see each other’s posts or be able to interact.',`<button class="btn sm dark" data-a="unblock" data-id="${u.id}">Unblock</button>`)}</div>`;
   const tab=S.userTab[u.id]||'Posts';let body='';
-  if(tab==='Posts'){const ps=Object.values(POSTS).filter(p=>p.author===u.id&&!p.deleted);const ls=Object.values(LISTINGS).filter(l=>l.owner===u.id&&!l.deleted);
+  if(tab==='Posts'){const ps=Object.values(POSTS).filter(p=>p.author===u.id&&!p.deleted).sort((a,b)=>(b.id===u.pinned)-(a.id===u.pinned));const ls=Object.values(LISTINGS).filter(l=>l.owner===u.id&&!l.deleted);
     body=(ps.length?ps.map(p=>postCard(p)).join(''):'')+(ls.length?'<div class="sec">Listings</div>'+ls.map(listingCard).join(''):'')||empty('No posts yet','');}
   if(tab==='Journey') body=journey(u,false);
   if(tab==='Communities'){const cs=Object.values(COMM).filter(c=>c.mods.includes(u.id)||(c.official&&(c.sub===u.batch||c.name.includes(u.state))));body=cs.length?cs.map(c=>commRow(c)).join(''):empty('No public communities','');}
   return `<div class="scroll">${tb('@'+esc(u.username),{right:`<button class="ib" data-a="userMenu" data-id="${u.id}" aria-label="More options">${I('more')}</button>`})}
   ${S.muted.has(u.id)?`<div class="pad" style="margin-bottom:10px"><div class="card row" style="padding:10px 14px;font-size:13px">${I('mute',16)}<span style="flex:1">Muted. Their posts are hidden from your feed.</span><button class="btn sm dark" data-a="unmute" data-id="${u.id}">Unmute</button></div></div>`:''}
-  ${profileHeader(u,false)}<div style="height:12px"></div>
+  ${profileHeader(u,false)}${S.following.has(u.id)?`<div class="pad" style="padding-top:10px"><button class="btn sm ${S.bells.has(u.id)?'lime':'dark'}" data-a="toggleBell" data-id="${u.id}" aria-pressed="${S.bells.has(u.id)}">${I('bell',16)}${S.bells.has(u.id)?'Notifying you of new posts':'Notify me of their posts'}</button></div>`:''}<div style="height:12px"></div>
   <div class="chips">${['Posts','Journey','Communities'].map(x=>`<button class="chip ${x===tab?'on':''}" data-a="userTab" data-id="${u.id}" data-v="${x}" aria-pressed="${x===tab}">${x}</button>`).join('')}</div>
   <div class="pad stack">${body}</div></div>`;
 };
@@ -1439,6 +1442,9 @@ SC.settings=()=>{const vlabel={verified:'Verified',pending:'In review',rejected:
     ${li({icon:'award',title:'Service information',sub:`${esc(S.me.batch)} · ${esc(S.me.state)} · ${esc(S.me.status)}`,a:'go',data:'data-s="service"',right:chev})}
     ${li({icon:'swap',title:'Redeployment',sub:S.me.redeploy?'Request under review':'Changing state? Keep your account',a:'go',data:'data-s="redeploy"',right:chev})}</div>
   <div class="sec">Preferences</div><div class="list">
+    ${li({icon:'mute',title:'Muted words',sub:S.mutedWords.length?S.mutedWords.length+' hidden':'Hide posts with words you pick',a:'go',data:'data-s="mutedWords"',right:chev})}
+    ${li({icon:'search',title:'Saved searches',sub:S.savedSearches.length+' saved',a:'go',data:'data-s="savedSearches"',right:chev})}
+    ${li({icon:'edit',title:'Drafts',sub:S.drafts.length?S.drafts.length+' saved':'None yet',a:'go',data:'data-s="drafts"',right:chev})}
     ${li({icon:'eye',title:'Privacy & visibility',sub:'Who sees your service details',a:'go',data:'data-s="privacy"',right:chev})}
     ${li({icon:'bell',title:'Notifications',sub:S.settings.push?'Push on'+(S.settings.quiet?' · quiet hours set':''):'Push off',a:'go',data:'data-s="notifSettings"',right:chev})}
     ${showInstall()?li({icon:'download',title:'Install the app',sub:'Add to your home screen',a:'installApp',right:chev}):''}
@@ -1568,7 +1574,7 @@ SH.gate=s=>`<span class="av" style="width:56px;height:56px;border-radius:18px;ba
   <p style="color:var(--soft);line-height:1.5;margin:0 0 18px;font-size:14px">${esc(s.why||'This feature')} is available once your NYSC membership is verified. ${S.verif==='pending'?'Your verification is already in review.':'It takes a couple of minutes to submit.'}</p>
   <button class="btn lime block" data-a="go" data-s="verification">${S.verif==='pending'?'Check status':'Get verified'}</button><button class="btn block" style="color:var(--muted);margin-top:6px" data-a="closeSheet">Not now</button>`;
 SH.postMenu=s=>{const p=POSTS[s.id],mine=p.author==='me',u=p.author?user(p.author):null,f=u&&S.following.has(u.id);
-  return `<div class="list">${li({icon:'bookmark',title:p.saved?'Remove from saved':'Save post',a:'save',data:`data-id="${p.id}"`})}${li({icon:'link',title:'Copy link',a:'copyLink'})}
+  return `<div class="list">${li({icon:'bookmark',title:p.saved?'Remove from saved':'Save post',a:'save',data:`data-id="${p.id}"`})}${p.saved?li({icon:'bookmark',title:'Save to a folder',sub:folderOf('post:'+p.id),a:'pickFolder',data:`data-k="post:${p.id}"`}):''}${li({icon:'bell',title:S.mutedPosts.has(p.id)?'Turn notifications back on':'Mute notifications for this post',sub:'Stop alerts from replies and likes',a:'mutePost',data:`data-id="${p.id}"`})}${mine?li({icon:'pin',title:S.pinned===p.id?'Unpin from profile':'Pin to your profile',a:'pinProfile',data:`data-id="${p.id}"`}):li({icon:'help',title:'Add context',sub:'Help others see the full picture',a:'addNote',data:`data-id="${p.id}"`})}${li({icon:'link',title:'Copy link',a:'copyLink'})}
   ${mine&&p.type!=='poll'?li({icon:'edit',title:'Edit post',a:'editPost',data:`data-id="${p.id}"`}):''}
   ${mine?li({icon:'trash',title:'Delete post',danger:true,a:'deletePostAsk',data:`data-id="${p.id}"`})
   :`${li({icon:'eye',title:'Not interested',sub:'Show fewer posts like this',a:'notInterested',data:`data-id="${p.id}"`})}${li({icon:'user',title:(f?'Unfollow ':'Follow ')+esc(first(u)),a:'follow',data:`data-id="${u.id}"`})}${li({icon:'mute',title:'Mute '+esc(first(u)),sub:'Hide their posts. They won’t be told.',a:'mute',data:`data-id="${u.id}"`})}${li({icon:'ban',title:'Block '+esc(first(u)),sub:'You won’t be able to interact',a:'blockAsk',data:`data-id="${u.id}"`})}${p.community&&isMod(COMM[p.community])?li({icon:'pin',title:'Pin to community',sub:'Moderator action',a:'modPin',data:`data-id="${p.id}"`})+li({icon:'trash',title:'Remove as moderator',danger:true,a:'modRemove',data:`data-id="${p.id}"`}):''}${li({icon:'flag',title:'Report post',danger:true,a:'report',data:`data-kind="post" data-id="${p.id}"`})}`}</div>`;};
@@ -1593,7 +1599,7 @@ SH.report=s=>{const r=s.kind==='listing'?['Fake or misleading listing','Scam or 
   <label for="rev" class="btn sm dark" style="margin-top:10px;cursor:pointer">${I('image',16)}${S.draft.revName?esc(S.draft.revName):'Attach screenshot (optional)'}</label><input id="rev" type="file" accept="image/*" class="vh" data-file="reportEvidence">
   <button class="btn lime block" style="margin-top:16px" data-a="submitReport" ${s.reason?'':'disabled'}>Submit report</button>`;};
 SH.share=s=>{const url='https://corpersconnect.com/'+s.kind+'/'+(s.id||'');const text={post:'Check out this post on Corpers Connect',listing:'Check out this listing on Corpers Connect',event:'Check out this event on Corpers Connect',community:'Join this community on Corpers Connect',profile:'Find me on Corpers Connect',invite:'Join me on Corpers Connect, the app for NYSC corps members'}[s.kind]||'Corpers Connect';
-  return `<h2>Share</h2><div class="list">${li({icon:'link',title:'Copy link',sub:url,a:'copyLink'})}${li({icon:'comment',title:'Share to WhatsApp',sub:'Opens WhatsApp',href:'https://wa.me/?text='+encodeURIComponent(text+' '+url),right:chev})}
+  return `<h2>Share</h2><div class="list">${li({icon:'comment',title:'Share to WhatsApp',sub:'Opens WhatsApp',href:'https://wa.me/?text='+encodeURIComponent(text+' '+url),right:chev})}${li({icon:'link',title:'Copy link',sub:url,a:'copyLink'})}
   ${s.kind==='post'&&POSTS[s.id].author!=='me'?li({icon:'repost',title:POSTS[s.id].reposted?'Undo repost':'Repost to your followers',a:'repost',data:`data-id="${s.id}"`}):''}</div>`;};
 SH.contact=s=>{const l=LISTINGS[s.id],o=user(l.owner);const msg=l.kind==='job'?`Hello, I saw the ${l.title} role on the Corpers Connect app. I’d like to apply. Is it still open?`:`Hello, I saw your ${l.title} on the Corpers Connect app. Is it still available?`;
   if(s.m==='wa') return `<h2>Message ${esc(first(o))} on WhatsApp</h2><p class="hint" style="margin:0 0 12px">There’s no in-app chat. We’ll open WhatsApp with this message ready to send:</p>
@@ -1742,7 +1748,7 @@ const A={
     if(!ok){render();return toast('Check the highlighted fields');}
     if(['photo','discussion','question','poll'].includes(ty)){
       const id=uid('p'),comm=x.dest!=='feed'?x.dest:null,commOnly=comm&&!x.alsoFeed;
-      POSTS[id]={id,type:ty,author:'me',loc:v('loc')||'',tags:[...(S.draft.tags||[])],community:comm,title:ty==='discussion'?v('title'):'',text:v('text'),media:[...x.photos],time:'Just now',likes:0,cc:0,reposts:0,batch:true,state:S.me.state,vis:commOnly?'Community':(x.vis==='Community'?'Public':x.vis),comments:[],
+      POSTS[id]={id,type:ty,author:'me',loc:v('loc')||'',replyWho:S.draft.replyWho||'Everyone',tags:[...(S.draft.tags||[])],community:comm,title:ty==='discussion'?v('title'):'',text:v('text'),media:[...x.photos],time:'Just now',likes:0,cc:0,reposts:0,batch:true,state:S.me.state,vis:commOnly?'Community':(x.vis==='Community'?'Public':x.vis),comments:[],
         poll:ty==='poll'?{options:opts.map(o=>[o,0]),voted:null,ends:'Ends in '+x.duration}:undefined};
       FEED.unshift({k:'post',id});S.myPosts.unshift(id);S.homeFilter='For You';backToTop();toast(comm?'Posted to '+COMM[comm].name:'Posted');return;}
     if(ty==='sell'||ty==='accommodation'||ty==='job'){
@@ -1845,7 +1851,7 @@ NOTIF.unshift({id:'n18',cat:'service',text:'<b>Moderation:</b> your post in Kano
 
 const isMod=c=>c.admin==='me'||(c.mods||[]).includes('me');
 const MOD_REASONS=['Spam','Harassment or bullying','Off-topic','Scam or fraud','Misinformation'];
-const rich=s=>esc(s).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span data-a="tagTap" data-v="$2" role="link" tabindex="0" style="color:var(--accent-text);font-weight:600;cursor:pointer">$2</span>');
+const rich=s=>esc(s).replace(/(https?:\/\/[^\s<]+|\b[a-z0-9-]+\.(?:com|ng|co|app|net|org|ly|xyz|top)(?:\/[^\s<]*)?)/gi,(m)=>`<span data-a="openLink" data-v="${m.replace(/[#@]/g,'')}" role="link" tabindex="0" style="color:var(--accent-text);text-decoration:underline;cursor:pointer">${m.replace(/@/g,'&#64;').replace(/#/g,'&#35;')}</span>`).replace(/(^|\s)([@#][A-Za-z0-9_.]*[A-Za-z0-9_])/g,'$1<span data-a="tagTap" data-v="$2" role="link" tabindex="0" style="color:var(--accent-text);font-weight:600;cursor:pointer">$2</span>');
 const offlineHtml=()=>`<div class="pad">${empty('You’re offline','Check your connection. Saved posts and listings are still available in Profile.',`<button class="btn sm lime" data-a="retry">Try again</button>`)}</div>`;
 
 // ---- Moderator panel
@@ -1951,7 +1957,7 @@ function searchResults(q){
   const T=S.searchType,on=k=>T==='All'||T===k;
   const ppl=Object.values(USERS).filter(u=>!S.blocked.has(u.id)&&(m(u.name)||m(u.username)||m(u.state)));
   const com=Object.values(COMM).filter(c=>m(c.name)||m(c.desc)||m(c.category));
-  let pos=Object.values(POSTS).filter(p=>!p.deleted&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community'&&(m(p.text)||m(p.title)));
+  let pos=Object.values(POSTS).filter(p=>!p.deleted&&!mutedHit(p)&&!hiddenAuthor(p.author)&&p.vis!=='Followers'&&p.vis!=='Community'&&(m(p.text)||m(p.title)));
   const lis=Object.values(LISTINGS).filter(l=>!l.deleted&&!hiddenAuthor(l.owner)&&(m(l.title)||m(l.desc)||m(l.area)||m(l.state)||m(l.company)||m(l.jobType)));
   const evs=Object.values(EVENTS).filter(e=>!e.deleted&&(m(e.title)||m(e.location)||m(e.state)));
   const pl=STATES.filter(s=>m(s));
@@ -1970,7 +1976,9 @@ function searchResults(q){
   ];
   const row=chips(['All','People','Posts','Communities','Jobs','Items','Rentals','Events','Places'],T,'searchType');
   const head=tag?`<div class="pad" style="padding-bottom:8px"><div class="card row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center">${I('trend',20)}</span><span><b class="hd" style="font-size:18px">${esc(tag[0])}</b><span class="hint" style="display:block">${tag[1]} across Nigeria</span></span></div></div>`:'';
-  return row+head+(parts.some(Boolean)?`<div class="pad stack">${parts.join('')}</div>`:`<div class="pad">${empty(`No ${T==='All'?'':T.toLowerCase()+' '}results for “${esc(S.q)}”`,'Check the spelling or try a broader word.')}</div>`);
+  const saved=S.savedSearches.some(x=>x.q===S.q.trim().toLowerCase());
+  const saveBar=`<div class="pad" style="padding-bottom:6px"><button class="btn sm ${saved?'lime':'dark'}" data-a="saveSearch">${I('bell',16)}${saved?'Saved. We’ll alert you':'Save this search and get alerts'}</button></div>`;
+  return row+saveBar+head+(parts.some(Boolean)?`<div class="pad stack">${parts.join('')}</div>`:`<div class="pad">${empty(`No ${T==='All'?'':T.toLowerCase()+' '}results for “${esc(S.q)}”`,'Check the spelling or try a broader word.')}</div>`);
 }
 A.eventRemind=d=>{const e=EVENTS[d.id];e.remind=!e.remind;render();toast(e.remind?'We’ll remind you the day before':'Reminder off');};
 
@@ -2097,8 +2105,87 @@ A.notInterested=d=>{S.notInt.add('post:'+d.id);S.sheet=null;if(topScreen().s==='
 document.addEventListener('touchend',e=>{if(x0==null||!S.lb||S.lb.list.length<2)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)A.lbStep({d:dx<0?1:-1});},{passive:true});
 document.addEventListener('keydown',e=>{if(!S.lb||S.lb.list.length<2)return;if(e.key==='ArrowRight')A.lbStep({d:1});if(e.key==='ArrowLeft')A.lbStep({d:-1});});})();
 
+// ===== Feature batch: muted words, post bell, mute conversation, new-posts pill, who can reply, drafts, pin, context notes,
+// scam-link warning, saved searches, bookmark folders, scoped trending =====
+Object.assign(S,{mutedWords:['forex','crypto signal'],mutedPosts:new Set(),bells:new Set(),pinned:null,drafts:[],folders:['Jobs to apply','Rooms to see'],folderMap:{},savedFolder:'All',
+  savedSearches:[{q:'room in yaba',alert:true},{q:'junior developer',alert:false}],trendScope:'Nigeria',noGuard:false});
+
+// ---- helpers
+function folderOf(k){return S.folderMap[k]||'Unfiled';}
+function folderBar(k){return `<button data-a="pickFolder" data-k="${k}" style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);padding:6px 6px 0;min-height:32px">${I('bookmark',14)}<span>${esc(folderOf(k))}</span><b style="color:var(--accent-text)">Change</b></button>`;}
+function pinTag(p){return (p.author==='me'&&S.pinned===p.id)||(p.author!=='me'&&user(p.author).pinned===p.id)?`<div class="row" style="gap:6px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">${I('pin',14)}Pinned</div>`:'';}
+function noteBlock(p){if(!p.note)return '';const n=p.note;
+  return `<div class="card" style="margin-top:10px;background:var(--raised);padding:12px"><div class="row" style="gap:6px;font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)">${I('help',14)}Readers added context</div><p style="margin:6px 0 8px;font-size:14px;line-height:1.45">${esc(n.text)}</p><div class="row" style="gap:8px;font-size:12.5px;color:var(--muted)"><span style="flex:1">Added by ${esc(n.by)}</span><button class="pill ${n.rated==='up'?'on-lime':''}" data-a="rateNote" data-id="${p.id}" data-v="up" style="min-height:32px;padding:0 10px" aria-pressed="${n.rated==='up'}">Helpful · ${n.up}</button><button class="pill ${n.rated==='down'?'on-like':''}" data-a="rateNote" data-id="${p.id}" data-v="down" style="min-height:32px;padding:0 10px" aria-pressed="${n.rated==='down'}">Not helpful</button></div></div>`;}
+function replyLocked(p){const w=p.replyWho;if(!w||w==='Everyone'||p.author==='me')return '';
+  if(w==='People I follow'&&S.following.has(p.author))return '';
+  const a=user(p.author);return `<div class="bottombar"><div class="card row" style="gap:10px;padding:12px 14px;font-size:13.5px">${I('lock',18)}<span>${w==='Nobody'?'Replies are turned off for this post.':'Only people '+esc(first(a))+' follows can reply.'}</span></div></div>`;}
+function draftHas(){const d=S.draft||{};return !!((d.text&&d.text.trim())||(d.title&&d.title.trim())||(d.photos&&d.photos.length));}
+function trendList(){const st=S.me.state;
+  if(S.trendScope==='My state')return [['#'+st.replace(/\s/g,'')+'Corpers','2.1k posts'],['#'+st.replace(/\s/g,'')+'Rent','1.1k posts'],['#'+st.replace(/\s/g,'')+'Jobs','930 posts'],['#CDS'+st.replace(/\s/g,''),'610 posts'],['#'+st.replace(/\s/g,'')+'Eats','420 posts']];
+  if(S.trendScope==='My camp')return [['#Platoon7','1.9k posts'],['#ParadeDrill','1.4k posts'],['#CampFood','1.1k posts'],['#SwearingIn','980 posts'],['#SAEDClass','520 posts']];
+  return TRENDING;}
+
+// ---- screens
+SC.mutedWords=()=>`${tb('Muted words')}<div class="scroll nonav"><div class="pad stack"><p class="hint" style="margin:0">Posts and replies containing these words are hidden from your feed and search. Only you can see this list.</p>
+  <div class="row" style="gap:8px"><label class="vh" for="f-mw">Word or phrase</label><input class="inp" id="f-mw" data-k="mw" value="${esc(S.draft.mw||'')}" placeholder="e.g. forex" style="flex:1"><button class="btn lime" data-a="addMuted">Add</button></div>
+  ${S.mutedWords.length?`<div class="list">${S.mutedWords.map((w,i)=>`<div class="li"><span class="ico">${I('mute',18)}</span><span class="t"><b>${esc(w)}</b></span><button class="btn sm dark" data-a="delMuted" data-i="${i}">Remove</button></div>`).join('')}</div>`:empty('No muted words','Add words you never want to see.')}</div></div>`;
+SC.savedSearches=()=>`${tb('Saved searches')}<div class="scroll nonav"><div class="pad stack"><p class="hint" style="margin:0">Turn on alerts to hear when a new listing or post matches. Save a search from the Explore results.</p>
+  ${S.savedSearches.length?`<div class="list">${S.savedSearches.map((s,i)=>`<div class="li"><button class="ico" data-a="runSaved" data-i="${i}" aria-label="Run search">${I('search',18)}</button><button class="t" data-a="runSaved" data-i="${i}" style="text-align:left"><b>${esc(s.q)}</b><span>${s.alert?'Alerts on':'Alerts off'}</span></button><button class="sw ${s.alert?'on':''}" role="switch" aria-checked="${s.alert}" aria-label="Alerts for ${esc(s.q)}" data-a="toggleSavedAlert" data-i="${i}"></button><button class="ib" data-a="delSaved" data-i="${i}" aria-label="Delete">${I('trash',18)}</button></div>`).join('')}</div>`:empty('No saved searches','Search in Explore, then tap Save this search.')}</div></div>`;
+SC.drafts=()=>`${tb('Drafts')}<div class="scroll nonav"><div class="pad stack">${S.drafts.length?`<div class="list">${S.drafts.map((d,i)=>`<div class="li"><span class="t"><b>${esc((d.draft.title||d.draft.text||'Untitled').slice(0,60))}</b><span>${esc(CT[d.t]||d.t)} · ${d.at}</span></span><button class="btn sm lime" data-a="resumeDraft" data-i="${i}">Resume</button><button class="ib" data-a="delDraft" data-i="${i}" aria-label="Delete draft">${I('trash',18)}</button></div>`).join('')}</div>`:empty('No drafts','Close the post screen with text in it and choose Save draft.')}</div></div>`;
+
+// ---- sheets
+SH.draftSave=s=>`<h2>Save as a draft?</h2><p class="hint" style="margin:0 0 14px">You can finish it later from Settings, Drafts.</p><div class="stack"><button class="btn lime block" data-a="saveDraft" data-t="${s.t}">Save draft</button><button class="btn dark block" data-a="discardDraft">Discard</button><button class="btn block" data-a="closeSheet">Keep editing</button></div>`;
+SH.addNote=s=>`<h2>Add context</h2><p class="hint" style="margin:0 0 12px">Add facts that help readers. Be specific and link a source if you can. Other members rate whether it is helpful.</p>${fld('note','Your note',{area:true,ph:'e.g. NYSC has not announced this. See the official portal.',attrs:'maxlength="280"'})}<button class="btn lime block" style="margin-top:14px" data-a="saveNote" data-id="${s.id}">Add note</button>`;
+SH.folderPick=s=>`<h2>Save to a folder</h2><div class="list">${['Unfiled',...S.folders].map(f=>li({icon:'bookmark',title:f,right:folderOf(s.k)===f?'<span class="tag lime">Here</span>':'',a:'setFolder',data:`data-k="${s.k}" data-f="${esc(f)}"`})).join('')}</div><div class="row" style="gap:8px;margin-top:14px"><label class="vh" for="f-nf">New folder</label><input class="inp" id="f-nf" data-k="nf" placeholder="New folder name" maxlength="24" style="flex:1"><button class="btn dark" data-a="newFolder" data-k="${s.k||''}">Create</button></div>`;
+SH.linkWarn=s=>`<span class="av" style="width:56px;height:56px;border-radius:18px;background:#FF8A3D;margin-top:4px">${I('shield',26)}</span><h2 style="margin-top:14px">This link looks risky</h2><p style="color:var(--soft);line-height:1.5;margin:0 0 6px;font-size:14px">${esc(s.url)}</p><p class="hint" style="margin:0 0 16px">It matches patterns used in scams, like shortened links or promises of quick money. Never pay to get a job or a place, and never share your bank details.</p><div class="stack"><button class="btn lime block" data-a="closeSheet">Go back</button><button class="btn block" style="color:var(--err)" data-a="openAnyway" data-url="${esc(s.url)}">Open anyway</button></div>`;
+
+// ---- actions
+Object.assign(A,{
+ addMuted(){const w=(S.draft.mw||'').trim().toLowerCase();if(w.length<2)return toast('Enter at least 2 letters');if(S.mutedWords.includes(w))return toast('Already muted');S.mutedWords.unshift(w);S.draft.mw='';render();toast('Muted “'+w+'”');},
+ delMuted(d){const w=S.mutedWords.splice(+d.i,1)[0];render();toast('Unmuted “'+w+'”');},
+ mutePost(d){const on=S.mutedPosts.has(d.id);on?S.mutedPosts.delete(d.id):S.mutedPosts.add(d.id);S.sheet=null;render();toast(on?'Notifications back on':'You won’t get alerts for this post');},
+ toggleBell(d){const on=S.bells.has(d.id);on?S.bells.delete(d.id):S.bells.add(d.id);render();toast(on?'Bell off':'We’ll notify you when '+first(USERS[d.id])+' posts');},
+ pinProfile(d){S.pinned=S.pinned===d.id?null:d.id;S.sheet=null;render();toast(S.pinned?'Pinned to your profile':'Unpinned');},
+ addNote(d){if(!verified())return sheet({type:'gate',why:'Adding context to posts'});sheet({type:'addNote',id:d.id});},
+ saveNote(d){const t=(S.draft.note||'').trim();if(t.length<10)return toast('Add a bit more detail');POSTS[d.id].note={text:t,by:S.me.name,up:0,down:0,rated:null};S.draft.note='';S.sheet=null;render();toast('Context added. Others can rate it.');},
+ rateNote(d){const n=POSTS[d.id].note;if(n.rated===d.v){n.rated=null;if(d.v==='up')n.up--;}else{if(n.rated==='up')n.up--;n.rated=d.v;if(d.v==='up')n.up++;}render();},
+ saveSearch(){const q=S.q.trim().toLowerCase();if(!q)return;const i=S.savedSearches.findIndex(x=>x.q===q);if(i>=0){S.savedSearches.splice(i,1);toast('Search removed');}else{S.savedSearches.unshift({q,alert:true});toast('Saved. We’ll alert you to new matches.');}render();},
+ runSaved(d){S.q=S.savedSearches[+d.i].q;tabTo('explore');},
+ toggleSavedAlert(d){const s=S.savedSearches[+d.i];s.alert=!s.alert;render();toast(s.alert?'Alerts on':'Alerts off');},
+ delSaved(d){S.savedSearches.splice(+d.i,1);render();toast('Removed');},
+ savedFolder(d){if(d.v==='+ New folder')return sheet({type:'folderPick',k:''});S.savedFolder=d.v;render();},
+ pickFolder(d){sheet({type:'folderPick',k:d.k});},
+ setFolder(d){if(d.f==='Unfiled')delete S.folderMap[d.k];else S.folderMap[d.k]=d.f;S.sheet=null;render();toast('Saved to '+d.f);},
+ newFolder(d){const n=(S.draft.nf||'').trim();if(n.length<2)return toast('Name your folder');if(S.folders.includes(n)||n==='All'||n==='Unfiled')return toast('That name is taken');S.folders.push(n);S.draft.nf='';if(d.k){S.folderMap[d.k]=n;S.sheet=null;toast('Saved to '+n);}else{S.sheet=null;S.savedFolder=n;toast('Folder created');}render();},
+ trendScope(d){S.trendScope=d.v;render();},
+ openLink(d){const u=d.v;const risky=/bit\.ly|tinyurl|forex|invest|giveaway|win-|claim|free-|\.xyz|\.top|crypto/i.test(u)||S.mutedWords.some(w=>u.toLowerCase().includes(w));if(risky)return sheet({type:'linkWarn',url:u});window.open(/^https?:/i.test(u)?u:'https://'+u,'_blank','noopener');},
+ openAnyway(d){S.sheet=null;render();window.open(/^https?:/i.test(d.url)?d.url:'https://'+d.url,'_blank','noopener');},
+ saveDraft(d){S.drafts.unshift({id:uid('d'),t:d.t,draft:JSON.parse(JSON.stringify(S.draft)),at:'Just now'});S.sheet=null;S.noGuard=true;back();S.noGuard=false;toast('Draft saved');},
+ discardDraft(){S.sheet=null;S.noGuard=true;back();S.noGuard=false;},
+ resumeDraft(d){const x=S.drafts.splice(+d.i,1)[0];go('compose',{t:x.t});Object.assign(S.draft,x.draft);render();},
+ delDraft(d){S.drafts.splice(+d.i,1);render();toast('Draft deleted');},
+ newPostsGo(){const p=document.getElementById('newpill');if(p)p.remove();const sc=document.querySelector('.scroll');if(sc)sc.scrollTo({top:0,behavior:'smooth'});}
+});
+{const _pub=A.publish;A.publish=function(d,el){S.noGuard=true;try{return _pub.call(A,d,el);}finally{S.noGuard=false;}};}
+
+// ---- who can reply, context note and link seeds
+POSTS.p6.replyWho='Nobody';POSTS.p8.replyWho='People I follow';
+{const rp=Object.values(POSTS).find(p=>/redeploy/i.test(p.text||'')&&p.author!=='me')||POSTS.p4;rp.note={text:'Redeployment requests are decided by NYSC state offices, not by a fixed date. Check the official portal before acting on any message that names a deadline.',by:'Zainab Lawal',up:41,down:3,rated:null};}
+{const ap=Object.values(POSTS).find(p=>p.author==='amaka'&&!p.deleted);if(ap)USERS.amaka.pinned=ap.id;}
+POSTS.pl1={id:'pl1',type:'discussion',author:'zainab',community:'redeploy',title:'Official portal for redeployment',text:'Start here for the forms, not from a forwarded message: nysc.gov.ng/portal',time:'40m',likes:96,cc:0,reposts:12,batch:true,state:'FCT',vis:'Public',comments:[]};
+POSTS.pl2={id:'pl2',type:'discussion',author:'ahmed',community:'corper-market',title:'Make money on your phone',text:'Join my free investment group and earn daily, link: bit.ly/quick-money',time:'1h',likes:3,cc:0,reposts:0,batch:true,state:'Kano',vis:'Public',comments:[]};
+FEED.splice(3,0,{k:'post',id:'pl1'},{k:'post',id:'pl2'});
+
+// ---- notification and new-posts pill
+NOTIF.unshift({id:'ss1',cat:'social',text:'<b>New match</b> for your saved search “room in yaba”: 2 new rooms',time:'20m',read:false,go:['savedSearches']});
+(function(){function pill(){if(topScreen().s!=='home'||document.getElementById('newpill'))return;const sc=document.querySelector('.scroll');if(!sc||sc.scrollTop<200)return;
+  app().insertAdjacentHTML('beforeend','<button id="newpill" data-a="newPostsGo" style="position:absolute;left:50%;transform:translateX(-50%);top:14px;z-index:30;background:#C8F169;color:#0F1211;font-weight:700;font-size:13px;border-radius:20px;padding:9px 16px;box-shadow:0 6px 18px rgba(0,0,0,.35)">↑ 3 new posts</button>');}
+  setInterval(pill,15000);})();
+
 // ---- tag people in a post, invite link
-function tagField(){const t=S.draft.tags||[];return `<div class="field"><span class="flabel">Tag people <span class="muted" style="font-weight:500">(optional)</span></span><button class="inp" data-a="tagPeople" style="text-align:left;display:flex;align-items:center;gap:8px;min-height:48px">${I('user',18)}<span style="flex:1;color:${t.length?'var(--text)':'var(--muted)'}">${t.length?t.map(x=>esc(user(x).name.split(' ')[0])).join(', '):'Add people'}</span>${chev}</button></div>`;}
+function replyField(){return fld('replyWho','Who can reply',{opts:['Everyone','People I follow','Nobody'],hint:'You can always reply to your own post.'});}
+function tagField(){return tagField0()+replyField();}
+function tagField0(){const t=S.draft.tags||[];return `<div class="field"><span class="flabel">Tag people <span class="muted" style="font-weight:500">(optional)</span></span><button class="inp" data-a="tagPeople" style="text-align:left;display:flex;align-items:center;gap:8px;min-height:48px">${I('user',18)}<span style="flex:1;color:${t.length?'var(--text)':'var(--muted)'}">${t.length?t.map(x=>esc(user(x).name.split(' ')[0])).join(', '):'Add people'}</span>${chev}</button></div>`;}
 SH.tagPeople=()=>{const t=S.draft.tags||[];const ppl=[...S.following].map(id=>USERS[id]).filter(Boolean);
   return `<h2>Tag people</h2><p class="hint" style="margin:0 0 12px">Only people you follow. They get a notification.</p><div class="list" style="max-height:46vh;overflow:auto">${ppl.map(u=>`<button class="li" data-a="tagToggle" data-id="${u.id}" role="checkbox" aria-checked="${t.includes(u.id)}">${av(u,40)}<span class="t"><b>${esc(u.name)}</b><span>@${esc(u.username)}</span></span><span style="width:24px;height:24px;border-radius:12px;border:2px solid var(--line3);display:flex;align-items:center;justify-content:center;background:${t.includes(u.id)?'#C8F169':'transparent'};color:var(--ink)">${t.includes(u.id)?I('check',14):''}</span></button>`).join('')}</div><button class="btn lime block" style="margin-top:14px" data-a="tagDone">Done${t.length?' ('+t.length+')':''}</button>`;};
 A.tagPeople=()=>{sheet({type:'tagPeople'});};
