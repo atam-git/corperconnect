@@ -206,6 +206,8 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke
 .radio{width:22px;height:22px;border-radius:11px;border:2px solid var(--line3);flex:none;display:flex;align-items:center;justify-content:center}
 .opt.on .radio,.radio.on{border-color:var(--accent-border)}
 .opt.on .radio::after,.radio.on::after{content:'';width:10px;height:10px;border-radius:5px;background:#C8F169}
+@media (max-width:639px){.nav{transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s}#app.nav-hide .nav{transform:translateY(calc(100% + 36px));opacity:0;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){.nav{transition:none!important}}
 .mrow{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;margin-right:-14px;padding-right:14px;scroll-padding-left:0}
 .mrow::-webkit-scrollbar{display:none}
 .mrow .mi{flex:none;scroll-snap-align:start;display:flex;position:relative;border-radius:16px;overflow:hidden}
@@ -891,7 +893,7 @@ function render(){
   const view=document.getElementById('view');
   const sc=view.querySelector('.scroll'); if(sc&&S.curKey) S.scrollMem[S.curKey]=sc.scrollTop;
   const t=topScreen();
-  const fn=SC[t.s]||SC.unavailable;
+  {const k=keyOf(t);if(S.navKey!==k){S.navKey=k;app().classList.remove('nav-hide');}}const fn=SC[t.s]||SC.unavailable;
   view.innerHTML=fn(t);
   // Inner pages (settings, notifications, detail screens) keep the desktop sidebar and right column
   {const root=S.stack[0]&&S.stack[0].s,inApp=['home','community','explore','profile'].includes(root);
@@ -2102,6 +2104,15 @@ SH.tagPeople=()=>{const t=S.draft.tags||[];const ppl=[...S.following].map(id=>US
 A.tagPeople=()=>{sheet({type:'tagPeople'});};
 A.tagToggle=d=>{const t=S.draft.tags=S.draft.tags||[];const i=t.indexOf(d.id);if(i<0){if(t.length>=5)return toast('You can tag up to 5 people');t.push(d.id);}else t.splice(i,1);render();};
 A.tagDone=()=>{S.sheet=null;render();};
+
+// ---- hide the bottom nav while scrolling down, bring it back on scroll up (phone only)
+(function(){const last=new WeakMap();
+document.addEventListener('scroll',e=>{const el=e.target;if(!el||!el.classList||!el.classList.contains('scroll'))return;
+  if(window.matchMedia('(min-width:640px)').matches){app().classList.remove('nav-hide');return;}
+  const y=el.scrollTop,p=last.get(el)||0,d=y-p;last.set(el,y);
+  if(y<60){app().classList.remove('nav-hide');return;}
+  if(d>8)app().classList.add('nav-hide');else if(d<-8)app().classList.remove('nav-hide');},true);
+})();
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el||!app().contains(el))return;
