@@ -162,6 +162,12 @@ select.inp option{background:var(--surface)}
 .inp.bad{border-color:#FF8A3D}
 .err{color:var(--err);font-size:12px;font-weight:600}
 .hint{font-size:12px;color:var(--muted);line-height:1.4}
+.tabs{display:flex;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;margin:0 0 4px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;padding:13px 14px;font-weight:600;font-size:14px;color:var(--muted);position:relative;white-space:nowrap;transition:color .2s ease}
+.tabs button[aria-selected="true"]{color:var(--text)}
+.tabs button[aria-selected="true"]::after{content:'';position:absolute;left:12px;right:12px;bottom:-1px;height:2.5px;border-radius:2px;background:#C8F169}
+[data-theme="light"] .tabs button[aria-selected="true"]::after{background:#6E9E00}
 .seg{display:flex;background:var(--surface);border-radius:16px;padding:4px;gap:4px}
 .seg button{flex:1;height:40px;border-radius:12px;font-weight:600;font-size:14px;color:var(--muted)}
 .seg button.on{background:var(--inv-bg);color:var(--inv-fg)}
@@ -1357,10 +1363,15 @@ function profileHeader(u,own){
       :`<button class="btn ${f?'dark':'lime'} sm" style="flex:1;height:42px" data-a="follow" data-id="${u.id}">${f?I('check',16)+'Following':'Follow'}</button><button class="btn dark sm" style="height:42px" data-a="share" data-kind="profile" data-id="${u.id}" aria-label="Share profile">${I('share',16)}</button>`}</div>
     </div></div></div>`;
 }
+function tabsBar(list,cur,act,id){return `<div class="tabs" role="tablist">${list.map(x=>`<button role="tab" aria-selected="${x===cur}" data-a="${act}" ${id?'data-id="'+id+'"':''} data-v="${x}">${x}</button>`).join('')}</div>`;}
+function repostsOf(uid){const hs=s=>{let n=0;for(const c of s)n=(n*31+c.charCodeAt(0))%9973;return n;};
+  return Object.values(POSTS).filter(p=>p.author&&p.author!==uid&&p.type!=='announcement'&&!p.deleted&&p.vis==='Public'&&hs(p.id+uid)%11===0).slice(0,4);}
+function repostEmpty(own){return empty('No reposts yet',own?'Tap the repost icon on a post to share it with your followers.':'Nothing reposted yet.');}
 SC.profile=()=>{
   const tab=S.profileTab,u=S.me;let body='';
-  if(tab==='Posts'){const ps=S.myPosts.map(id=>POSTS[id]).filter(p=>!p.deleted).sort((a,b)=>(b.id===S.pinned)-(a.id===S.pinned));const rp=Object.values(POSTS).filter(p=>p.reposted&&!p.deleted);
-    body=ps.length||rp.length?ps.map(p=>postCard(p)).join('')+(rp.length?`<div class="sec">Reposts</div>`+rp.map(p=>postCard(p)).join(''):''):empty('No posts yet','Share your first camp moment.',`<button class="btn sm lime" data-a="create">Create a post</button>`);}
+  if(tab==='Posts'){const ps=S.myPosts.map(id=>POSTS[id]).filter(p=>!p.deleted).sort((a,b)=>(b.id===S.pinned)-(a.id===S.pinned));
+    body=ps.length?ps.map(p=>postCard(p)).join(''):empty('No posts yet','Share your first camp moment.',`<button class="btn sm lime" data-a="create">Create a post</button>`);}
+  if(tab==='Reposts'){const rp=Object.values(POSTS).filter(p=>p.reposted&&!p.deleted);body=rp.length?rp.map(p=>postCard(p)).join(''):repostEmpty(true);}
   if(tab==='Journey') body=journey(u,true);
   if(tab==='Saved'){const sp=Object.values(POSTS).filter(p=>p.saved&&!p.deleted),sl=Object.values(LISTINGS).filter(l=>l.saved&&!l.deleted),se=Object.values(EVENTS).filter(e=>e.rsvp&&!e.deleted);
     const fl=S.savedFolder,inF=k=>fl==='All'||folderOf(k)===fl;const sp2=sp.filter(p=>inF('post:'+p.id)),sl2=sl.filter(l=>inF('listing:'+l.id));
@@ -1369,7 +1380,7 @@ SC.profile=()=>{
     body=ml.length||me.length?`${ml.length?'<div class="sec">Your listings</div>'+ml.map(listingCard).join(''):''}${me.length?'<div class="sec">Your events</div>'+me.map(eventCard).join(''):''}`:empty('No listings or events','Sell an item, hand over your apartment or organise a meetup.',`<button class="btn sm lime" data-a="create">Create</button>`);}
   return `<div class="scroll"><div class="topbar"><h1>Profile</h1><button class="ib" data-a="share" data-kind="profile" data-id="me" aria-label="Share profile">${I('share')}</button><button class="ib" data-a="go" data-s="settings" aria-label="Settings">${I('gear')}</button></div>
   ${profileHeader(u,true)}
-  <div style="height:12px"></div>${chips(['Posts','Journey','Saved','Listings'],tab,'profileTab')}
+  <div style="height:12px"></div>${tabsBar(['Posts','Reposts','Journey','Saved','Listings'],tab,'profileTab')}
   <div class="pad stack">${body}</div></div>${nav('profile')}`;
 };
 SC.user=t=>{const u=USERS[t.id];
@@ -1377,12 +1388,13 @@ SC.user=t=>{const u=USERS[t.id];
   const tab=S.userTab[u.id]||'Posts';let body='';
   if(tab==='Posts'){const ps=Object.values(POSTS).filter(p=>p.author===u.id&&!p.deleted).sort((a,b)=>(b.id===u.pinned)-(a.id===u.pinned));const ls=Object.values(LISTINGS).filter(l=>l.owner===u.id&&!l.deleted);
     body=(ps.length?ps.map(p=>postCard(p)).join(''):'')+(ls.length?'<div class="sec">Listings</div>'+ls.map(listingCard).join(''):'')||empty('No posts yet','');}
+  if(tab==='Reposts'){const rp=repostsOf(u.id);body=rp.length?rp.map(p=>postCard(p)).join(''):repostEmpty(false);}
   if(tab==='Journey') body=journey(u,false);
   if(tab==='Communities'){const cs=Object.values(COMM).filter(c=>c.mods.includes(u.id)||(c.official&&(c.sub===u.batch||c.name.includes(u.state))));body=cs.length?cs.map(c=>commRow(c)).join(''):empty('No public communities','');}
   return `<div class="scroll">${tb('@'+esc(u.username),{right:`<button class="ib" data-a="userMenu" data-id="${u.id}" aria-label="More options">${I('more')}</button>`})}
   ${S.muted.has(u.id)?`<div class="pad" style="margin-bottom:10px"><div class="card row" style="padding:10px 14px;font-size:13px">${I('mute',16)}<span style="flex:1">Muted. Their posts are hidden from your feed.</span><button class="btn sm dark" data-a="unmute" data-id="${u.id}">Unmute</button></div></div>`:''}
   ${profileHeader(u,false)}${S.following.has(u.id)?`<div class="pad" style="padding-top:10px"><button class="btn sm ${S.bells.has(u.id)?'lime':'dark'}" data-a="toggleBell" data-id="${u.id}" aria-pressed="${S.bells.has(u.id)}">${I('bell',16)}${S.bells.has(u.id)?'Notifying you of new posts':'Notify me of their posts'}</button></div>`:''}<div style="height:12px"></div>
-  <div class="chips">${['Posts','Journey','Communities'].map(x=>`<button class="chip ${x===tab?'on':''}" data-a="userTab" data-id="${u.id}" data-v="${x}" aria-pressed="${x===tab}">${x}</button>`).join('')}</div>
+  ${tabsBar(['Posts','Reposts','Journey','Communities'],tab,'userTab',u.id)}
   <div class="pad stack">${body}</div></div>`;
 };
 SC.followList=t=>{const id=t.id,own=id==='me',u=user(id),tab=S.followTab;
@@ -2170,6 +2182,7 @@ Object.assign(A,{
 {const _pub=A.publish;A.publish=function(d,el){S.noGuard=true;try{return _pub.call(A,d,el);}finally{S.noGuard=false;}};}
 
 // ---- who can reply, context note and link seeds
+{const seeds=Object.values(POSTS).filter(p=>p.author&&p.author!=='me'&&p.media&&p.media.length&&p.vis==='Public'&&!p.deleted).slice(2,5);seeds.forEach(p=>{p.reposted=true;});}
 POSTS.p6.replyWho='Nobody';POSTS.p8.replyWho='People I follow';
 {const rp=Object.values(POSTS).find(p=>/redeploy/i.test(p.text||'')&&p.author!=='me')||POSTS.p4;rp.note={text:'Redeployment requests are decided by NYSC state offices, not by a fixed date. Check the official portal before acting on any message that names a deadline.',by:'Zainab Lawal',up:41,down:3,rated:null};}
 {const ap=Object.values(POSTS).find(p=>p.author==='amaka'&&!p.deleted);if(ap)USERS.amaka.pinned=ap.id;}
