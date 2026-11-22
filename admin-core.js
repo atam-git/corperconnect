@@ -89,9 +89,9 @@ const NAV=[
  ['Operations',[['overview','Overview','overview',()=>true],['verification','Verification','verify',()=>canAny('VERIFICATION_VIEW','MODERATOR_APPLICATIONS_REVIEW','ALUMNI_REVIEW'),()=>SUBS.filter(s=>s.status==='PENDING').length],['moderation','Moderation','moderation',()=>canAny('REPORTS_VIEW','APPEALS_MANAGE'),()=>REPORTS.filter(r=>r.status==='OPEN').length],['listings','Listings','listings',()=>can('LISTINGS_VIEW'),()=>LISTINGS.filter(l=>l.hidden).length],['events','Events','events',()=>can('EVENTS_MODERATE')]]],
  ['People and spaces',[['members','Members','members',()=>can('MEMBERS_VIEW')],['communities','Communities','communities',()=>can('COMMUNITIES_VIEW')]]],
  ['Content',[['announcements','Announcements','announce',()=>canAny('ANNOUNCEMENTS_MANAGE','NOTIFICATIONS_SEND')],['camps','Camp schedules','camp',()=>can('CAMP_SCHEDULE_MANAGE')],['support','Support inbox','support',()=>can('SUPPORT_MANAGE'),()=>TICKETS.filter(t=>t.status==='OPEN').length]]],
- ['Platform',[['analytics','Analytics','analytics',()=>can('ANALYTICS_VIEW')],['config','Settings','config',()=>canAny('CONFIG_VIEW','RISK_RULES_MANAGE','PAGES_MANAGE','REFERENCE_DATA_MANAGE')],['audit','Audit log','audit',()=>can('AUDIT_VIEW')],['admins','Admins and roles','admins',()=>can('ADMIN_ACCOUNTS_MANAGE')]]]
+ ['Platform',[['analytics','Analytics','analytics',()=>can('ANALYTICS_VIEW')],['config','Settings','config',()=>true],['audit','Audit log','audit',()=>can('AUDIT_VIEW')],['admins','Admins and roles','admins',()=>can('ADMIN_ACCOUNTS_MANAGE')]]]
 ];
-const NEED={overview:null,verification:['VERIFICATION_VIEW','MODERATOR_APPLICATIONS_REVIEW','ALUMNI_REVIEW'],moderation:['REPORTS_VIEW','APPEALS_MANAGE'],listings:['LISTINGS_VIEW'],events:['EVENTS_MODERATE'],members:['MEMBERS_VIEW'],communities:['COMMUNITIES_VIEW'],announcements:['ANNOUNCEMENTS_MANAGE','NOTIFICATIONS_SEND'],camps:['CAMP_SCHEDULE_MANAGE'],support:['SUPPORT_MANAGE'],analytics:['ANALYTICS_VIEW'],config:['CONFIG_VIEW','RISK_RULES_MANAGE','PAGES_MANAGE','REFERENCE_DATA_MANAGE'],audit:['AUDIT_VIEW'],admins:['ADMIN_ACCOUNTS_MANAGE']};
+const NEED={overview:null,verification:['VERIFICATION_VIEW','MODERATOR_APPLICATIONS_REVIEW','ALUMNI_REVIEW'],moderation:['REPORTS_VIEW','APPEALS_MANAGE'],listings:['LISTINGS_VIEW'],events:['EVENTS_MODERATE'],members:['MEMBERS_VIEW'],communities:['COMMUNITIES_VIEW'],announcements:['ANNOUNCEMENTS_MANAGE','NOTIFICATIONS_SEND'],camps:['CAMP_SCHEDULE_MANAGE'],support:['SUPPORT_MANAGE'],analytics:['ANALYTICS_VIEW'],config:null,audit:['AUDIT_VIEW'],admins:['ADMIN_ACCOUNTS_MANAGE']};
 function allowed(route){const n=NEED[route];return !n||canAny(...n);}
 
 function shell(){
@@ -102,7 +102,6 @@ function shell(){
   const top=`<header class="top"><button class="menu-btn" data-a="toggleSide" aria-label="Menu">${I('menu',20)}</button>
   <div class="search"><span>${I('search',16)}</span><label class="sr" for="gs">Search members</label><input id="gs" data-live="global" value="${esc(S.q.global||'')}" placeholder="Search members, listings, reports…"></div>
   <div class="persona"><label for="pers">Demo: view as</label><select id="pers" data-change="persona">${ADMINS.filter(a=>a.status==='ACTIVE').map(a=>`<option value="${a.id}" ${a.id===S.persona?'selected':''}>${esc(a.name)} · ${a.roles.map(r=>roleOf(r)?.name).join(' + ')}</option>`).join('')}</select></div>
-  <button class="theme-btn" data-a="theme" aria-label="Change theme, now ${CCTheme.label()}">${themeIcon()} <span>${CCTheme.label()}</span></button>
   <button class="avatar-btn" data-a="logout" aria-label="Sign out">${av(p.name,p.color,32)}<span class="soft" style="font-weight:600">Sign out</span></button></header>`;
   let page;
   if(!allowed(S.route)) page=`<div class="denied"><div class="big">${I('lock',30)}</div><h1 class="hd" style="font-size:26px;margin:0 0 6px">You don’t have access to this page</h1><p class="muted">The server answered <code>ADMIN_PERMISSION_DENIED</code>. This page needs one of: ${NEED[S.route].map(k=>`<code>${k}</code>`).join(' ')}.</p><button class="btn lime" data-a="go" data-v="overview">Back to overview</button></div>`;
@@ -159,6 +158,7 @@ A.verifyMfa=()=>{const code=[0,1,2,3,4,5].map(i=>$('otp'+i).value).join('');if(!
 A.acceptInvite=()=>{const p=val('i-pass'),p2=val('i-pass2'),c=val('i-code');let ok=true;ok=ferr('i-pass',p.length>=12?'':'Use at least 12 characters.')&&ok;ok=ferr('i-pass2',p===p2&&p2?'':'Passwords do not match.')&&ok;ok=ferr('i-code',/^\d{6}$/.test(c)?'':'Enter the 6-digit code.')&&ok;if(!ok)return;S.step='login';S.auth.err='';render();toast('Account ready. Sign in to continue.');};
 const themeIcon=()=>{const t=CCTheme.get();const p=t==='light'?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>':t==='dark'?'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>':'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>';return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;};
 A.theme=()=>{CCTheme.next();render();};
+A.setTheme=d=>{CCTheme.set(d.v);render();};
 window.addEventListener('cc-theme',()=>{if(typeof render==='function')render();});
 A.logout=()=>{S.authed=false;sessionStorage.removeItem('ccadm');S.step='login';S.drawer=null;S.modal=null;render();};
 A.go=d=>{location.hash='#/'+d.v;};
