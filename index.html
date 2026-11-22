@@ -206,12 +206,13 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke
 .radio{width:22px;height:22px;border-radius:11px;border:2px solid var(--line3);flex:none;display:flex;align-items:center;justify-content:center}
 .opt.on .radio,.radio.on{border-color:var(--accent-border)}
 .opt.on .radio::after,.radio.on::after{content:'';width:10px;height:10px;border-radius:5px;background:#C8F169}
-.mrow{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:18px;padding-bottom:2px}
-.mrow .mi{flex:none;scroll-snap-align:start;display:flex;position:relative;border-radius:18px;overflow:hidden}
-.mrow{--mh:380px}@media (min-width:640px){.mrow{--mh:460px}}@media (min-width:1100px){.mrow{--mh:500px}}
-.mrow:not(.one) .mi.por{height:var(--mh);aspect-ratio:4/5}.mrow:not(.one) .mi.lan{height:calc(var(--mh)*.72);aspect-ratio:4/3}
+.mrow{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;margin-right:-14px;padding-right:14px;scroll-padding-left:0}
+.mrow::-webkit-scrollbar{display:none}
+.mrow .mi{flex:none;scroll-snap-align:start;display:flex;position:relative;border-radius:16px;overflow:hidden}
+.mrow{--mh:340px}@media (min-width:640px){.mrow{--mh:420px}}@media (min-width:1100px){.mrow{--mh:480px}}
+.mrow:not(.one) .mi.por{height:var(--mh);aspect-ratio:3/4}.mrow:not(.one) .mi.lan{height:calc(var(--mh)*.7);aspect-ratio:4/3}
 .mrow:not(.one){align-items:flex-start}
-.mrow.one{overflow:visible}.mrow.one .mi.por{aspect-ratio:4/5;height:min(calc(var(--mh)*1.25),70vh);max-height:620px;max-width:100%}.mrow.one .mi.lan{aspect-ratio:4/3;width:100%;max-height:440px}
+.mrow.one{overflow:visible;margin-right:0;padding-right:0}.mrow.one .mi.por{aspect-ratio:3/4;width:min(100%,450px)}.mrow.one .mi.lan{aspect-ratio:16/10;width:100%}
 .mi .ph{border-radius:0}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -769,7 +770,7 @@ function photos(list,key,h=200){
   const isVid=x=>/\.(mp4|webm)$/i.test(x);const one=x=>isVid(x)?`${S.settings.autoplay?`<span class="ph" style="height:100%;width:100%;background:#000"><video src="${x}" autoplay muted loop controls playsinline aria-label="Video" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video></span>`:`<button class="ph" data-a="playVideo" data-src="${x}" aria-label="Play video" style="height:100%;width:100%;padding:0;background:linear-gradient(135deg,var(--surface),var(--bg-deep));flex-direction:column;gap:8px;color:var(--text)"><span style="width:60px;height:60px;border-radius:30px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted)">TAP TO PLAY VIDEO</span></button>`}`:x.startsWith('#')?`<span class="ph" role="img" aria-label="Photo" style="height:100%;width:100%;background:${x}">${I('image',28)}</span>`:`<button class="ph" data-a="lightbox" data-key="${key}" data-src="${x}" aria-label="View photo full screen" style="height:100%;width:100%;padding:0"><img src="${x}" alt="Photo"></button>`;
   const por=x=>isVid(x)?!/v[24][.]mp4$/.test(x):(x.startsWith('#')?false:(+((x.match(/p([0-9]+)[.]jpg/)||[])[1])>=201));
   if(list.length===1){const p=por(list[0]);return `<div class="mrow one" style="margin-top:10px"><div class="mi ${p?'por':'lan'}">${one(list[0])}</div></div>`;}
-  return `<div class="mrow" role="group" aria-label="${list.length} items, swipe sideways" tabindex="0" style="margin-top:10px">${list.map(x=>`<div class="mi ${por(x)?'por':'lan'}">${one(x)}</div>`).join('')}</div><div class="hint" style="margin-top:4px;text-align:right">${list.length} items · swipe</div>`;
+  return `<div class="mrow" role="group" aria-label="${list.length} items, swipe sideways" tabindex="0" style="margin-top:10px">${list.map(x=>`<div class="mi ${por(x)?'por':'lan'}">${one(x)}</div>`).join('')}</div>`;
 }
 function pollBlock(p){
   const v=p.poll.voted, total=p.poll.options.reduce((a,o)=>a+o[1],0);
