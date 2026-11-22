@@ -7,7 +7,7 @@ No build step. Sample data only; nothing is saved or sent.
 | Page | File | What it is |
 |---|---|---|
 | Member app | `index.html` | The mobile-first member app. Responsive: phone, tablet, desktop |
-| Admin console | `admin.html` (`/admin`) | Desktop-first admin prototype with MFA login, role switcher, verification review with ID viewer, moderation, listings, communities, announcements, camp schedules, support, analytics with the feed mix cap, settings, audit log, and admins, roles and permissions |
+| Admin console | `admin.html` (`/admin`) | Desktop-first admin prototype with login, role switcher, verification review with ID viewer, moderation, listings, communities, announcements, camp schedules, support, analytics with the feed mix cap, settings, audit log, and admins, roles and permissions |
 | Landing page | `landing.html` (`/landing`) | Public marketing page |
 | Info pages | `info.html` (`/terms`, `/privacy`, `/guidelines`, `/safety`, `/help`, `/contact`, `/about`) | Terms, privacy, guidelines, safety tips, help centre, contact |
 | Status pages | `404.html`, `maintenance.html`, `error.html` | Not found, maintenance and error pages |

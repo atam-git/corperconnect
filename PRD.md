@@ -1797,7 +1797,7 @@ These refine the baseline above and are recorded in detail in the technical docu
 4. **Access by status.** Awaiting-deployment members can ask, comment, run polls and post ordinary content. Jobs, items, accommodation, events, creating communities and official communities need verification. Alumni keep full verified access once confirmed with a passing-out certificate.
 5. **Light scam protection.** Required fields, safety text, reports with priority, keyword check at publish, new-account listing limit, one-strike suspension, auto-hide at 3 reports. No business accounts at launch.
 6. **No feed quota at launch.** Observe the feed mix first and add a cap only if needed.
-7. **Admin roles and permissions.** Admins are a separate identity, invited, with MFA. A super admin can create roles and assign permissions. Default roles include a staff moderator focused on posts, communities, listings and reports. Admins can do everything a community moderator can, in any community, and can appoint and remove moderators.
+7. **Admin roles and permissions.** Admins are a separate identity and are invited. A super admin can create roles and assign permissions. Default roles include a staff moderator focused on posts, communities, listings and reports. Admins can do everything a community moderator can, in any community, and can appoint and remove moderators.
 8. **Community moderators are live at launch,** alongside admins, approved by the platform team.
 9. **Responsive.** Mobile first, with tablet and desktop adaptations.
 10. **Hosting is decided after the app is built.**

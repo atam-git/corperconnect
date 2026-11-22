@@ -52,13 +52,13 @@ const ROLES=[
 ];
 
 const ADMINS=[
- {id:'a1',name:'Ada Eze',email:'ada@corpersconnect.example',roles:['SUPER_ADMIN'],status:'ACTIVE',mfa:true,last:'Today, 09:12',color:COL[0]},
- {id:'a2',name:'Tunde Bello',email:'tunde.b@corpersconnect.example',roles:['STAFF_MODERATOR'],status:'ACTIVE',mfa:true,last:'Today, 08:40',color:COL[1]},
- {id:'a3',name:'Ngozi Obi',email:'ngozi.o@corpersconnect.example',roles:['VERIFICATION_REVIEWER'],status:'ACTIVE',mfa:true,last:'Yesterday',color:COL[2]},
- {id:'a4',name:'Chidi Musa',email:'chidi.m@corpersconnect.example',roles:['TRUST_AND_SAFETY','COMMUNITY_MANAGER'],status:'ACTIVE',mfa:true,last:'Today, 07:58',color:COL[3]},
- {id:'a5',name:'Halima Sani',email:'halima.s@corpersconnect.example',roles:['SUPPORT_AGENT'],status:'ACTIVE',mfa:true,last:'Yesterday',color:COL[4]},
- {id:'a6',name:'Emeka Ola',email:'emeka.o@corpersconnect.example',roles:['ANALYST','AUDITOR'],status:'ACTIVE',mfa:true,last:'2 days ago',color:COL[5]},
- {id:'a7',name:'Zainab Yusuf',email:'zainab.y@corpersconnect.example',roles:['CONTENT_EDITOR'],status:'INVITED',mfa:false,last:'Never',color:COL[6]}
+ {id:'a1',name:'Ada Eze',email:'ada@corpersconnect.example',roles:['SUPER_ADMIN'],status:'ACTIVE',last:'Today, 09:12',color:COL[0]},
+ {id:'a2',name:'Tunde Bello',email:'tunde.b@corpersconnect.example',roles:['STAFF_MODERATOR'],status:'ACTIVE',last:'Today, 08:40',color:COL[1]},
+ {id:'a3',name:'Ngozi Obi',email:'ngozi.o@corpersconnect.example',roles:['VERIFICATION_REVIEWER'],status:'ACTIVE',last:'Yesterday',color:COL[2]},
+ {id:'a4',name:'Chidi Musa',email:'chidi.m@corpersconnect.example',roles:['TRUST_AND_SAFETY','COMMUNITY_MANAGER'],status:'ACTIVE',last:'Today, 07:58',color:COL[3]},
+ {id:'a5',name:'Halima Sani',email:'halima.s@corpersconnect.example',roles:['SUPPORT_AGENT'],status:'ACTIVE',last:'Yesterday',color:COL[4]},
+ {id:'a6',name:'Emeka Ola',email:'emeka.o@corpersconnect.example',roles:['ANALYST','AUDITOR'],status:'ACTIVE',last:'2 days ago',color:COL[5]},
+ {id:'a7',name:'Zainab Yusuf',email:'zainab.y@corpersconnect.example',roles:['CONTENT_EDITOR'],status:'INVITED',last:'Never',color:COL[6]}
 ];
 
 // ---------- Members ----------

@@ -66,20 +66,13 @@ function ferr(id,msg){const e=$('err-'+id);if(e)e.textContent=msg||'';const i=$(
 function authView(){
   const a=S.auth;
   const brand=`<div class="brand"><b>C</b><span>Corpers Connect<small style="display:block;font-family:Inter;font-size:10px;letter-spacing:1px;color:var(--orange-text);text-transform:uppercase">Admin console</small></span></div>`;
-  if(S.step==='login') return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Sign in</h1><p class="muted" style="margin:0 0 18px">Staff only. Admins are invited. MFA is required.</p>
+  if(S.step==='login') return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Sign in</h1><p class="muted" style="margin:0 0 18px">Staff only. Admins are invited.</p>
    ${field('Work email','a-email',{type:'email',v:a.email})}${field('Password','a-pass',{type:'password',v:'demo-password'})}<div class="err" style="margin-bottom:8px">${esc(a.err)}</div>
-   <button class="btn lime block" data-a="login">Continue</button>
+   <button class="btn lime block" data-a="login">Sign in</button>
    <button class="btn block" style="color:var(--accent-text);margin-top:8px" data-a="goStep" data-v="invite">I have an invite link</button>
    <p class="hint" style="margin-top:14px">Prototype: any password works. Your account locks after 5 failed attempts for 15 minutes.</p></div></div>`;
-  if(S.step==='mfa') return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Enter your MFA code</h1><p class="muted" style="margin:0 0 18px">Open your authenticator app and enter the 6-digit code for Corpers Connect.</p>
-   <div class="otp" role="group" aria-label="6 digit code">${[0,1,2,3,4,5].map(i=>`<input inputmode="numeric" maxlength="1" id="otp${i}" data-otp="${i}" aria-label="Digit ${i+1}">`).join('')}</div><div class="err" style="margin:8px 0">${esc(a.err)}</div>
-   <button class="btn lime block" data-a="verifyMfa">Verify and sign in</button>
-   <button class="btn block" style="color:var(--muted);margin-top:6px" data-a="goStep" data-v="login">Back</button>
-   <p class="hint" style="margin-top:12px">Prototype: any 6 digits work.</p></div></div>`;
-  return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Accept your invite</h1><p class="muted" style="margin:0 0 14px">Set a password and enrol an authenticator app. Invites expire after 72 hours.</p>
+  return `<div class="auth"><div class="box">${brand}<h1 class="hd" style="font-size:26px;margin:0 0 6px">Accept your invite</h1><p class="muted" style="margin:0 0 14px">Set a password to finish. Invites expire after 72 hours.</p>
    ${field('Password','i-pass',{type:'password',ph:'At least 12 characters'})}${field('Confirm password','i-pass2',{type:'password'})}
-   <div class="lbl">Scan with your authenticator app</div><div class="qr" role="img" aria-label="Sample QR code"></div>
-   ${field('Code from the app','i-code',{ph:'6 digits'})}
    <button class="btn lime block" data-a="acceptInvite">Finish setup</button>
    <button class="btn block" style="color:var(--muted);margin-top:6px" data-a="goStep" data-v="login">Back to sign in</button></div></div>`;
 }
@@ -142,7 +135,6 @@ document.addEventListener('input',e=>{
   const t=e.target;
   if(t.dataset.live==='global'){S.q.members=t.value;S.q.global=t.value;S.focus=t.id;if(S.route!=='members'&&can('MEMBERS_VIEW'))location.hash='#/members';else render();}
   else if(t.dataset.live){S.q[t.dataset.live]=t.value;S.focus=t.id;render();}
-  if(t.dataset.otp!==undefined){const i=+t.dataset.otp;t.value=t.value.replace(/\D/g,'').slice(0,1);if(t.value&&i<5)$('otp'+(i+1)).focus();}
 });
 document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset.change==='persona'){S.persona=t.value;S.drawer=null;S.modal=null;toast('Now viewing as '+persona().name+'. Pages and buttons follow this role.');}
@@ -153,9 +145,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(S.modal)closeMod
 
 // ---------- Auth actions ----------
 A.goStep=d=>{S.step=d.v;S.auth.err='';render();};
-A.login=()=>{const em=val('a-email');if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.auth.err='Enter a valid work email.';return render();}S.auth.email=em;S.auth.err='';S.step='mfa';render();setTimeout(()=>{const f=$('otp0');if(f)f.focus();},30);};
-A.verifyMfa=()=>{const code=[0,1,2,3,4,5].map(i=>$('otp'+i).value).join('');if(!/^\d{6}$/.test(code)){S.auth.err='Enter all 6 digits.';return render();}S.authed=true;sessionStorage.setItem('ccadm','1');S.step='login';S.auth.err='';audit('LOGIN_SUCCESS','Admin session','MFA verified');route();};
-A.acceptInvite=()=>{const p=val('i-pass'),p2=val('i-pass2'),c=val('i-code');let ok=true;ok=ferr('i-pass',p.length>=12?'':'Use at least 12 characters.')&&ok;ok=ferr('i-pass2',p===p2&&p2?'':'Passwords do not match.')&&ok;ok=ferr('i-code',/^\d{6}$/.test(c)?'':'Enter the 6-digit code.')&&ok;if(!ok)return;S.step='login';S.auth.err='';render();toast('Account ready. Sign in to continue.');};
+A.login=()=>{const em=val('a-email');if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.auth.err='Enter a valid work email.';return render();}S.auth.email=em;S.auth.err='';S.authed=true;sessionStorage.setItem('ccadm','1');S.step='login';audit('LOGIN_SUCCESS','Admin session','');route();};
+A.acceptInvite=()=>{const p=val('i-pass'),p2=val('i-pass2');let ok=true;ok=ferr('i-pass',p.length>=12?'':'Use at least 12 characters.')&&ok;ok=ferr('i-pass2',p===p2&&p2?'':'Passwords do not match.')&&ok;if(!ok)return;S.step='login';S.auth.err='';render();toast('Account ready. Sign in to continue.');};
 const themeIcon=()=>{const t=CCTheme.get();const p=t==='light'?'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>':t==='dark'?'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>':'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>';return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;};
 A.theme=()=>{CCTheme.next();render();};
 A.setTheme=d=>{CCTheme.set(d.v);render();};
