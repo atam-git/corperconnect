@@ -1,53 +1,69 @@
-/* Premium pass for Home (and the phone nav). Self-contained.
-   To revert: delete the <link rel="stylesheet" href="premium.css"> line in index.html, or `git revert` the commit that added this file.
-   Everything is scoped to #app[data-s="home"] except the phone bottom nav. */
+/* Premium pass: flat feed, dark announcement cards, hairline controls, frosted nav, sliding Home header.
+   Self-contained. To revert: delete the <link rel="stylesheet" href="premium.css"> line in index.html,
+   or `git revert` the commits that touched this file. The Home header slide is the last-but-one block. */
 
-/* Depth: faint lime glow behind the greeting, frosted sticky header */
-#app[data-s="home"] .scroll{background:radial-gradient(90% 300px at 50% 0,rgba(200,241,105,.075),transparent 70%) no-repeat}
-[data-theme="light"] #app[data-s="home"] .scroll{background:radial-gradient(90% 300px at 50% 0,rgba(110,158,0,.09),transparent 70%) no-repeat}
-#app[data-s="home"] header{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--bg) 74%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3)}
+/* ---------- Depth ---------- */
+#app .scroll{background:radial-gradient(90% 300px at 50% 0,rgba(200,241,105,.07),transparent 70%) no-repeat}
+[data-theme="light"] #app .scroll{background:radial-gradient(90% 300px at 50% 0,rgba(110,158,0,.09),transparent 70%) no-repeat}
 
-/* Type: tighter, lighter, quieter metadata */
+/* ---------- Type: tighter, lighter, quieter metadata ---------- */
+#app .topbar h1{font-weight:600;letter-spacing:-.02em}
 #app[data-s="home"] header .hd{font-weight:600;letter-spacing:-.03em;font-size:27px}
-#app[data-s="home"] .eyebrow{letter-spacing:.14em;font-weight:600;opacity:.85}
-#app[data-s="home"] article .hd{font-weight:600;letter-spacing:-.02em}
-#app[data-s="home"] article .pt{font-size:15.5px;line-height:1.5;color:var(--soft)}
-#app[data-s="home"] article b{font-weight:600}
+#app .eyebrow{letter-spacing:.14em;font-weight:600;opacity:.85}
+#app article .hd{font-weight:600;letter-spacing:-.02em}
+#app article .pt{font-size:15.5px;line-height:1.5;color:var(--soft)}
+#app article b{font-weight:600}
 
-/* Hairline controls instead of filled blocks */
-#app[data-s="home"] header .ib{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
-#app[data-s="home"] .chip{background:transparent;border-color:var(--line)}
-#app[data-s="home"] .chip.on{background:rgba(200,241,105,.14);color:var(--accent-text);border-color:rgba(200,241,105,.5);font-weight:600}
-[data-theme="light"] #app[data-s="home"] .chip.on{background:rgba(110,158,0,.12);border-color:rgba(110,158,0,.5)}
+/* ---------- Hairline controls instead of filled blocks ---------- */
+#app .topbar .ib:not(.lime),#app[data-s="home"] header .ib{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+#app .chip{background:transparent;border-color:var(--line)}
+#app .chip.on{background:rgba(200,241,105,.14);color:var(--accent-text);border-color:rgba(200,241,105,.5);font-weight:600}
+[data-theme="light"] #app .chip.on{background:rgba(110,158,0,.12);border-color:rgba(110,158,0,.5)}
+#app .card{box-shadow:inset 0 0 0 1px var(--line)}
+#app .list{box-shadow:inset 0 0 0 1px var(--line)}
+#app .li{border-bottom-color:var(--line)}
 
-/* Today at camp: one hairline card, lime-tint highlight instead of solid orange */
-#app[data-s="home"] .scroll>div>.card{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+/* ---------- Today at camp ---------- */
+#app[data-s="home"] .scroll>div>.card{background:transparent}
 #app[data-s="home"] [style*="background:#FF8A3D"][style*="min-width:120px"]{background:rgba(200,241,105,.14)!important;color:var(--accent-text)!important;box-shadow:inset 0 0 0 1px rgba(200,241,105,.4)}
 [data-theme="light"] #app[data-s="home"] [style*="background:#FF8A3D"][style*="min-width:120px"]{background:rgba(110,158,0,.12)!important}
 
-/* Flat feed: posts, listings and events sit on the page with hairline dividers */
+/* ---------- Flat feed: posts, listings and events on the page with hairline dividers ---------- */
+#app .pad.stack:has(>article.card){gap:0;padding-left:0;padding-right:0}
+#app .pad.stack:has(>article.card)>:not(article.card):not(.empty):not(button.card[data-a="openListing"]):not(button.card[data-a="openEvent"]){margin-left:12px;margin-right:12px}
+#app .pad.stack:has(>article.card)>.sec{margin-top:14px;margin-bottom:6px}
+#app .pad.stack>article.card,
+#app .pad.stack>button.card[data-a="openListing"],
+#app .pad.stack>button.card[data-a="openEvent"]{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding:16px}
 #app[data-s="home"] .pad.stack{gap:0;padding-left:0;padding-right:0}
-#app[data-s="home"] .pad.stack>.card,#app[data-s="home"] .pad.stack>article{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding:16px}
-#app[data-s="home"] .pad.stack>.empty{padding:24px 16px}
-#app[data-s="home"] article .pill:not(.on-like):not(.on-lime){background:transparent;padding-left:8px;padding-right:8px;color:var(--muted)}
-#app[data-s="home"] article .pill:not(.on-like):not(.on-lime):active{background:var(--raised)}
+#app[data-s="home"] .pad.stack>.card{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding:16px}
+#app .pad.stack>.empty{padding:24px 16px}
+/* listings and events keep a little breathing room between dividers when mixed into a gapped stack */
+#app .pad.stack:not(:has(>article.card))>button.card[data-a="openListing"],#app .pad.stack:not(:has(>article.card))>button.card[data-a="openEvent"]{border-radius:18px;box-shadow:inset 0 0 0 1px var(--line);border-bottom:0}
+#app article .pill:not(.on-like):not(.on-lime){background:transparent;padding-left:8px;padding-right:8px;color:var(--muted)}
+#app article .pill:not(.on-like):not(.on-lime):active{background:var(--raised)}
 
-/* Announcements: dark card, thin lime rule, lime as signal not shout */
-#app[data-s="home"] .pad.stack>article.card[style*="C8F169"]{background:var(--surface)!important;color:var(--text)!important;border:0;border-left:3px solid #C8F169;border-radius:0 16px 16px 0;margin:12px 16px;padding:14px 16px 12px 14px!important;box-shadow:inset 0 0 0 1px var(--line);border-left-color:#C8F169}
-[data-theme="light"] #app[data-s="home"] .pad.stack>article.card[style*="C8F169"]{border-left-color:#6E9E00}
-#app[data-s="home"] article.card[style*="C8F169"] span[style*="uppercase"]{color:var(--accent-text)}
-#app[data-s="home"] article.card[style*="C8F169"] p.hd{font-size:17px;line-height:1.3;font-weight:600;letter-spacing:-.015em;color:var(--text)}
-#app[data-s="home"] article.card[style*="C8F169"] button{color:var(--accent-text)}
-#app[data-s="home"] article.card[style*="C8F169"] [style*="font-size:12px"]{color:var(--muted)}
+/* ---------- Announcements: dark card, thin lime rule ---------- */
+#app article.card[style*="C8F169"]{background:var(--surface)!important;color:var(--text)!important;border:0;border-left:3px solid #C8F169;border-radius:0 16px 16px 0;margin:12px 16px;padding:14px 16px 12px 14px!important;box-shadow:inset 0 0 0 1px var(--line)}
+[data-theme="light"] #app article.card[style*="C8F169"]{border-left-color:#6E9E00}
+#app article.card[style*="C8F169"] span[style*="uppercase"]{color:var(--accent-text)}
+#app article.card[style*="C8F169"] p.hd{font-size:17px;line-height:1.3;font-weight:600;letter-spacing:-.015em;color:var(--text)}
+#app article.card[style*="C8F169"] button{color:var(--accent-text)}
+#app article.card[style*="C8F169"] [style*="font-size:12px"]{color:var(--muted)}
+#app .pad.stack>article.card[style*="C8F169"]{margin:12px 16px}
 
-/* Banners: hairline, calmer */
-#app[data-s="home"] button.card[style*="border:1px solid #FF8A3D"]{border-color:rgba(255,138,61,.55)!important;border-radius:16px}
+/* ---------- Banners ---------- */
+#app button.card[style*="border:1px solid #FF8A3D"]{border-color:rgba(255,138,61,.55)!important;border-radius:16px;box-shadow:none}
 
-/* Press feel */
-#app[data-s="home"] .chip,#app[data-s="home"] .pill,#app[data-s="home"] header .ib,.nav button{transition:transform .15s ease,background .2s ease,box-shadow .2s ease,color .2s ease}
-#app[data-s="home"] .chip:active,#app[data-s="home"] .pill:active,#app[data-s="home"] header .ib:active,.nav button:active{transform:scale(.95)}
+/* ---------- Press feel ---------- */
+#app .chip,#app .pill,#app .topbar .ib,#app[data-s="home"] header .ib,.nav button{transition:transform .15s ease,background .2s ease,box-shadow .2s ease,color .2s ease}
+#app .chip:active,#app .pill:active,#app .topbar .ib:active,#app[data-s="home"] header .ib:active,.nav button:active{transform:scale(.95)}
 
-/* Phone bottom nav: frosted glass, hairline border, lime-tint active state */
+/* ---------- Home header: slides away on scroll down, back on scroll up (same trigger as the nav) ---------- */
+#app[data-s="home"] header{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--bg) 74%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s}
+@media (max-width:639px){#app.nav-hide[data-s="home"] header{transform:translateY(-110%);opacity:0;pointer-events:none}}
+
+/* ---------- Phone bottom nav: frosted glass, hairline border, lime-tint active state ---------- */
 @media (max-width:639px){
   .nav{background:color-mix(in srgb,var(--raised) 68%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px var(--shadow),inset 0 0 0 1px rgba(255,255,255,.07)}
   [data-theme="light"] .nav{box-shadow:0 12px 32px var(--shadow),inset 0 0 0 1px rgba(20,32,26,.07)}
@@ -55,4 +71,4 @@
   [data-theme="light"] .nav button.on{background:rgba(110,158,0,.14)}
   .nav button.create{box-shadow:0 4px 14px rgba(200,241,105,.28)}
 }
-@media (prefers-reduced-motion:reduce){#app[data-s="home"] *,.nav button{transition:none!important}}
+@media (prefers-reduced-motion:reduce){#app *,.nav button{transition:none!important}}
