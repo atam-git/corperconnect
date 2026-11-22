@@ -128,3 +128,16 @@
 /* Other people's profiles: same fixed title bar and tabs */
 #app[data-s="user"] .scroll>.topbar{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--bg) 78%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3)}
 #app[data-s="user"] .scroll>.tabs{position:sticky;top:64px;z-index:3;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+
+/* Marketplace tiles: image and text on the page, no box */
+#app .grid2>button.card[data-a="openListing"]{background:transparent;box-shadow:none;padding:0;border-radius:0}
+#app .grid2>button.card[data-a="openListing"]:active{opacity:.8}
+
+/* Profile header: the corner colour blob becomes a soft glow */
+#app [aria-hidden="true"][style*="right:-50px"][style*="top:-50px"]{filter:blur(34px);opacity:.2!important}
+
+/* Photo viewer: solid black so the page never shows through */
+[role="dialog"][aria-label="Photo viewer"]{background:#000!important}
+
+/* Single post page: flat, like the feed */
+#app[data-s="post"] article.card{background:transparent;box-shadow:none;border-radius:0;border-bottom:1px solid var(--line);padding:16px}
