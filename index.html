@@ -739,7 +739,7 @@ function nav(active){
     <button class="dx" data-a="navExplore" data-v="Marketplace" aria-label="Marketplace">${I('bag',24)}<span class="lb">Marketplace</span></button>
     <button class="dx" data-a="navExplore" data-v="Accommodation" aria-label="Rooms">${I('building',24)}<span class="lb">Rooms</span></button>
     <button class="dx" data-a="navExplore" data-v="Events" aria-label="Events">${I('cal',24)}<span class="lb">Events</span></button>
-    <button class="dx" data-a="navExplore" data-v="Guides" aria-label="Guides">${I('book',24)}<span class="lb">Guides</span></button>
+    <button class="dx" data-a="go" data-s="guides" aria-label="Guides">${I('book',24)}<span class="lb">Guides</span></button>
     <span class="sep dx" aria-hidden="true"></span>
     <button class="dx" data-a="navSaved" aria-label="Saved">${I('bookmark',24)}<span class="lb">Saved</span></button>
     <button class="dx" data-a="go" data-s="settings" aria-label="Settings">${I('gear',24)}<span class="lb">Settings</span></button>
@@ -1062,7 +1062,7 @@ SC.home=()=>{
   return `<div class="scroll">
   <header style="display:flex;align-items:center;gap:8px;padding:18px 16px 8px">
     <div style="flex:1;min-width:0"><div class="eyebrow">${esc(label)}</div><div class="hd" style="font-weight:700;font-size:28px;margin-top:2px">Oya, what’s up?</div></div>
-    <button class="ib" data-a="navExplore" data-v="Guides" aria-label="Guides">${I('book')}</button>
+    <button class="ib" data-a="go" data-s="guides" aria-label="Guides">${I('book')}</button>
     <button class="ib" data-a="tab" data-t="explore" aria-label="Search">${I('search')}</button>
     <button class="ib" data-a="go" data-s="notifications" aria-label="Notifications${unread?', unread':''}">${I('bell')}${unread?'<span class="dot"></span>':''}</button>
   </header>
@@ -1239,14 +1239,12 @@ function exploreBody(){
     const l=lst('accommodation');body=exFilters(true)+`<div class="pad stack">${l.length?l.map(listingCard).join(''):empty('No places match','Try a different state or price.')}</div>`;
   } else if(tab==='Events'){
     const e=Object.values(EVENTS).filter(e=>!e.deleted&&stateOk(e.state)&&!hiddenAuthor(e.organiser));body=exFilters(false)+`<div class="pad stack">${e.length?e.map(eventCard).join(''):empty('No events here yet','Organise one from the Create button.')}</div>`;
-  } else if(tab==='Guides'){
-    body=guidesBody();
   } else if(tab==='Communities'){
     body=`<div class="pad stack">${Object.values(COMM).map(c=>commRow(c)).join('')}</div>`;
   } else if(tab==='People'){
     const u=Object.values(USERS).filter(u=>stateOk(u.state)&&!S.blocked.has(u.id));body=exFilters(false)+`<div class="pad stack">${u.length?u.map(userRow).join(''):empty('No one found','Try another state.')}</div>`;
   }
-  return chips(['For You','Guides','Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
+  return chips(['For You','Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
 }
 function searchResults(q){
   const m=s=>String(s||'').toLowerCase().includes(q);
@@ -1581,6 +1579,7 @@ SC.safety=t=>{const g=t.t==='guidelines';
   :tips.map(([i,t,l])=>`<div class="card"><div class="row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center">${I(i,20)}</span><b class="hd" style="font-size:18px">${t}</b></div><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:var(--soft);font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
   </div></div>`;};
 // ===== Guides: admin-curated reference content (sample text for the prototype) =====
+S.guideQ='';S.guideStage='All';
 const GSTAGES=[
   {id:'before',t:'Before camp',sub:'Registration, documents and packing',icon:'file',status:'Awaiting deployment'},
   {id:'camp',t:'Camp life',sub:'Daily routine, rules and what to expect',icon:'mappin',status:'In camp'},
@@ -1688,13 +1687,23 @@ function guideFeature(){
   const [ttl,sub,s,id]=inCamp?['Your camp guide',(CAMPGUIDE[S.me.state]||{}).name||S.me.state+' Orientation Camp','campGuide',S.me.state]:[sg.t,first?first.t:sg.sub,'guide',first?first.id:''];
   return `<button class="card" data-a="go" data-s="${s}" data-id="${esc(id)}" style="width:100%;text-align:left;display:flex;gap:12px;align-items:center"><span class="ico" style="width:44px;height:44px;border-radius:16px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none">${I(inCamp?'mappin':sg.icon,22)}</span><span style="flex:1;min-width:0"><span class="eyebrow">Guide for you</span><b class="hd" style="display:block;font-size:17px">${esc(ttl)}</b><span class="hint">${esc(sub)}</span></span>${I('chevR',18)}</button>`;
 }
+function guideMatch(g,q){const m=x=>String(x||'').toLowerCase().includes(q);return m(g.t)||m(g.intro)||g.secs.some(([h,l])=>m(h)||l.some(m));}
 function guidesBody(){
-  const mine=gStage(S.me.status).id;
-  const order=[...GSTAGES].sort((a,b)=>(b.id===mine)-(a.id===mine));
-  return `<div class="pad stack">${guideFeature()}
-  ${order.map(sg=>`<div class="sec">${sg.t}${sg.id===mine?' · your stage':''}</div><div class="list">${sg.id==='camp'?campGuideRow():''}${Object.values(GUIDES).filter(g=>g.stage===sg.id).map(guideRow).join('')}</div>`).join('')}
+  const q=(S.guideQ||'').toLowerCase().trim(),mine=gStage(S.me.status).id;
+  const only=S.guideStage==='All'?null:(GSTAGES.find(x=>x.t===S.guideStage)||{}).id;
+  const order=[...GSTAGES].sort((a,b)=>(b.id===mine)-(a.id===mine)).filter(sg=>!only||sg.id===only);
+  const blocks=order.map(sg=>{
+    const gs=Object.values(GUIDES).filter(g=>g.stage===sg.id&&(!q||guideMatch(g,q)));
+    const camp=sg.id==='camp'&&!q?campGuideRow():'';
+    return gs.length||camp?`<div class="sec">${sg.t}${sg.id===mine?' · your stage':''}</div><div class="list">${camp}${gs.map(guideRow).join('')}</div>`:'';
+  }).join('');
+  return `<div class="pad stack">${!q&&!only?guideFeature():''}
+  ${blocks||empty('No guides match','Try a different word or stage.')}
   <div class="hint" style="padding:0 4px">Guides are written and kept up to date by the Corpers Connect team. Spot something out of date? Use Contact support.</div></div>`;
 }
+INIT.guides=()=>{S.guideQ='';S.guideStage='All';};
+SC.guides=()=>`${tb('Guides')}<div class="scroll nonav"><div class="pad" style="padding-bottom:10px"><div style="position:relative"><span style="position:absolute;left:14px;top:15px;color:var(--muted)">${I('search',20)}</span><label for="f-gq" class="vh">Search guides</label><input class="inp" id="f-gq" type="search" data-live="guideQ" value="${esc(S.guideQ)}" placeholder="Search guides: allowance, clearance, camp…" style="padding-left:44px"></div></div>
+  ${chips(['All',...GSTAGES.map(x=>x.t)],S.guideStage,'guideStage')}<div id="gResults">${guidesBody()}</div></div>`;
 SC.guide=t=>{const g=GUIDES[t.id];if(!g)return unavailable('guide');const sg=GSTAGES.find(s=>s.id===g.stage);const more=Object.values(GUIDES).filter(x=>x.stage===g.stage&&x.id!==g.id);
   return `${tb('')}<div class="scroll nonav"><div class="pad stack">
   <div><div class="eyebrow">${sg.t}</div><h1 class="hd" style="font-size:28px;margin:4px 0 6px">${esc(g.t)}</h1><div class="hint">${g.min} min read · Updated by the Corpers Connect team</div></div>
@@ -1921,6 +1930,7 @@ const A={
   },
   // explore
   exTab(d){S.exploreTab=d.v;render();},
+  guideStage(d){S.guideStage=d.v;render();},
   setQ(d){S.q=d.v;S.recent=[d.v,...S.recent.filter(x=>x.toLowerCase()!==d.v.toLowerCase())].slice(0,5);render();},
   toggleAvail(){S.availOnly=!S.availOnly;render();},
   exPlace(d){S.q='';S.exploreState=d.v;S.exploreTab='Accommodation';if(topScreen().s==='explore')render();else go('explore');},
@@ -1993,6 +2003,7 @@ const FILES={
 };
 const LIVE={
   exploreQ(val){S.q=val;const el=document.getElementById('exResults');if(el)el.innerHTML=exploreBody();},
+  guideQ(val){S.guideQ=val;const el=document.getElementById('gResults');if(el)el.innerHTML=guidesBody();},
   commQ(val){S.commQ=val;const el=document.getElementById('commResults');if(el)el.innerHTML=commResults();}
 };
 const CH={
