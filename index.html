@@ -739,6 +739,7 @@ function nav(active){
     <button class="dx" data-a="navExplore" data-v="Marketplace" aria-label="Marketplace">${I('bag',24)}<span class="lb">Marketplace</span></button>
     <button class="dx" data-a="navExplore" data-v="Accommodation" aria-label="Rooms">${I('building',24)}<span class="lb">Rooms</span></button>
     <button class="dx" data-a="navExplore" data-v="Events" aria-label="Events">${I('cal',24)}<span class="lb">Events</span></button>
+    <button class="dx" data-a="navExplore" data-v="Guides" aria-label="Guides">${I('book',24)}<span class="lb">Guides</span></button>
     <span class="sep dx" aria-hidden="true"></span>
     <button class="dx" data-a="navSaved" aria-label="Saved">${I('bookmark',24)}<span class="lb">Saved</span></button>
     <button class="dx" data-a="go" data-s="settings" aria-label="Settings">${I('gear',24)}<span class="lb">Settings</span></button>
@@ -1061,12 +1062,14 @@ SC.home=()=>{
   return `<div class="scroll">
   <header style="display:flex;align-items:center;gap:8px;padding:18px 16px 8px">
     <div style="flex:1;min-width:0"><div class="eyebrow">${esc(label)}</div><div class="hd" style="font-weight:700;font-size:28px;margin-top:2px">Oya, what’s up?</div></div>
+    <button class="ib" data-a="navExplore" data-v="Guides" aria-label="Guides">${I('book')}</button>
     <button class="ib" data-a="tab" data-t="explore" aria-label="Search">${I('search')}</button>
     <button class="ib" data-a="go" data-s="notifications" aria-label="Notifications${unread?', unread':''}">${I('bell')}${unread?'<span class="dot"></span>':''}</button>
   </header>
   ${verifBanner()}${installCard()}
   ${chips(['For You','My Batch','My State','Following'],S.homeFilter,'homeFilter')}
   ${S.homeFilter==='For You'&&me.status==='In camp'?campToday():''}
+  ${S.homeFilter==='For You'&&!S.settings.offline?`<div style="padding:0 12px 12px">${guideFeature()}</div>`:''}
   <div class="pad stack">${S.settings.offline?offlineHtml():items.length?items.map(feedItem).join(''):emp}</div>
   ${items.length&&!S.settings.offline?'<div class="empty" style="padding:24px">You’re all caught up.</div>':''}
   </div>${nav('home')}`;
@@ -1236,12 +1239,14 @@ function exploreBody(){
     const l=lst('accommodation');body=exFilters(true)+`<div class="pad stack">${l.length?l.map(listingCard).join(''):empty('No places match','Try a different state or price.')}</div>`;
   } else if(tab==='Events'){
     const e=Object.values(EVENTS).filter(e=>!e.deleted&&stateOk(e.state)&&!hiddenAuthor(e.organiser));body=exFilters(false)+`<div class="pad stack">${e.length?e.map(eventCard).join(''):empty('No events here yet','Organise one from the Create button.')}</div>`;
+  } else if(tab==='Guides'){
+    body=guidesBody();
   } else if(tab==='Communities'){
     body=`<div class="pad stack">${Object.values(COMM).map(c=>commRow(c)).join('')}</div>`;
   } else if(tab==='People'){
     const u=Object.values(USERS).filter(u=>stateOk(u.state)&&!S.blocked.has(u.id));body=exFilters(false)+`<div class="pad stack">${u.length?u.map(userRow).join(''):empty('No one found','Try another state.')}</div>`;
   }
-  return chips(['For You','Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
+  return chips(['For You','Guides','Trending','Nationwide','Marketplace','Jobs','Accommodation','Events','Communities','People'],tab,'exTab')+body;
 }
 function searchResults(q){
   const m=s=>String(s||'').toLowerCase().includes(q);
@@ -1251,10 +1256,12 @@ function searchResults(q){
   const lis=Object.values(LISTINGS).filter(l=>!l.deleted&&(m(l.title)||m(l.desc)||m(l.area)||m(l.state)));
   const evs=Object.values(EVENTS).filter(e=>!e.deleted&&(m(e.title)||m(e.location)||m(e.state)));
   const pl=STATES.filter(s=>m(s));
-  if(!ppl.length&&!com.length&&!pos.length&&!lis.length&&!evs.length&&!pl.length) return empty(`No results for “${esc(S.q)}”`,'Check the spelling or try a broader word.');
+  const gds=Object.values(GUIDES).filter(g=>m(g.t)||m(g.intro)||g.secs.some(([h,l])=>m(h)||l.some(m)));
+  if(!ppl.length&&!com.length&&!pos.length&&!lis.length&&!evs.length&&!pl.length&&!gds.length) return empty(`No results for “${esc(S.q)}”`,'Check the spelling or try a broader word.');
   const sec=(t,h)=>h?`<div class="sec">${t}</div>${h}`:'';
   return `<div class="pad stack">
   ${sec('Places',pl.slice(0,3).map(s=>`<button class="card row" data-a="exPlace" data-v="${s}" style="width:100%;text-align:left;padding:12px">${I('mappin',20,'style="color:var(--accent-text)"')}<span style="flex:1"><b>${s}</b><span class="hint" style="display:block">Accommodation, items, events and people in ${s}</span></span>${I('chevR',18)}</button>`).join(''))}
+  ${gds.length?`<div class="sec">Guides</div><div class="list">${gds.slice(0,3).map(guideRow).join('')}</div>`:''}
   ${sec('People',ppl.slice(0,3).map(userRow).join(''))}
   ${sec('Communities',com.slice(0,3).map(c=>commRow(c)).join(''))}
   ${sec('Listings',lis.slice(0,4).map(listingCard).join(''))}
@@ -1572,6 +1579,146 @@ SC.safety=t=>{const g=t.t==='guidelines';
   return `${tb(g?'Community guidelines':'Safety tips')}<div class="scroll nonav"><div class="pad stack">
   ${g?`<div class="card"><ol style="margin:0;padding-left:20px;line-height:1.65;color:var(--soft)">${rules.map(r=>`<li style="margin-bottom:6px">${r}</li>`).join('')}</ol></div><div class="hint" style="padding:0 4px">Moderators are corps members who run communities. Serious issues go to the platform team. Significant decisions can be appealed.</div>`
   :tips.map(([i,t,l])=>`<div class="card"><div class="row" style="gap:10px"><span class="ico" style="width:40px;height:40px;border-radius:14px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center">${I(i,20)}</span><b class="hd" style="font-size:18px">${t}</b></div><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:var(--soft);font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+  </div></div>`;};
+// ===== Guides: admin-curated reference content (sample text for the prototype) =====
+const GSTAGES=[
+  {id:'before',t:'Before camp',sub:'Registration, documents and packing',icon:'file',status:'Awaiting deployment'},
+  {id:'camp',t:'Camp life',sub:'Daily routine, rules and what to expect',icon:'mappin',status:'In camp'},
+  {id:'serving',t:'Serving',sub:'PPA, CDS, allowance and redeployment',icon:'briefcase',status:'Serving'},
+  {id:'out',t:'Passing out',sub:'Clearance, certificate and what next',icon:'award',status:'Completed'}
+];
+const GUIDES_CHECKED='25 Nov 2026';
+const GUIDES={
+  reg:{id:'reg',stage:'before',t:'Registering on the NYSC portal',min:4,icon:'file',
+    intro:'Mobilisation registration is online and the portal opens only for a short window each batch, often about a week. Missing the window can cost you a batch.',
+    secs:[['Before you start',['Check the NYSC mobilisation timetable for your batch.','Confirm your name is on the list your school sent to NYSC (Senate or Academic Board approved list).','Set up an email address you control and will keep. You log in with it later.']],
+          ['Steps',['Open the official registration portal and create one account. Do not create a second account if you already started one. Continue the first.','Fill in your details and upload the documents asked for.','Pay the registration fee if the portal asks. Guides report ₦4,000 to ₦5,500 in recent years. Confirm the current figure on the portal.','Preview your form, submit it, then print the acknowledgement slip.','Wait for your call-up letter. Keep several copies of the slip.']],
+          ['Watch out for',['Only use the official portal. Never pay anyone “to speed up” a call-up letter.','Keep your login details private. The portal is also how you later apply for redeployment and check clearance.']]],
+    src:[['TechCabal: NYSC registration procedures','https://techcabal.com/2024/03/27/2025-nysc-registration-procedures-for-all-batches-and-streams/'],['Legit.ng: portal login guide','https://www.legit.ng/ask-legit/guides/1243242-wwwnyscorgng-nysc-portal-login-registration/']],
+    verify:'The portal address is cited as portal.nysc.org.ng by several guides but sources disagree on the exact domain. Confirm it from an official NYSC notice before you enter any details.'},
+  docs:{id:'docs',stage:'before',t:'Documents to carry to camp',min:3,icon:'file',
+    intro:'Missing paperwork is the commonest cause of delay at camp registration. Carry originals plus the number of copies below.',
+    secs:[['Core documents (original plus photocopies)',['Call-up letter: original plus 5 copies.','Statement of result or certificate: original plus 5 copies.','Green card: original plus 2 copies.','School ID card: original plus 2 copies.','Medical fitness certificate from a government hospital: original plus 2 copies.','12 passport photographs.']],
+          ['Also listed by guides',['NIN: hard copy and the preview copy.','The addendum you sign from your portal dashboard.','Foreign-trained graduates: international passport (original plus 5 copies) and the originals of everything uploaded at registration.','Married women posted to a husband’s state: evidence of marriage and the husband’s valid ID.']],
+          ['Tip',['Scan everything to your email as a backup. Camp registration is easier when you can reprint.']]],
+    src:[['Within Nigeria: what to pack for camp 2026','https://www.withinnigeria.com/2026/06/05/what-to-pack-for-nysc-orientation-camp-2026-male-and-female-corps-members/'],['Pulse: documents NYSC expects','https://www.pulse.ng/story/nysc-5-important-documents-corps-members-must-take-to-camp-2024073120122520970']],
+    verify:'Requirements change by batch. Follow the notice on your portal dashboard if it differs from this list.'},
+  pack:{id:'pack',stage:'before',t:'What to pack for camp',min:4,icon:'bag',
+    intro:'Camp lasts about 21 days. Camp issues the official uniform, but you supply most daily items.',
+    secs:[['Issued at camp',['Khaki jacket and trousers, khaki cap, white T-shirts, white shorts, jungle boots, white socks, crested vest.']],
+          ['Bring',['5 to 7 plain white round-neck T-shirts and 5 to 7 white shorts.','White canvas shoes and 7 pairs of white socks.','3 to 5 plain mufti outfits and flip-flops.','Bedsheet, pillowcase, light blanket.','Mosquito net. Guides call it essential.','Toiletries. Camp provides none.','Plate, bowl, cup and spoon.','Power bank, torch and a small padlock.','Waist pouch and cash in small notes. Network and POS are unreliable.','Personal medication with a doctor’s note.']],
+          ['Female corps members also bring',['Sanitary pads or tampons, sports bras, hair ties or bonnets, modest sleepwear.']],
+          ['Do not bring',['Electric stoves, hot plates, gas cookers.','Laptops and tablets, extension cords.','Jewellery and expensive accessories.','Alcohol, knives or sharp objects, weapons of any kind.','Political materials or anything linked to secret societies.','Cooking is not allowed. Bring ready-to-eat food only.']]],
+    src:[['Within Nigeria: what to pack 2026','https://www.withinnigeria.com/2026/06/05/what-to-pack-for-nysc-orientation-camp-2026-male-and-female-corps-members/'],['Pulse: camp essentials','https://www.pulse.ng/story/5-nysc-camp-essentials-and-where-to-get-them-2025041414305527170']],
+    verify:'Your camp’s official notice overrides this list. Some camps ask for items not listed here.'},
+  arrive:{id:'arrive',stage:'camp',t:'Arriving and registering at camp',min:3,icon:'clock',
+    intro:'Camp registration checks your documents, then medicals, then kit issue. Expect long queues on the first day.',
+    secs:[['Be on time',['NYSC has said corps members who arrive late to camp may not be registered. Check your reporting date on the call-up letter and arrive early.']],
+          ['What happens',['Document screening against what you uploaded online.','Medical screening.','Collection of your uniform and kit.','Allocation to a platoon and bed space.','Your NYSC ID card and state code are issued during or after registration.']],
+          ['Money',['Give a correct bank account at registration. Your allowance goes there.','Allowance is paid for service months, not as a separate camp payment. Guides say the first payment usually arrives around the end of camp or shortly after.']]],
+    src:[['ThisDay: late corps members won’t be registered','https://www.thisdaylive.com/2024/09/03/late-corps-members-to-camp-wont-be-registered-says-nysc'],['NYSC Mobilization: allowance breakdown','https://nyscmobilization.org/nysc-allowance-breakdown/']],
+    verify:'Order of steps varies by camp.'},
+  saed:{id:'saed',stage:'camp',t:'SAED: skills and entrepreneurship',min:3,icon:'award',
+    intro:'Skill Acquisition and Entrepreneurship Development (SAED) is part of the camp programme. Every corps member takes part automatically from arrival.',
+    secs:[['What it is',['A department of NYSC with two divisions: Skills Acquisition and Entrepreneurship and Empowerment.','An awareness lecture in camp introduces the skill tracks. You choose one for training.','Content covers entrepreneurship, financial literacy, digital learning and funding opportunities.']],
+          ['Getting value from it',['Pick something you can sell in your state of service.','Ask corpers who completed that track what it earns.','Join a matching community here and post your work.']],
+          ['Recent changes',['NYSC has announced a standardised SAED curriculum and a more data-driven approach.']]],
+    src:[['Tribune: everything about SAED','https://tribuneonlineng.com/everything-you-need-to-know-about-nyscs-saed-programme/'],['AllAfrica: NYSC standardises entrepreneurial training','https://allafrica.com/stories/202512180341.html']],
+    verify:''},
+  allowance:{id:'allowance',stage:'serving',t:'Your allowance and money',min:4,icon:'bag',
+    intro:'Federal allowance is reported as ₦77,000 a month, the same for all corps members. State, LGA and PPA top-ups come on top and vary a lot.',
+    secs:[['Federal allowance',['Reported as ₦77,000 a month after the 2024 minimum wage change.','Paid into the account you gave at camp, typically between the 25th and 30th of the month.','Linked to monthly clearance and CDS attendance. Guides say a missed clearance can forfeit that month’s payment.']],
+          ['Top-ups',['Some states pay extra. Reported examples: Ebonyi ₦30,000 a month (approved Aug 2026), Kebbi ₦10,000.','Some LGAs pay a stipend. Example: an Akwa Ibom LGA announced ₦20,000 a month.','Some states pay nothing extra. Ask in your state community.','PPA pay is separate and depends on your employer.']],
+          ['Budgeting',['Rent is the biggest cost. Inspect before paying and see Rooms in Explore.','Keep a small emergency fund. Payment dates can slip.','Ignore anyone asking for a “fee” to receive allowance.']]],
+    src:[['NYSC Mobilization: allowance breakdown','https://nyscmobilization.org/nysc-allowance-breakdown/'],['Channels TV: Ebonyi ₦30,000','https://www.channelstv.com/2026/08/08/ebonyi-approves-%E2%82%A630000-monthly-allowance-for-corps-members/'],['Pulse: Akwa Ibom LGA extra ₦20,000','https://www.pulse.ng/story/nysc-corps-members-extra-20000-monthly-allowance-2026091717495172746'],['The Guardian: conditions for allowance payment','https://guardian.ng/?p=279675']],
+    verify:'The ₦77,000 figure comes from consistent news and blog reports. We could not read an official NYSC statement. Top-ups are announced locally and change often.'},
+  clearance:{id:'clearance',stage:'serving',t:'Monthly clearance',min:4,icon:'shield',
+    intro:'Clearance is the monthly check that you attended your PPA. It decides whether your allowance is paid.',
+    secs:[['When',['The clearance window runs roughly from the 1st to the 10th of each month, sometimes to the 15th.']],
+          ['Steps',['Attend your PPA regularly.','Get a clearance letter from your PPA supervisor: letterhead, dated, signed and stamped.','Take it to your Local Government Inspector (LGI) with your NYSC ID card and any other documents asked for.','Do biometric fingerprint verification where your LGA uses it.','Sign the monthly clearance register.','Your name goes to NYSC headquarters and allowance is paid after.']],
+          ['Check your status',['Log in to the portal and open the LGA Clearance tab. Each month shows Present or Absent.']],
+          ['If you miss it',['Speak to your LGI the same week.','Repeated unexcused absence can lead to withheld clearance and, in serious cases, an extension of service.']]],
+    src:[['Legit.ng: monthly and final clearance','https://www.legit.ng/ask-legit/guides/1657819-understanding-nysc-clearance-process-guide-monthly-final-clearance'],['Dubawa: NYSC bye-laws and extension','https://dubawa.org/raye-does-nysc-bye-laws-support-service-year-extension-as-claimed-by-the-corps/?amp=1']],
+    verify:'Dates and biometric rules vary by LGA. Your LGI’s office is the authority.'},
+  cds:{id:'cds',stage:'serving',t:'CDS explained',min:3,icon:'users',
+    intro:'Community Development Service (CDS) is a weekly group activity. Attendance is recorded and counts towards clearance.',
+    secs:[['The basics',['Each LGA sets a CDS day, usually a weekday.','Some LGAs use biometric capture for CDS attendance.','No CDS attendance and no monthly clearance can mean no allowance.']],
+          ['Choosing a group',['Pick groups with real projects and good attendance records.','Ask senior corpers which groups are worth joining.','Match the group to your skills.']],
+          ['Dues',['Groups may ask for dues. Final clearance requires CDS dues to be cleared and the receipt kept.','Amounts reported by guides range from about ₦500 to ₦2,000. Treat higher demands with caution and ask your LGI.']]],
+    src:[['The Guardian: allowance conditions','https://guardian.ng/?p=279675'],['Awajis: bye-laws during primary assignment','https://awajis.com/nysc-bye-laws-during-the-period-of-primary-assignment/']],
+    verify:'Dues and attendance thresholds come from guides, not the official bye-laws.'},
+  ppa:{id:'ppa',stage:'serving',t:'Settling into your PPA',min:3,icon:'briefcase',
+    intro:'Your Place of Primary Assignment is where you work for the year. A good first week sets the tone.',
+    secs:[['First week',['Report with your posting letter and copies.','Meet your supervisor and agree your duties.','Ask who signs your monthly clearance letter.']],
+          ['Accommodation',['Inspect any room before paying anything.','Get rent and every fee in writing.','Use Rooms in Explore and your state community.']],
+          ['If things go wrong',['Speak to your supervisor first, then your LGI.','If the problem is serious, use redeployment. See the next guide.']]],
+    src:[['Legit.ng: monthly and final clearance','https://www.legit.ng/ask-legit/guides/1657819-understanding-nysc-clearance-process-guide-monthly-final-clearance']],
+    verify:''},
+  redeploy:{id:'redeploy',stage:'serving',t:'Redeployment and relocation',min:4,icon:'swap',
+    intro:'Redeployment changes your state of service. Relocation changes your PPA inside the same state. Some guides use the words interchangeably.',
+    secs:[['When you can ask',['At orientation camp, which is the most common window.','After camp through the portal, if your reason arose after posting.']],
+          ['Common reasons',['Health, with a medical report.','Marriage, with a marriage certificate.','Security, considered case by case.']],
+          ['How',['Log in to the portal and open the relocation or redeployment option.','Choose your reason and upload supporting documents. Payment cannot proceed before uploads.','Pay the processing fee if one applies.','Wait. Guides estimate 2 to 6 weeks.']],
+          ['Know this',['Approval is not automatic and sits with NYSC management.','You keep your original batch and camp on your profile here after approval.']]],
+    src:[['Within Nigeria: redeployment process 2026','https://www.withinnigeria.com/2026/06/11/nysc-redeployment-process-2026-how-to-apply-and-requirements-needed/'],['Pulse: how to apply','https://www.pulse.ng/communities/student/how-to-apply-for-nysc-relocation-and-redeployment-id8726638.html']],
+    verify:'Menu names and fees differ between guides. Follow what your portal dashboard shows.'},
+  out:{id:'out',stage:'out',t:'Final clearance and discharge certificate',min:4,icon:'award',
+    intro:'Final clearance is required before the Passing-Out Parade and before your discharge certificate is released.',
+    secs:[['Final clearance',['Get a final clearance letter from your PPA: completion, items returned, nothing pending.','Complete the clearance forms your LGI gives you.','Clear all CDS dues and keep the receipt.','Submit to your LGI, who forwards to the Zonal Inspector.','Do biometric verification after approval.','Collect your final clearance certificate.']],
+          ['Bring',['NYSC ID card, service booklet showing full monthly clearance, PPA completion letter, CDS attendance record, project report if your group asked for one.']],
+          ['Discharge certificate',['Issued after the Passing-Out Parade.','Certificates go from NYSC headquarters to state secretariats a few times a year, so collection can take weeks.','Make several photocopies and scan the original as soon as you collect it.']],
+          ['If a certificate is withheld',['NYSC has said certificates were withheld for infractions. Resolve clearance problems early, not in the last month.']]],
+    src:[['Legit.ng: monthly and final clearance','https://www.legit.ng/ask-legit/guides/1657819-understanding-nysc-clearance-process-guide-monthly-final-clearance'],['Legit.ng: discharge certificate','https://www.legit.ng/1171799-nysc-discharge-certificate.html'],['Dubawa: bye-laws and extension','https://dubawa.org/raye-does-nysc-bye-laws-support-service-year-extension-as-claimed-by-the-corps/?amp=1']],
+    verify:'Form names and steps are as reported by guides. Your state secretariat gives the final word.'}
+};
+// Camp pages come from the camps table (admin-editable). One sample camp; other states show an empty state.
+const CAMPGUIDE={
+  Kano:{name:'Kano Orientation Camp',address:'Sample address, Kano State',lga:'Sample LGA',map:'Kano NYSC orientation camp',updated:'Sample content',
+    arrive:['Report with your call-up letter and all original documents.','Registration runs in stages: documents, medicals, then kit issue.','Bring cash for small purchases. Expect queues on day one.'],
+    rules:['No leaving the camp without a permit from your platoon officer.','Lights out time is announced at roll call.','Respect officers and fellow corpers.','Keep your kit and bed space tidy for inspection.'],
+    around:[['Mammy Market','Food, phone charging, SIM top-up and small shops'],['Camp clinic','Basic care. Go early if unwell.'],['Parade ground','Roll call, drills and ceremonies'],['Hall B','Lectures and skills sessions']]}
+};
+function gStage(st){return GSTAGES.find(s=>s.status===st)||GSTAGES[1];}
+function guideRow(g){return li({icon:g.icon,title:esc(g.t),sub:g.min+' min read',right:I('chevR',18),a:'go',data:`data-s="guide" data-id="${g.id}"`});}
+function campGuideRow(){const st=S.me.state;return li({icon:'mappin',title:esc((CAMPGUIDE[st]||{}).name||st+' Orientation Camp'),sub:'Camp page · address, rules and what’s around',right:I('chevR',18),a:'go',data:`data-s="campGuide" data-id="${esc(st)}"`});}
+// Stage-aware entry card, shown on Home and at the top of Guides
+function guideFeature(){
+  const sg=gStage(S.me.status),inCamp=S.me.status==='In camp';
+  const first=Object.values(GUIDES).find(g=>g.stage===sg.id);
+  const [ttl,sub,s,id]=inCamp?['Your camp guide',(CAMPGUIDE[S.me.state]||{}).name||S.me.state+' Orientation Camp','campGuide',S.me.state]:[sg.t,first?first.t:sg.sub,'guide',first?first.id:''];
+  return `<button class="card" data-a="go" data-s="${s}" data-id="${esc(id)}" style="width:100%;text-align:left;display:flex;gap:12px;align-items:center"><span class="ico" style="width:44px;height:44px;border-radius:16px;background:#C8F169;color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none">${I(inCamp?'mappin':sg.icon,22)}</span><span style="flex:1;min-width:0"><span class="eyebrow">Guide for you</span><b class="hd" style="display:block;font-size:17px">${esc(ttl)}</b><span class="hint">${esc(sub)}</span></span>${I('chevR',18)}</button>`;
+}
+function guidesBody(){
+  const mine=gStage(S.me.status).id;
+  const order=[...GSTAGES].sort((a,b)=>(b.id===mine)-(a.id===mine));
+  return `<div class="pad stack">${guideFeature()}
+  ${order.map(sg=>`<div class="sec">${sg.t}${sg.id===mine?' · your stage':''}</div><div class="list">${sg.id==='camp'?campGuideRow():''}${Object.values(GUIDES).filter(g=>g.stage===sg.id).map(guideRow).join('')}</div>`).join('')}
+  <div class="hint" style="padding:0 4px">Guides are written and kept up to date by the Corpers Connect team. Spot something out of date? Use Contact support.</div></div>`;
+}
+SC.guide=t=>{const g=GUIDES[t.id];if(!g)return unavailable('guide');const sg=GSTAGES.find(s=>s.id===g.stage);const more=Object.values(GUIDES).filter(x=>x.stage===g.stage&&x.id!==g.id);
+  return `${tb('')}<div class="scroll nonav"><div class="pad stack">
+  <div><div class="eyebrow">${sg.t}</div><h1 class="hd" style="font-size:28px;margin:4px 0 6px">${esc(g.t)}</h1><div class="hint">${g.min} min read · Updated by the Corpers Connect team</div></div>
+  <p style="margin:0;line-height:1.6;color:var(--soft)">${g.intro}</p>
+  ${g.secs.map(([h,l])=>`<div class="card"><b class="hd" style="font-size:18px">${h}</b><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:var(--soft);font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+  ${g.verify?`<div class="card" style="border:1px solid #FF8A3D;background:transparent"><div class="row" style="gap:8px">${I('info',18,'style="color:var(--orange-text)"')}<b>Confirm before you act</b></div><div class="hint" style="margin-top:6px">${g.verify}</div></div>`:''}
+  ${g.src&&g.src.length?`<div class="sec">Sources</div><div class="list">${g.src.map(([l,u])=>li({icon:'link',title:esc(l),href:u})).join('')}</div><div class="hint" style="padding:0 4px">Based on public guides and news reports, checked ${GUIDES_CHECKED}. Official NYSC pages could not be reached for this check. Always confirm with your state secretariat or the portal.</div>`:''}
+  ${g.stage==='camp'?`<div class="list">${campGuideRow()}</div>`:''}
+  ${more.length?`<div class="sec">More in ${sg.t}</div><div class="list">${more.map(guideRow).join('')}</div>`:''}
+  <button class="btn outline block" data-a="go" data-s="contact">${I('help',18)}Report something out of date</button>
+  </div></div>`;};
+SC.campGuide=t=>{const st=t.id||S.me.state,c=CAMPGUIDE[st];
+  if(!c) return `${tb('Camp guide')}<div class="scroll nonav"><div class="pad">${empty('No camp page for '+esc(st)+' yet','Camp pages are added by the Corpers Connect team. Check back soon, or ask in your state community.','<button class="btn sm lime" data-a="back">Back to guides</button>')}</div></div>`;
+  const sec=(h,l)=>`<div class="card"><b class="hd" style="font-size:18px">${h}</b><ul style="margin:10px 0 0;padding-left:18px;line-height:1.6;color:var(--soft);font-size:14px">${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  return `${tb('Camp guide')}<div class="scroll nonav"><div class="pad stack">
+  <div class="card"><div class="eyebrow">${esc(st)} State</div><h1 class="hd" style="font-size:26px;margin:4px 0 10px">${esc(c.name)}</h1>
+    <div class="row" style="gap:8px;color:var(--soft);font-size:14px">${I('mappin',16)}<span>${esc(c.address)}</span></div>
+    <div class="row" style="gap:8px;color:var(--soft);font-size:14px;margin-top:6px">${I('info',16)}<span>LGA: ${esc(c.lga)}</span></div>
+    <a class="btn sm lime" style="margin-top:14px;display:inline-flex" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.map)}" target="_blank" rel="noopener">${I('link',16)}Open in Maps</a>
+    <div class="hint" style="margin-top:10px">${esc(c.updated)}. Camp name and location are managed by admins and can change.</div></div>
+  ${sec('Arrival day',c.arrive)}
+  <div class="card"><b class="hd" style="font-size:18px">Around the camp</b><div class="list" style="margin-top:8px">${c.around.map(([a,b])=>li({icon:'mappin',title:esc(a),sub:esc(b)})).join('')}</div></div>
+  ${sec('Camp rules',c.rules)}
+  <div class="list">${li({icon:'bag',title:'What to pack for camp',sub:'3 min read',right:I('chevR',18),a:'go',data:'data-s="guide" data-id="pack"'})}${li({icon:'clock',title:'Arriving and registering at camp',sub:'3 min read',right:I('chevR',18),a:'go',data:'data-s="guide" data-id="arrive"'})}${COMM['kano-camp']?li({icon:'users',title:'Ask your camp community',sub:'Kano Orientation Camp',right:I('chevR',18),a:'go',data:'data-s="communityDetail" data-id="kano-camp"'}):''}</div>
   </div></div>`;};
 // ---------- Bottom sheets ----------
 const SH={};
