@@ -1345,6 +1345,7 @@ A separate web-based administration dashboard is required for internal platform 
 | Events | Reported events and administrative actions |
 | Analytics | Engagement, retention and usage trends |
 | Camp schedules | Daily camp schedule items shown on members' Home during camp |
+| Guides | Create, edit, publish, archive and reorder guides by service stage, and edit each camp's guide |
 | Support | Contact-form tickets and replies |
 | Content | Terms, privacy, about, guidelines, safety and FAQ pages |
 | Roles and permissions | Admin accounts, custom roles and permission assignment (super admin) |
@@ -1818,3 +1819,11 @@ These were decided while reviewing the prototype and are part of the product.
 10. **Admin sign-in is email and password. No MFA.**
 11. **Look and feel:** flat feed, dark announcement cards with a lime rule, hairline controls, frosted nav, header and sheets. The phone nav and Home header slide away on scroll down. See `docs/Design-System.md` section 5a.
 12. **Admin console:** the theme switch lives in Settings, Appearance, open to every role.
+
+## Appendix C. Additions after prototype round 3 (25 November 2026)
+
+1. **Guides.** A library of reference guides grouped by service stage: Before camp, Camp, Serving and Passing out. Each guide has a title, icon, intro, ordered sections of plain-text points, an optional "Confirm before you act" note, sources with links, a last-checked date and a reading time worked out from the text. Home shows a **Guide for you** card for the member's stage. Guides are searchable and can be read without signing in.
+2. **Camp guides.** One page per camp with arrival steps, camp rules and places nearby, plus an Open in Maps button. The camp's name, address and location are edited with the camp itself.
+3. **Admin control.** Guides and camp guides are not fixed content. Admins with the guides permission write, edit, publish, archive and reorder guides and can create as many as needed. Every change is audited.
+4. **Honesty.** Guides are general information, not official NYSC instructions. Each guide shows its sources and the date it was last checked. Members can report a guide as out of date, which opens a support ticket linked to that guide.
+5. The text in the prototype guides is sample content. Real guides are written in the admin console before launch.
